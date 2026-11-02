@@ -1,0 +1,1701 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TaxLens ID — hitung, visualisasikan, dan bagikan aliran pajak serta iuran wajib tahunanmu. Semua diproses di browser, tanpa menyimpan data.">
+  <meta property="og:title" content="TaxLens ID — Personal Statutory & Tax Flow Tracker">
+  <meta property="og:description" content="Hitung pajak & iuran wajibmu, lihat kalau pajak itu jadi barang, lalu download bukti kontribusinya. 100% diproses di browser.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#020617">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23ef4444'/%3E%3Ctext x='32' y='46' font-family='Arial,sans-serif' font-size='40' font-weight='800' text-anchor='middle' fill='white'%3ET%3C/text%3E%3C/svg%3E">
+  <title>TaxLens ID — Personal Statutory & Tax Flow Tracker</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    try {
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif']
+            }
+          }
+        }
+      };
+    } catch (e) { /* CDN gagal dimuat — font fallback tetap dipakai */ }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root { color-scheme: dark; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+      background-color: #020617;
+      background-image:
+        radial-gradient(55rem 32rem at 12% -8%, rgba(59, 130, 246, .10), transparent 62%),
+        radial-gradient(48rem 30rem at 92% -4%, rgba(239, 68, 68, .10), transparent 58%),
+        radial-gradient(40rem 26rem at 50% 110%, rgba(245, 158, 11, .05), transparent 60%);
+      background-attachment: fixed;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection { background: #ef4444; color: #fff; }
+
+    .tabular { font-variant-numeric: tabular-nums; }
+
+    .goldbar {
+      display: inline-block;
+      background: linear-gradient(135deg, #fde68a 0%, #f59e0b 55%, #b45309 100%);
+      border-radius: 3px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 6px 16px -8px rgba(245, 158, 11, .7);
+    }
+
+    .goods-filter {
+      border: 1px solid #1e293b;
+      background: rgba(15, 23, 42, .65);
+      color: #94a3b8;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1;
+      padding: 8px 14px;
+      border-radius: 9999px;
+      transition: color .18s ease, background-color .18s ease, border-color .18s ease, transform .18s ease;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .goods-filter:hover { color: #e2e8f0; border-color: #334155; transform: translateY(-1px); }
+    .goods-filter.is-active { background: #f59e0b; border-color: #f59e0b; color: #1c1917; }
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button { opacity: .25; }
+
+    @media print {
+      header, #privacyBanner, #downloadShareBtn, #goodsFilters { display: none !important; }
+      body { background: #fff; color: #0f172a; }
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-100">
+
+  <!-- ============================ HEADER ============================ -->
+  <header class="sticky top-0 z-50 border-b border-slate-800/80 bg-slate-950/95 backdrop-blur-xl">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3.5">
+      <a href="#" class="flex items-center gap-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 rounded-xl">
+        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-red-500 to-rose-700 shadow-lg shadow-red-950/50">
+          <span class="text-lg font-black tracking-tight text-white">T</span>
+        </div>
+        <div class="leading-tight">
+          <p class="text-base font-extrabold tracking-tight text-white sm:text-lg">TaxLens <span class="text-red-400">ID</span></p>
+          <p class="hidden text-[10px] font-medium text-slate-400 sm:block sm:text-[11px]">Personal Statutory &amp; Tax Flow Tracker</p>
+        </div>
+      </a>
+
+      <nav class="hidden items-center gap-6 text-xs font-semibold text-slate-400 md:flex">
+        <a href="#kalkulator" class="transition hover:text-white">Kalkulator</a>
+        <a href="#belanja" class="transition hover:text-white">Belanja Pajak</a>
+        <a href="#metodologi" class="transition hover:text-white">Metodologi</a>
+      </nav>
+
+      <span class="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-[10px] font-semibold text-emerald-400 sm:text-[11px]">
+        <span class="relative flex h-1.5 w-1.5">
+          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+        </span>
+        Live <span class="hidden sm:inline">calculation</span>
+      </span>
+    </div>
+  </header>
+
+  <!-- ========================= PRIVACY BANNER ======================= -->
+  <div id="privacyBanner" class="border-b border-emerald-500/15 bg-emerald-500/[0.04]">
+    <div class="mx-auto flex max-w-7xl items-start gap-2.5 px-4 py-2.5 sm:items-center">
+      <svg class="mt-0.5 h-4 w-4 shrink-0 text-emerald-400 sm:mt-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="4" y="10" width="16" height="10" rx="2"></rect>
+        <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+      </svg>
+      <p class="flex-1 text-[11px] leading-relaxed text-emerald-200/80 sm:text-xs">
+        <span class="font-bold text-emerald-300">Privasi:</span>
+        website ini <span class="font-semibold text-emerald-200">tidak menyimpan data apa pun</span>. Semua perhitungan dan gambar diproses sepenuhnya di browser kamu — tidak ada data yang dikirim ke server.
+      </p>
+      <button id="dismissPrivacy" type="button" aria-label="Tutup banner privasi" class="rounded-md px-1.5 py-0.5 text-base leading-none text-emerald-300/60 transition hover:bg-emerald-500/10 hover:text-emerald-200">×</button>
+    </div>
+  </div>
+
+  <main id="kalkulator" class="mx-auto max-w-7xl px-4 py-8 sm:py-10">
+
+    <!-- ============================ INTRO ============================ -->
+    <div class="mb-7 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-blue-400 sm:text-xs">UU HPP · PP 58/2023 · PMK 168/2023 · UU HKPD</p>
+        <h1 class="mt-2 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">Ke mana uangmu benar-benar pergi?</h1>
+        <p class="mt-2 max-w-2xl text-sm leading-relaxed text-slate-400">
+          Hitung potongan wajib dari gaji, rekonsiliasi PPh 21 progresif, dan pajak konsumsi dalam satu tampilan.
+        </p>
+      </div>
+      <div class="hidden shrink-0 items-center gap-2.5 rounded-xl border border-slate-800 bg-slate-900/60 px-4 py-2.5 sm:flex">
+        <span class="inline-flex h-5 w-7 shrink-0 flex-col overflow-hidden rounded-[3px] border border-slate-700/80" aria-hidden="true">
+          <span class="h-1/2 w-full bg-red-500"></span>
+          <span class="h-1/2 w-full bg-slate-100"></span>
+        </span>
+        <div class="leading-tight">
+          <p class="text-[10px] uppercase tracking-wider text-slate-500">Tahun pajak</p>
+          <p class="font-mono text-sm font-bold text-slate-200">2026</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+
+      <!-- ======================= LEFT / INPUTS ======================= -->
+      <section class="space-y-5 lg:col-span-2">
+
+        <!-- Card 1: Profil -->
+        <div class="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/70 p-5 shadow-xl sm:p-6">
+          <div class="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-blue-500 via-blue-500/60 to-transparent"></div>
+          <h2 class="flex items-center gap-3 text-base font-bold text-white sm:text-lg">
+            <span class="grid h-9 w-9 place-items-center rounded-lg bg-blue-600/15 text-blue-400">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </span>
+            1. Profil Wajib Pajak
+          </h2>
+          <p class="mt-1 text-xs text-slate-500">PTKP dipakai sekali di rekonsiliasi tahunan; TER dipakai untuk potongan Jan–Nov.</p>
+
+          <div class="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div>
+              <label for="ptkpStatus" class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-400">Status PTKP</label>
+              <select id="ptkpStatus" class="w-full rounded-xl border border-slate-800 bg-slate-950/80 px-4 py-3 text-sm text-slate-200 outline-none transition focus:border-blue-500/60 focus:ring-4 focus:ring-blue-500/10">
+                <option value="54000000">TK/0 — Tanpa Tanggungan (Rp 54 juta)</option>
+                <option value="58500000">TK/1 atau K/0 (Rp 58,5 juta)</option>
+                <option value="63000000">TK/2 atau K/1 (Rp 63 juta)</option>
+                <option value="67500000">TK/3 atau K/2 (Rp 67,5 juta)</option>
+                <option value="72000000">K/3 — 3 Tanggungan (Rp 72 juta)</option>
+              </select>
+            </div>
+            <div>
+              <label for="terCategory" class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-400">Kategori TER PPh 21 (Jan–Nov)</label>
+              <select id="terCategory" class="w-full rounded-xl border border-slate-800 bg-slate-950/80 px-4 py-3 text-sm text-slate-200 outline-none transition focus:border-blue-500/60 focus:ring-4 focus:ring-blue-500/10">
+                <option value="A">Kategori A — TK/0, TK/1, K/0</option>
+                <option value="B">Kategori B — TK/2, TK/3, K/1, K/2</option>
+                <option value="C">Kategori C — K/3</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mt-4 flex items-start gap-2 rounded-xl border border-blue-500/10 bg-blue-500/[0.05] px-3.5 py-2.5">
+            <span class="mt-0.5 shrink-0 text-blue-400">
+              <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2V18h6v-1.3c0-.8.4-1.5 1-2A7 7 0 0 0 12 2Z"/></svg>
+            </span>
+            <p class="text-[11px] leading-relaxed text-slate-400">
+              PTKP hanya mengurangi penghasilan pada <span class="font-semibold text-slate-300">Pekerjaan 1</span>. Pekerjaan tambahan tidak mendapat PTKP dan PPh 21-nya dihitung progresif dari rupiah pertama.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 2: Job 1 -->
+        <div class="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/70 p-5 shadow-xl sm:p-6">
+          <div class="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-blue-500 to-blue-500/0"></div>
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h2 class="flex items-center gap-3 text-base font-bold text-white sm:text-lg">
+              <span class="grid h-9 w-9 place-items-center rounded-lg bg-blue-500/10 text-blue-400">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+              </span>
+              Pekerjaan 1 <span class="hidden text-xs font-medium text-slate-500 sm:inline">(Primary Job)</span>
+            </h2>
+            <span class="rounded-full border border-blue-500/20 bg-blue-500/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-blue-300">PTKP applied</span>
+          </div>
+
+          <div class="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div>
+              <label for="job1Salary" class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-400">Gaji Bruto Bulanan</label>
+              <div class="relative">
+                <span class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[11px] font-semibold text-slate-500">Rp</span>
+                <input id="job1Salary" type="number" min="0" step="500000" value="15000000" inputmode="numeric"
+                  class="w-full rounded-xl border border-slate-800 bg-slate-950/80 py-3 pl-10 pr-4 font-mono text-sm tabular text-slate-100 outline-none transition focus:border-blue-500/60 focus:ring-4 focus:ring-blue-500/10">
+              </div>
+              <div class="mt-2 flex flex-wrap gap-1.5">
+                <button type="button" data-preset="10000000" class="rounded-md border border-slate-800 bg-slate-950/60 px-2 py-1 text-[10px] font-semibold text-slate-500 transition hover:border-slate-700 hover:text-slate-300">10 jt</button>
+                <button type="button" data-preset="15000000" class="rounded-md border border-slate-800 bg-slate-950/60 px-2 py-1 text-[10px] font-semibold text-slate-500 transition hover:border-slate-700 hover:text-slate-300">15 jt</button>
+                <button type="button" data-preset="25000000" class="rounded-md border border-slate-800 bg-slate-950/60 px-2 py-1 text-[10px] font-semibold text-slate-500 transition hover:border-slate-700 hover:text-slate-300">25 jt</button>
+                <button type="button" data-preset="40000000" class="rounded-md border border-slate-800 bg-slate-950/60 px-2 py-1 text-[10px] font-semibold text-slate-500 transition hover:border-slate-700 hover:text-slate-300">40 jt</button>
+                <button type="button" data-preset="50000000" class="rounded-md border border-slate-800 bg-slate-950/60 px-2 py-1 text-[10px] font-semibold text-slate-500 transition hover:border-slate-700 hover:text-slate-300">50 jt</button>
+              </div>
+            </div>
+
+            <div class="flex flex-col justify-center rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-[11px] text-slate-400">Potongan wajib / bulan</span>
+                <span id="j1TerBadge" class="rounded-full bg-slate-800/80 px-2 py-0.5 font-mono text-[10px] font-semibold text-blue-300">TER A · 6%</span>
+              </div>
+              <div id="job1DeductionsSummary" class="mt-1 font-mono text-lg font-extrabold tabular text-red-400">Rp 0 / bln</div>
+              <div class="mt-1 text-[10px] text-slate-500">BPJS + PPh 21 (estimasi)</div>
+            </div>
+          </div>
+
+          <div class="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+            <div class="rounded-lg border border-slate-800 bg-slate-950/50 px-3 py-2">
+              <div class="flex items-center justify-between gap-1">
+                <span class="text-[9px] font-bold uppercase tracking-wider text-slate-500">Kesehatan</span>
+                <span class="text-[9px] text-slate-600">1%</span>
+              </div>
+              <div id="j1Kes" class="mt-0.5 font-mono text-xs font-semibold tabular text-slate-200">Rp 0</div>
+            </div>
+            <div class="rounded-lg border border-slate-800 bg-slate-950/50 px-3 py-2">
+              <div class="flex items-center justify-between gap-1">
+                <span class="text-[9px] font-bold uppercase tracking-wider text-slate-500">JHT</span>
+                <span class="text-[9px] text-slate-600">2%</span>
+              </div>
+              <div id="j1Jht" class="mt-0.5 font-mono text-xs font-semibold tabular text-slate-200">Rp 0</div>
+            </div>
+            <div class="rounded-lg border border-slate-800 bg-slate-950/50 px-3 py-2">
+              <div class="flex items-center justify-between gap-1">
+                <span class="text-[9px] font-bold uppercase tracking-wider text-slate-500">JP</span>
+                <span class="text-[9px] text-slate-600">1%</span>
+              </div>
+              <div id="j1Jp" class="mt-0.5 font-mono text-xs font-semibold tabular text-slate-200">Rp 0</div>
+            </div>
+            <div class="rounded-lg border border-slate-800 bg-slate-950/50 px-3 py-2">
+              <div class="flex items-center justify-between gap-1">
+                <span class="text-[9px] font-bold uppercase tracking-wider text-slate-500">PPh 21</span>
+                <span class="text-[9px] text-slate-600">TER</span>
+              </div>
+              <div id="j1Pph" class="mt-0.5 font-mono text-xs font-semibold tabular text-slate-200">Rp 0</div>
+            </div>
+          </div>
+
+          <div class="mt-3 flex items-center justify-between gap-3 rounded-xl border border-slate-800 bg-slate-950/40 px-4 py-2.5">
+            <span class="text-[11px] text-slate-400">Estimasi take-home / bulan</span>
+            <span id="j1TakeHome" class="font-mono text-sm font-bold tabular text-emerald-400">Rp 0</span>
+          </div>
+        </div>
+
+        <!-- Card 3: Additional Jobs -->
+        <div id="additionalJobsContainer" class="space-y-4"></div>
+        <div>
+          <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <button type="button" id="addJob2Btn"
+              class="rounded-xl border border-slate-800 bg-slate-900/70 py-3 px-4 text-sm font-semibold text-slate-200 transition hover:border-slate-700 hover:bg-slate-800/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40">
+              <span class="inline-flex items-center justify-center gap-2">
+                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                Tambah Pekerjaan 2
+              </span>
+            </button>
+            <button type="button" id="addJob3Btn"
+              class="hidden rounded-xl border border-slate-800 bg-slate-900/70 py-3 px-4 text-sm font-semibold text-slate-200 transition hover:border-slate-700 hover:bg-slate-800/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40">
+              <span class="inline-flex items-center justify-center gap-2">
+                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                Tambah Pekerjaan 3
+              </span>
+            </button>
+          </div>
+          <p class="mt-2.5 text-center text-[10px] text-slate-500">Maksimal 3 sumber penghasilan · pekerjaan tambahan bisa dihapus kapan saja.</p>
+        </div>
+
+        <!-- Card 4: Consumption -->
+        <div class="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/70 p-5 shadow-xl sm:p-6">
+          <div class="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-purple-500 to-purple-500/0"></div>
+          <h2 class="flex items-center gap-3 text-base font-bold text-white sm:text-lg">
+            <span class="grid h-9 w-9 place-items-center rounded-lg bg-purple-600/15 text-purple-400">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            </span>
+            2. Konsumsi &amp; Pajak Tidak Langsung
+          </h2>
+          <p class="mt-1 text-xs text-slate-500">Pajak yang menempel pada pengeluaran, bukan pada slip gaji.</p>
+
+          <div class="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
+            <div>
+              <label for="monthlyConsumption" class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-400">Belanja Retail &amp; Digital / Bulan</label>
+              <div class="relative">
+                <span class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[11px] font-semibold text-slate-500">Rp</span>
+                <input id="monthlyConsumption" type="number" min="0" step="500000" value="4000000" inputmode="numeric"
+                  class="w-full rounded-xl border border-slate-800 bg-slate-950/80 py-3 pl-10 pr-4 font-mono text-sm tabular text-slate-100 outline-none transition focus:border-purple-500/60 focus:ring-4 focus:ring-purple-500/10">
+              </div>
+              <p class="mt-2 text-[11px] text-slate-500">PPN 11% ≈ <span id="ppnMonthlyHint" class="font-mono font-semibold text-purple-300">Rp 0</span> / bulan</p>
+            </div>
+            <div>
+              <label for="monthlyDining" class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-400">Makan Resto / Cafe / Bulan</label>
+              <div class="relative">
+                <span class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[11px] font-semibold text-slate-500">Rp</span>
+                <input id="monthlyDining" type="number" min="0" step="250000" value="1500000" inputmode="numeric"
+                  class="w-full rounded-xl border border-slate-800 bg-slate-950/80 py-3 pl-10 pr-4 font-mono text-sm tabular text-slate-100 outline-none transition focus:border-emerald-500/60 focus:ring-4 focus:ring-emerald-500/10">
+              </div>
+              <p class="mt-2 text-[11px] text-slate-500">PB1 10% ≈ <span id="pb1MonthlyHint" class="font-mono font-semibold text-emerald-300">Rp 0</span> / bulan</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================= RIGHT / SUMMARY ====================== -->
+      <aside class="space-y-5 lg:sticky lg:top-24 lg:self-start">
+
+        <div class="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/80 shadow-2xl">
+          <div class="border-b border-slate-800/80 px-5 py-4">
+            <h2 class="flex items-center gap-2 text-sm font-bold text-white">
+              <svg class="h-4 w-4 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></svg>
+              Ringkasan Aliran Keluar
+            </h2>
+          </div>
+
+          <!-- Big total -->
+          <div class="px-5 pt-5">
+            <div class="relative overflow-hidden rounded-xl border border-red-900/50 bg-gradient-to-br from-red-950/60 via-slate-950 to-slate-950 p-5">
+              <div class="pointer-events-none absolute -right-10 -top-12 h-32 w-32 rounded-full bg-red-500/10 blur-3xl"></div>
+              <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-red-400">Total Pajak &amp; Iuran Wajib / Tahun</p>
+              <div id="totalOutflowYear" aria-live="polite" class="mt-1.5 break-words font-mono text-3xl font-extrabold tabular tracking-tight text-red-400">Rp 0</div>
+              <div id="summaryMonthly" class="mt-1 font-mono text-[11px] text-slate-500">≈ Rp 0 / bulan</div>
+              <div class="mt-3 rounded-lg border border-slate-800/80 bg-slate-950/60 px-3 py-2">
+                <div id="effectiveTaxRate" class="text-[11px] leading-relaxed text-slate-400">Effective Out-of-Pocket Rate: 0% dari gross</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Breakdown -->
+          <div class="px-5 pb-5 pt-4">
+            <div class="space-y-0.5 text-sm">
+              <div class="flex items-center justify-between gap-3 border-b border-slate-800/70 py-2.5">
+                <span class="flex items-center gap-2 text-slate-400">
+                  <span class="h-2 w-2 rounded-full bg-blue-500"></span>Total BPJS
+                </span>
+                <span id="summaryBPJS" class="font-mono text-[13px] font-semibold tabular text-slate-200">Rp 0</span>
+              </div>
+              <div class="flex items-center justify-between gap-3 border-b border-slate-800/70 py-2.5">
+                <span class="flex items-center gap-2 text-slate-400">
+                  <span class="h-2 w-2 rounded-full bg-red-500"></span>PPh 21 Dipotong (Jan–Nov)
+                </span>
+                <span id="summaryPPh21" class="font-mono text-[13px] font-semibold tabular text-slate-200">Rp 0</span>
+              </div>
+              <div class="my-1 flex items-center justify-between gap-3 rounded-lg border border-amber-500/15 bg-amber-500/[0.06] px-2.5 py-2.5">
+                <span class="flex items-center gap-2 text-[12px] font-medium text-amber-400">
+                  <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4M12 17h.01"/></svg>
+                  Kurang Bayar (Des)
+                </span>
+                <span id="summaryKurangBayar" class="font-mono text-[13px] font-bold tabular text-amber-400">Rp 0</span>
+              </div>
+              <p id="refundNote" class="hidden px-1 pb-1 text-[10px] leading-relaxed text-emerald-400"></p>
+              <div class="flex items-center justify-between gap-3 border-b border-slate-800/70 py-2.5">
+                <span class="flex items-center gap-2 text-slate-400">
+                  <span class="h-2 w-2 rounded-full bg-purple-500"></span>PPN Belanja (11%)
+                </span>
+                <span id="summaryPPN" class="font-mono text-[13px] font-semibold tabular text-slate-200">Rp 0</span>
+              </div>
+              <div class="flex items-center justify-between gap-3 border-b border-slate-800/70 py-2.5">
+                <span class="flex items-center gap-2 text-slate-400">
+                  <span class="h-2 w-2 rounded-full bg-emerald-500"></span>PB1 Resto / Cafe (10%)
+                </span>
+                <span id="summaryPB1" class="font-mono text-[13px] font-semibold tabular text-slate-200">Rp 0</span>
+              </div>
+            </div>
+
+            <!-- Chart -->
+            <div class="mt-5 border-t border-slate-800 pt-4">
+              <div class="flex items-center justify-between">
+                <h3 class="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">Komposisi Outflow</h3>
+                <span class="text-[10px] text-slate-600">Tahunan</span>
+              </div>
+              <div class="relative mt-2 h-[212px]">
+                <canvas id="outflowChart" aria-label="Grafik donat komposisi pajak dan iuran wajib tahunan" role="img"></canvas>
+              </div>
+            </div>
+
+            <!-- Download -->
+            <div class="mt-4 border-t border-slate-800 pt-4">
+              <button type="button" id="downloadShareBtn"
+                class="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-red-950/50 transition hover:from-red-500 hover:to-rose-500 focus:outline-none focus:ring-4 focus:ring-red-500/20 disabled:cursor-wait disabled:opacity-70">
+                <svg class="h-4 w-4 transition-transform group-hover:translate-y-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <path d="m7 10 5 5 5-5"></path>
+                  <path d="M12 15V3"></path>
+                </svg>
+                <span>Download Bukti Kontribusi (JPG)</span>
+              </button>
+              <p class="mt-2 text-center text-[10px] text-slate-500">1080 × 1350 px · dibuat lokal, tanpa upload</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/40 p-4">
+          <p class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+            <svg class="h-3.5 w-3.5 text-amber-400/80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2V18h6v-1.3c0-.8.4-1.5 1-2A7 7 0 0 0 12 2Z"/></svg>
+            Insight
+          </p>
+          <p id="insightText" class="mt-2 text-xs leading-relaxed text-slate-400">Dari setiap Rp100 yang kamu hasilkan, sekitar Rp0 mengalir ke pajak &amp; iuran wajib.</p>
+        </div>
+      </aside>
+    </div>
+
+    <!-- ====================== GOODS VISUALIZATION ==================== -->
+    <section id="belanja" class="mt-12 scroll-mt-28 sm:mt-14">
+      <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-amber-400 sm:text-xs">Daya beli pajakmu</p>
+          <h2 class="mt-1 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">Kalau Pajakmu Jadi Barang</h2>
+          <p class="mt-1.5 max-w-2xl text-sm leading-relaxed text-slate-400">
+            Gambaran barang yang setara dengan total uang yang mengalir keluar tahun ini. Angka harga ilustratif, bukan belanja sungguhan.
+          </p>
+        </div>
+        <div class="inline-flex shrink-0 items-center gap-2 self-start rounded-full border border-amber-500/20 bg-amber-500/10 px-4 py-2 sm:self-auto">
+          <span class="text-[10px] font-semibold uppercase tracking-wider text-amber-500/80">Total outflow</span>
+          <span id="goodsTotal" class="font-mono text-sm font-bold tabular text-amber-300">Rp 0</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-4">
+        <!-- Gold hero -->
+        <div class="relative overflow-hidden rounded-2xl border border-amber-500/20 bg-gradient-to-b from-amber-500/[0.09] via-slate-900/60 to-slate-900/40 p-5 lg:sticky lg:top-24 lg:self-start">
+          <div class="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-amber-500/10 blur-2xl"></div>
+          <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-amber-400/80">Setara emas Antam</p>
+          <div class="mt-2 flex items-baseline gap-1.5">
+            <span id="goldGrams" class="bg-gradient-to-r from-amber-200 to-amber-500 bg-clip-text font-mono text-4xl font-extrabold tabular text-transparent">0</span>
+            <span class="text-sm font-semibold text-amber-200/70">gram</span>
+          </div>
+          <p class="mt-1 text-[10px] text-slate-500">@ Rp 2.150.000 / gram</p>
+
+          <div class="mt-4 flex items-end gap-1.5" aria-hidden="true">
+            <span class="goldbar h-2 w-8"></span>
+            <span class="goldbar h-2.5 w-11"></span>
+            <span class="goldbar h-3 w-14"></span>
+          </div>
+
+          <div class="mt-5 space-y-3 border-t border-amber-500/10 pt-4">
+            <div>
+              <p class="text-[9px] font-bold uppercase tracking-[0.16em] text-slate-500">Termahal yang kebeli</p>
+              <p id="topItem" class="mt-1 text-[13px] font-semibold leading-snug text-slate-100">—</p>
+            </div>
+            <div>
+              <p class="text-[9px] font-bold uppercase tracking-[0.16em] text-slate-500">Paling banyak</p>
+              <p id="bulkItem" class="mt-1 text-[13px] font-semibold leading-snug text-slate-100">—</p>
+            </div>
+            <div>
+              <p class="text-[9px] font-bold uppercase tracking-[0.16em] text-slate-500">Kombinasi pas</p>
+              <p id="comboItem" class="mt-1 text-[13px] font-semibold leading-snug text-slate-100">—</p>
+            </div>
+          </div>
+
+          <p class="mt-4 border-t border-amber-500/10 pt-3 text-[9px] leading-relaxed text-slate-600">
+            Dihitung dari total outflow tahunan ÷ harga satuan. Bukan akumulasi semua barang sekaligus.
+          </p>
+        </div>
+
+        <!-- Goods grid -->
+        <div class="lg:col-span-3">
+          <div id="goodsFilters" class="mb-3.5 flex flex-wrap gap-2">
+            <button type="button" class="goods-filter is-active" data-filter="Semua">Semua</button>
+            <button type="button" class="goods-filter" data-filter="Elektronik">Elektronik</button>
+            <button type="button" class="goods-filter" data-filter="Kendaraan">Kendaraan</button>
+            <button type="button" class="goods-filter" data-filter="Liburan">Liburan</button>
+            <button type="button" class="goods-filter" data-filter="Emas">Emas</button>
+            <button type="button" class="goods-filter" data-filter="Lifestyle">Lifestyle</button>
+          </div>
+          <div id="goodsGrid" class="grid grid-cols-2 gap-3 md:grid-cols-3"></div>
+          <p class="mt-3 text-[10px] leading-relaxed text-slate-500">
+            Setiap barang dihitung terpisah dari total outflow — bukan akumulasi semuanya sekaligus. Harga indikatif pasar 2026.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================== METHODOLOGY ======================== -->
+    <section id="metodologi" class="mt-12 scroll-mt-28 sm:mt-14">
+      <div class="rounded-2xl border border-slate-800 bg-slate-900/40 p-5 sm:p-6">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <h2 class="flex items-center gap-2 text-lg font-bold text-white">
+            <svg class="h-4 w-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/></svg>
+            Metodologi &amp; Asumsi
+          </h2>
+          <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Untuk estimasi, bukan bukti potong resmi</span>
+        </div>
+
+        <div class="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div class="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
+            <p class="text-xs font-bold text-slate-200">PPh 21 &amp; TER</p>
+            <p class="mt-1.5 text-[11px] leading-relaxed text-slate-400">
+              Jan–Nov memakai tarif efektif (TER) kategori A/B/C sesuai PP 58/2023 &amp; PMK 168/2023. Desember direkonsiliasi dengan Pasal 17 atas penghasilan setahun.
+            </p>
+          </div>
+          <div class="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
+            <p class="text-xs font-bold text-slate-200">PTKP &amp; Biaya Jabatan</p>
+            <p class="mt-1.5 text-[11px] leading-relaxed text-slate-400">
+              PTKP dikurangkan sekali pada rekonsiliasi. Biaya jabatan 5% dari bruto, maksimal Rp 6 juta/tahun. PKP dibulatkan ke bawah ribuan penuh.
+            </p>
+          </div>
+          <div class="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
+            <p class="text-xs font-bold text-slate-200">BPJS Karyawan</p>
+            <p class="mt-1.5 text-[11px] leading-relaxed text-slate-400">
+              Kesehatan 1% (batas upah Rp 12 juta), JHT 2% (tanpa batas), JP 1% (batas upah Rp 10.547.400). Hanya JHT &amp; JP yang mengurangi PKP.
+            </p>
+          </div>
+          <div class="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
+            <p class="text-xs font-bold text-slate-200">Pajak Konsumsi</p>
+            <p class="mt-1.5 text-[11px] leading-relaxed text-slate-400">
+              PPN 11% untuk retail &amp; digital (UU HPP), PB1 10% untuk makan/minum di restoran &amp; kafe (UU HKPD). Pekerjaan tambahan tanpa PTKP.
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-5 rounded-xl border border-amber-500/10 bg-amber-500/[0.04] px-4 py-3">
+          <p class="text-[10px] leading-relaxed text-slate-500">
+            <span class="font-bold text-amber-400/80">Catatan:</span> angka bersifat estimasi untuk edukasi dan perencanaan. Pemotongan aktual dapat berbeda karena kebijakan pemberi kerja, status PTKP suami/istri, iuran pensiun lain, dan perubahan regulasi. Harga barang pada visualisasi bersifat ilustratif. Aplikasi tidak menyimpan, mengirim, atau memproses data pribadi di server.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================ FOOTER ============================ -->
+  <footer class="mt-4 border-t border-slate-800/80">
+    <div class="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-7 text-[11px] text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+      <p>© 2026 TaxLens ID · Dibuat untuk literasi pajak, bukan nasihat pajak.</p>
+      <p class="flex items-center gap-1.5">
+        <svg class="h-3.5 w-3.5 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+        100% client-side · tidak ada data yang disimpan
+      </p>
+    </div>
+  </footer>
+
+  <!-- ========================= SHARE MODAL ========================== -->
+  <div id="shareModal" class="fixed inset-0 z-[110] hidden" role="dialog" aria-modal="true" aria-labelledby="shareModalTitle">
+    <div class="absolute inset-0 bg-slate-950/85 backdrop-blur-sm" data-close-share></div>
+    <div class="relative flex min-h-full items-center justify-center p-4">
+      <div class="w-full max-w-2xl overflow-hidden rounded-2xl border border-slate-700 bg-slate-900 shadow-2xl">
+        <div class="flex items-center justify-between border-b border-slate-800 px-5 py-4">
+          <div>
+            <h2 id="shareModalTitle" class="text-sm font-bold text-white">Bukti Kontribusi Kamu</h2>
+            <p class="mt-0.5 text-[10px] text-slate-500">JPG 1080 × 1350 · siap diunggah ke media sosial</p>
+          </div>
+          <button type="button" data-close-share aria-label="Tutup" class="grid h-8 w-8 place-items-center rounded-lg text-slate-400 transition hover:bg-slate-800 hover:text-white">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div class="max-h-[66vh] overflow-y-auto bg-slate-950 p-4">
+          <img id="sharePreview" class="mx-auto w-full max-w-md rounded-xl border border-slate-800" alt="Pratinjau bukti kontribusi pajak tahunan">
+        </div>
+        <div class="flex flex-col gap-2 border-t border-slate-800 p-4 sm:flex-row">
+          <button type="button" id="downloadJpgBtn"
+            class="flex-1 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:from-red-500 hover:to-rose-500 focus:outline-none focus:ring-4 focus:ring-red-500/20">
+            Download JPG
+          </button>
+          <button type="button" data-close-share
+            class="rounded-xl border border-slate-700 bg-slate-800/60 px-4 py-2.5 text-sm font-semibold text-slate-300 transition hover:bg-slate-800 hover:text-white">
+            Tutup
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="pointer-events-none fixed bottom-5 left-1/2 z-[120] -translate-x-1/2 rounded-xl border border-slate-700 bg-slate-900 px-4 py-2.5 text-xs font-semibold text-slate-100 opacity-0 shadow-2xl transition-opacity duration-300"></div>
+
+  <!-- ========================== APPLICATION ======================== -->
+  <script>
+  (function () {
+    "use strict";
+
+    /* ------------------------------------------------------------------ */
+    /*  Konstanta & tabel resmi                                           */
+    /* ------------------------------------------------------------------ */
+
+    // TER PPh 21 (PP 58/2023). Pasangan [batas atas bruto bulanan, tarif].
+    const TER_TABLES = {
+      A: [
+        [5400000, 0], [5650000, 0.0025], [5950000, 0.005], [6300000, 0.0075],
+        [6750000, 0.01], [7500000, 0.0125], [8550000, 0.015], [9650000, 0.0175],
+        [10050000, 0.02], [10350000, 0.0225], [10700000, 0.025], [11050000, 0.03],
+        [11600000, 0.035], [12500000, 0.04], [13750000, 0.05], [15100000, 0.06],
+        [16950000, 0.07], [19750000, 0.08], [24150000, 0.09], [26450000, 0.10],
+        [28000000, 0.11], [30050000, 0.12], [32400000, 0.13], [35400000, 0.14],
+        [39100000, 0.15], [43850000, 0.16], [47800000, 0.17], [51400000, 0.18],
+        [56300000, 0.19], [62200000, 0.20], [68600000, 0.21], [77500000, 0.22],
+        [89000000, 0.23], [103000000, 0.24], [125000000, 0.25], [157000000, 0.26],
+        [206000000, 0.27], [337000000, 0.28], [454000000, 0.29], [550000000, 0.30],
+        [695000000, 0.31], [910000000, 0.32], [1400000000, 0.33], [Infinity, 0.34]
+      ],
+      B: [
+        [6200000, 0], [6500000, 0.0025], [6850000, 0.005], [7300000, 0.0075],
+        [9200000, 0.01], [10750000, 0.015], [11250000, 0.02], [11600000, 0.025],
+        [12600000, 0.03], [13600000, 0.04], [14950000, 0.05], [16400000, 0.06],
+        [18450000, 0.07], [21850000, 0.08], [26000000, 0.09], [27700000, 0.10],
+        [29350000, 0.11], [31450000, 0.12], [33950000, 0.13], [37100000, 0.14],
+        [41100000, 0.15], [45800000, 0.16], [49500000, 0.17], [53800000, 0.18],
+        [58500000, 0.19], [64000000, 0.20], [71000000, 0.21], [80000000, 0.22],
+        [91000000, 0.23], [106000000, 0.24], [128000000, 0.25], [161000000, 0.26],
+        [212000000, 0.27], [345000000, 0.28], [465000000, 0.29], [565000000, 0.30],
+        [715000000, 0.31], [935000000, 0.32], [1400000000, 0.33], [Infinity, 0.34]
+      ],
+      C: [
+        [6600000, 0], [6950000, 0.0025], [7350000, 0.005], [7800000, 0.0075],
+        [8850000, 0.01], [9800000, 0.015], [10950000, 0.02], [11200000, 0.025],
+        [12050000, 0.03], [12950000, 0.04], [14150000, 0.05], [15550000, 0.06],
+        [17050000, 0.07], [19500000, 0.08], [22700000, 0.09], [26600000, 0.10],
+        [28100000, 0.11], [30100000, 0.12], [32600000, 0.13], [35400000, 0.14],
+        [39100000, 0.15], [43850000, 0.16], [47800000, 0.17], [51400000, 0.18],
+        [56300000, 0.19], [62200000, 0.20], [68600000, 0.21], [77500000, 0.22],
+        [89000000, 0.23], [103000000, 0.24], [125000000, 0.25], [157000000, 0.26],
+        [206000000, 0.27], [337000000, 0.28], [454000000, 0.29], [550000000, 0.30],
+        [695000000, 0.31], [910000000, 0.32], [1400000000, 0.33], [Infinity, 0.34]
+      ]
+    };
+
+    // Pasal 17 UU HPP: [batas atas PKP, tarif]
+    const PROGRESSIVE = [
+      [60000000, 0.05],
+      [250000000, 0.15],
+      [500000000, 0.25],
+      [5000000000, 0.30],
+      [Infinity, 0.35]
+    ];
+
+    const BPJS = { kesRate: 0.01, kesCap: 12000000, jhtRate: 0.02, jpRate: 0.01, jpCap: 10547400 };
+    const BIYA_JABATAN = { rate: 0.05, cap: 6000000 };
+    const PPN_RATE = 0.11;
+    const PB1_RATE = 0.10;
+    const SECONDARY_DEFAULT = 5000000;
+    const GOLD_PRICE = 2150000;
+
+    // Katalog ilustrasi daya beli (harga indikatif 2026, dalam Rupiah).
+    const GOODS = [
+      { name: "iPhone 18 Pro Max Burgundy 2TB", price: 39999000, icon: "phone", category: "Elektronik" },
+      { name: "iPhone 17 256GB", price: 20999000, icon: "phone", category: "Elektronik" },
+      { name: "MacBook Air M4 13\"", price: 18999000, icon: "laptop", category: "Elektronik" },
+      { name: "PlayStation 5 Slim", price: 8999000, icon: "gamepad", category: "Elektronik" },
+      { name: "AirPods Pro 3", price: 3799000, icon: "headphones", category: "Elektronik" },
+      { name: "Honda Beat 2026", price: 19500000, icon: "scooter", category: "Kendaraan" },
+      { name: "Yamaha NMAX Turbo", price: 38000000, icon: "scooter", category: "Kendaraan" },
+      { name: "Toyota Avanza", price: 245000000, icon: "car", category: "Kendaraan" },
+      { name: "Trip Bali 4D3N", price: 4500000, icon: "plane", category: "Liburan" },
+      { name: "Umrah 9 Hari", price: 32000000, icon: "plane", category: "Liburan" },
+      { name: "Trip Jepang 7D", price: 28000000, icon: "plane", category: "Liburan" },
+      { name: "Emas Antam 1 gram", price: 2150000, icon: "gold", category: "Emas" },
+      { name: "Emas Antam 10 gram", price: 20500000, icon: "gold", category: "Emas" },
+      { name: "Kopi susu artisan", price: 28000, icon: "coffee", category: "Lifestyle" },
+      { name: "Netflix 1 tahun", price: 2280000, icon: "tv", category: "Lifestyle" },
+      { name: "Sepeda Brompton", price: 32000000, icon: "bike", category: "Lifestyle" }
+    ];
+
+    const CATEGORY_COLORS = {
+      Elektronik: "#60a5fa",
+      Kendaraan: "#f87171",
+      Liburan: "#c084fc",
+      Emas: "#fbbf24",
+      Lifestyle: "#34d399"
+    };
+
+    const CATEGORY_ICONS = {
+      Elektronik: '<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M12 18h.01"/>',
+      Kendaraan: '<path d="M5 16h14"/><path d="M4 16v-3l2-5h12l2 5v3"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M9 17h6"/>',
+      Liburan: '<path d="M17.8 19.2 16 11l3.5-3.5a2.12 2.12 0 0 0-3-3L13 8 4.8 6.2a1 1 0 0 0-.9 1.7l5.6 4.1-2.1 2.1-2.3-.5a1 1 0 0 0-.9 1.6l2.6 2.6 2.6 2.6a1 1 0 0 0 1.6-.9l-.5-2.3 2.1-2.1 4.1 5.6a1 1 0 0 0 1.7-.9Z"/>',
+      Emas: '<rect x="5" y="13" width="14" height="6" rx="1"/><rect x="8" y="8" width="10" height="4" rx="1"/>',
+      Lifestyle: '<path d="M17 8h1a3 3 0 1 1 0 6h-1"/><path d="M3 8h14v6a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8Z"/><path d="M6 2v2M10 2v2M14 2v2"/>'
+    };
+
+    const ICON_PATHS = {
+      phone: '<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M12 18h.01"/>',
+      laptop: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M2 20h20"/>',
+      gamepad: '<path d="M7.5 7h9a4 4 0 0 1 3.9 3.1l1 4.5A2.6 2.6 0 0 1 16.8 17l-1.3-1.5H8.5L7.2 17a2.6 2.6 0 0 1-4.6-2.4l1-4.5A4 4 0 0 1 7.5 7Z"/><path d="M8 11h3M9.5 9.5v3M16 11h.01M18 13h.01"/>',
+      headphones: '<path d="M4 14v3a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H5"/><path d="M20 14v3a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h2"/><path d="M4 14a8 8 0 0 1 16 0"/>',
+      scooter: '<circle cx="5.5" cy="17.5" r="3"/><circle cx="18.5" cy="17.5" r="3"/><path d="M8.5 17.5h6l2.5-8h2"/><path d="M13 9.5H9l-2 4"/>',
+      car: '<path d="M5 16h14"/><path d="M4 16v-3l2-5h12l2 5v3"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M9 17h6"/>',
+      plane: '<path d="M17.8 19.2 16 11l3.5-3.5a2.12 2.12 0 0 0-3-3L13 8 4.8 6.2a1 1 0 0 0-.9 1.7l5.6 4.1-2.1 2.1-2.3-.5a1 1 0 0 0-.9 1.6l2.6 2.6 2.6 2.6a1 1 0 0 0 1.6-.9l-.5-2.3 2.1-2.1 4.1 5.6a1 1 0 0 0 1.7-.9Z"/>',
+      gold: '<rect x="5" y="13" width="14" height="6" rx="1"/><rect x="8" y="8" width="10" height="4" rx="1"/>',
+      coffee: '<path d="M17 8h1a3 3 0 1 1 0 6h-1"/><path d="M3 8h14v6a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8Z"/><path d="M6 2v2M10 2v2M14 2v2"/>',
+      tv: '<rect x="2" y="6" width="20" height="14" rx="2"/><path d="m10 10 5 3-5 3z"/><path d="M8 2v4M16 2v4"/>',
+      bike: '<circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2ZM12 17.5V14l-3-3 4-3 3 3h3"/>'
+    };
+
+    const COLORS = {
+      bpjs: "#3b82f6",
+      pph: "#ef4444",
+      kurang: "#f59e0b",
+      ppn: "#a855f7",
+      pb1: "#10b981"
+    };
+
+    const FONT_STACK = '"Plus Jakarta Sans", Arial, sans-serif';
+
+    /* ------------------------------------------------------------------ */
+    /*  State                                                             */
+    /* ------------------------------------------------------------------ */
+    let activeJobs = [];
+    const secondarySalaries = {};
+    let goodsFilter = "Semua";
+    let chart = null;
+    let lastResult = null;
+    let shareDataUrl = null;
+    let toastTimer = null;
+
+    /* ------------------------------------------------------------------ */
+    /*  Helper format                                                     */
+    /* ------------------------------------------------------------------ */
+    const byId = (id) => document.getElementById(id);
+
+    function formatIDR(value) {
+      const n = Number.isFinite(value) ? value : 0;
+      return new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        maximumFractionDigits: 0
+      }).format(Math.round(n));
+    }
+
+    function formatNumber(value, decimals) {
+      const d = Number.isInteger(decimals) ? decimals : 0;
+      return Number(value || 0).toLocaleString("id-ID", {
+        minimumFractionDigits: d,
+        maximumFractionDigits: d
+      });
+    }
+
+    function formatCompact(value) {
+      const n = Number(value) || 0;
+      if (n >= 1e12) return "Rp " + (n / 1e12).toLocaleString("id-ID", { maximumFractionDigits: 2 }) + " T";
+      if (n >= 1e9) return "Rp " + (n / 1e9).toLocaleString("id-ID", { maximumFractionDigits: 2 }) + " M";
+      if (n >= 1e6) return "Rp " + (n / 1e6).toLocaleString("id-ID", { maximumFractionDigits: 1 }) + " jt";
+      if (n >= 1e3) return "Rp " + (n / 1e3).toLocaleString("id-ID", { maximumFractionDigits: 0 }) + " rb";
+      return "Rp " + Math.round(n);
+    }
+
+    function formatRate(rate) {
+      return (rate * 100).toLocaleString("id-ID", { maximumFractionDigits: 2 }) + "%";
+    }
+
+    function percentage(value, total) {
+      return (total > 0 ? (value / total) * 100 : 0).toLocaleString("id-ID", { maximumFractionDigits: 1 });
+    }
+
+    function readNumber(value) {
+      const n = parseFloat(value);
+      return Number.isFinite(n) && n > 0 ? n : 0;
+    }
+
+    function setText(id, text) {
+      const node = byId(id);
+      if (node) node.textContent = text;
+    }
+
+    function tint(hex, alpha) {
+      const h = hex.replace("#", "");
+      const r = parseInt(h.slice(0, 2), 16);
+      const g = parseInt(h.slice(2, 4), 16);
+      const b = parseInt(h.slice(4, 6), 16);
+      return "rgba(" + r + ", " + g + ", " + b + ", " + alpha + ")";
+    }
+
+    /* ------------------------------------------------------------------ */
+    /*  Mesin perhitungan                                                 */
+    /* ------------------------------------------------------------------ */
+    function terRate(category, monthlyGross) {
+      const table = TER_TABLES[category] || TER_TABLES.A;
+      for (let i = 0; i < table.length; i += 1) {
+        if (monthlyGross <= table[i][0]) return table[i][1];
+      }
+      return 0.34;
+    }
+
+    function progressiveTax(pkp) {
+      let tax = 0;
+      let lower = 0;
+      for (let i = 0; i < PROGRESSIVE.length; i += 1) {
+        if (pkp <= lower) break;
+        const upper = PROGRESSIVE[i][0];
+        tax += (Math.min(pkp, upper) - lower) * PROGRESSIVE[i][1];
+        lower = upper;
+      }
+      return tax;
+    }
+
+    function calcPrimary(salary, category) {
+      const kes = Math.min(salary, BPJS.kesCap) * BPJS.kesRate;
+      const jht = salary * BPJS.jhtRate;
+      const jp = Math.min(salary, BPJS.jpCap) * BPJS.jpRate;
+      const rate = terRate(category, salary);
+      const pph = salary * rate;
+      const total = kes + jht + jp + pph;
+      return { kes, jht, jp, rate, pph, total, net: salary - total };
+    }
+
+    // Pekerjaan tambahan: progresif Pasal 17, tanpa PTKP, dari rupiah pertama.
+    function calcSecondary(salary) {
+      const annualGross = salary * 12;
+      const biayaJabatan = Math.min(annualGross * BIYA_JABATAN.rate, BIYA_JABATAN.cap);
+      const pkp = Math.floor(Math.max(0, annualGross - biayaJabatan) / 1000) * 1000;
+      const annualTax = progressiveTax(pkp);
+      const monthlyTax = annualTax / 12;
+      return {
+        annualGross,
+        biayaJabatan,
+        pkp,
+        annualTax,
+        monthlyTax,
+        rate: salary > 0 ? monthlyTax / salary : 0
+      };
+    }
+
+    /* ------------------------------------------------------------------ */
+    /*  Render kartu pekerjaan tambahan                                   */
+    /* ------------------------------------------------------------------ */
+    function jobCardHTML(n) {
+      const salary = secondarySalaries[n] !== undefined ? secondarySalaries[n] : SECONDARY_DEFAULT;
+      return `
+        <div class="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/70 p-5 shadow-xl sm:p-6">
+          <div class="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-amber-500 to-amber-500/0"></div>
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <div class="flex flex-wrap items-center gap-2">
+                <h2 class="text-base font-bold text-white sm:text-lg">Pekerjaan ${n}</h2>
+                <span class="rounded-full border border-amber-500/20 bg-amber-500/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-400">Secondary</span>
+              </div>
+              <p class="mt-1 text-[11px] text-slate-500">PPh 21 progresif tanpa PTKP — dipotong dari rupiah pertama.</p>
+            </div>
+            <button type="button" data-remove-job="${n}"
+              class="shrink-0 rounded-lg border border-red-500/15 bg-red-500/10 px-2.5 py-1.5 text-[10px] font-semibold text-red-400 transition hover:bg-red-500/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40">
+              Hapus
+            </button>
+          </div>
+
+          <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div>
+              <label for="job${n}Salary" class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-400">Gaji Bruto Bulanan</label>
+              <div class="relative">
+                <span class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[11px] font-semibold text-slate-500">Rp</span>
+                <input id="job${n}Salary" data-salary-job="${n}" type="number" min="0" step="500000" value="${salary}" inputmode="numeric"
+                  class="w-full rounded-xl border border-slate-800 bg-slate-950/80 py-3 pl-10 pr-4 font-mono text-sm tabular text-slate-100 outline-none transition focus:border-amber-500/60 focus:ring-4 focus:ring-amber-500/10">
+              </div>
+            </div>
+
+            <div class="flex flex-col justify-center rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-[11px] text-slate-400">PPh 21 / bulan</span>
+                <span id="sec${n}Rate" class="rounded-full bg-slate-800/80 px-2 py-0.5 font-mono text-[10px] font-semibold text-amber-300">0% efektif</span>
+              </div>
+              <div id="sec${n}Monthly" class="mt-1 font-mono text-lg font-extrabold tabular text-amber-400">Rp 0</div>
+              <div class="mt-1 text-[10px] text-slate-500">Estimasi setahun: <span id="sec${n}Annual" class="font-mono text-slate-400">Rp 0</span></div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderJobs() {
+      const container = byId("additionalJobsContainer");
+      if (!container) return;
+      container.innerHTML = activeJobs.map(jobCardHTML).join("");
+
+      byId("addJob2Btn").classList.toggle("hidden", activeJobs.includes(2));
+      byId("addJob3Btn").classList.toggle("hidden", !(activeJobs.includes(2) && !activeJobs.includes(3)));
+    }
+
+    function addJob(n) {
+      if (activeJobs.includes(n)) return;
+      activeJobs.push(n);
+      activeJobs.sort(function (a, b) { return a - b; });
+      if (secondarySalaries[n] === undefined) secondarySalaries[n] = SECONDARY_DEFAULT;
+      renderJobs();
+      calculate();
+    }
+
+    function removeJob(n) {
+      activeJobs = activeJobs.filter(function (x) { return x !== n; });
+      delete secondarySalaries[n];
+      renderJobs();
+      calculate();
+    }
+
+    /* ------------------------------------------------------------------ */
+    /*  Chart                                                             */
+    /* ------------------------------------------------------------------ */
+    const centerTextPlugin = {
+      id: "taxlensCenterText",
+      afterDraw: function (chartInstance) {
+        const area = chartInstance.chartArea;
+        if (!area) return;
+        const data = chartInstance.data.datasets[0].data;
+        let total = 0;
+        for (let i = 0; i < data.length; i += 1) total += Number(data[i]) || 0;
+
+        const ctx = chartInstance.ctx;
+        const x = (area.left + area.right) / 2;
+        const y = (area.top + area.bottom) / 2;
+
+        ctx.save();
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = "#64748b";
+        ctx.font = "700 9px " + FONT_STACK;
+        ctx.fillText("TOTAL / TAHUN", x, y - 16);
+        ctx.fillStyle = "#f8fafc";
+        ctx.font = "800 18px " + FONT_STACK;
+        ctx.fillText(formatCompact(total), x, y + 3);
+        ctx.fillStyle = "#475569";
+        ctx.font = "600 9px " + FONT_STACK;
+        ctx.fillText("5 komponen", x, y + 21);
+        ctx.restore();
+      }
+    };
+
+    function initChart() {
+      if (typeof Chart === "undefined") return;
+      const canvas = byId("outflowChart");
+      if (!canvas) return;
+
+      chart = new Chart(canvas.getContext("2d"), {
+        type: "doughnut",
+        data: {
+          labels: ["BPJS", "PPh 21", "Kurang Bayar", "PPN 11%", "PB1 10%"],
+          datasets: [{
+            data: [0, 0, 0, 0, 0],
+            backgroundColor: [COLORS.bpjs, COLORS.pph, COLORS.kurang, COLORS.ppn, COLORS.pb1],
+            borderColor: "#020617",
+            borderWidth: 3,
+            hoverOffset: 5
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: "72%",
+          animation: { duration: 450 },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: "#020617",
+              borderColor: "#334155",
+              borderWidth: 1,
+              padding: 12,
+              titleFont: { family: "Plus Jakarta Sans", size: 11, weight: "600" },
+              bodyFont: { family: "Plus Jakarta Sans", size: 12, weight: "700" },
+              displayColors: true,
+              boxWidth: 8,
+              boxHeight: 8,
+              callbacks: {
+                label: function (context) {
+                  return "  " + context.label + ": " + formatIDR(context.parsed);
+                }
+              }
+            }
+          }
+        },
+        plugins: [centerTextPlugin]
+      });
+    }
+
+    function updateChart(items) {
+      if (!chart) return;
+      chart.data.datasets[0].data = items.map(function (item) { return item.value; });
+      chart.update("none");
+    }
+
+    /* ------------------------------------------------------------------ */
+    /*  Hitung utama                                                      */
+    /* ------------------------------------------------------------------ */
+    function calculate() {
+      const ptkp = readNumber(byId("ptkpStatus").value) || 54000000;
+      const category = byId("terCategory").value;
+
+      const job1Salary = readNumber(byId("job1Salary").value);
+      const job1 = calcPrimary(job1Salary, category);
+
+      const secondaries = activeJobs.map(function (n) {
+        const salary = readNumber(secondarySalaries[n]);
+        return Object.assign({ n: n, salary: salary }, calcSecondary(salary));
+      });
+
+      const secAnnualGross = secondaries.reduce(function (sum, job) { return sum + job.salary * 12; }, 0);
+      const secMonthlyWithheld = secondaries.reduce(function (sum, job) { return sum + job.monthlyTax; }, 0);
+      const totalGross = job1Salary * 12 + secAnnualGross;
+
+      // ---- Ringkasan bulanan job 1
+      setText("job1DeductionsSummary", formatIDR(job1.total) + " / bln");
+      setText("j1Kes", formatIDR(job1.kes));
+      setText("j1Jht", formatIDR(job1.jht));
+      setText("j1Jp", formatIDR(job1.jp));
+      setText("j1Pph", formatIDR(job1.pph));
+      setText("j1TerBadge", "TER " + category + " · " + formatRate(job1.rate));
+      setText("j1TakeHome", formatIDR(job1.net));
+
+      // ---- Ringkasan bulanan pekerjaan tambahan
+      secondaries.forEach(function (job) {
+        setText("sec" + job.n + "Monthly", formatIDR(job.monthlyTax));
+        setText("sec" + job.n + "Rate", formatRate(job.rate) + " efektif");
+        setText("sec" + job.n + "Annual", formatIDR(job.annualTax));
+      });
+
+      // ---- Rekonsiliasi tahunan
+      const biayaJabatan = Math.min(totalGross * BIYA_JABATAN.rate, BIYA_JABATAN.cap);
+      const bpjsDeductible = (job1.jht + job1.jp) * 12;
+      const pkpRaw = totalGross - biayaJabatan - bpjsDeductible - ptkp;
+      const pkp = Math.floor(Math.max(0, pkpRaw) / 1000) * 1000;
+      const trueTax = progressiveTax(pkp);
+
+      const withheldMonthly = job1.pph + secMonthlyWithheld;
+      const withheldYear = withheldMonthly * 11;
+      const delta = trueTax - withheldYear;
+      const kurangBayar = Math.max(0, delta);
+      const lebihBayar = Math.max(0, -delta);
+
+      const bpjsYear = (job1.kes + job1.jht + job1.jp) * 12;
+      const consumption = readNumber(byId("monthlyConsumption").value);
+      const dining = readNumber(byId("monthlyDining").value);
+      const ppn = consumption * PPN_RATE * 12;
+      const pb1 = dining * PB1_RATE * 12;
+
+      const grandTotal = bpjsYear + withheldYear + kurangBayar + ppn + pb1;
+      const effPct = totalGross > 0 ? (grandTotal / totalGross) * 100 : 0;
+
+      // ---- DOM ringkasan
+      setText("totalOutflowYear", formatIDR(grandTotal));
+      setText("summaryMonthly", "≈ " + formatIDR(grandTotal / 12) + " / bulan");
+      setText(
+        "effectiveTaxRate",
+        "Effective Out-of-Pocket Rate: " + effPct.toLocaleString("id-ID", { maximumFractionDigits: 1 }) +
+        "% dari gross " + formatIDR(totalGross)
+      );
+      setText("summaryBPJS", formatIDR(bpjsYear));
+      setText("summaryPPh21", formatIDR(withheldYear));
+      setText("summaryKurangBayar", formatIDR(kurangBayar));
+      setText("summaryPPN", formatIDR(ppn));
+      setText("summaryPB1", formatIDR(pb1));
+      setText("ppnMonthlyHint", formatIDR(consumption * PPN_RATE));
+      setText("pb1MonthlyHint", formatIDR(dining * PB1_RATE));
+      setText(
+        "insightText",
+        "Dari setiap Rp100 yang kamu hasilkan, sekitar Rp" +
+        effPct.toLocaleString("id-ID", { maximumFractionDigits: 1 }) +
+        " mengalir ke pajak & iuran wajib."
+      );
+
+      const refundNote = byId("refundNote");
+      if (refundNote) {
+        if (lebihBayar > 0) {
+          refundNote.textContent = "Estimasi lebih bayar " + formatIDR(lebihBayar) + " — berpotensi dikembalikan saat rekonsiliasi.";
+          refundNote.classList.remove("hidden");
+        } else {
+          refundNote.classList.add("hidden");
+        }
+      }
+
+      // ---- Data untuk chart & poster
+      const items = [
+        { label: "BPJS", full: "BPJS Kesehatan, JHT & JP", value: bpjsYear, color: COLORS.bpjs },
+        { label: "PPh 21", full: "PPh 21 (Jan–Nov)", value: withheldYear, color: COLORS.pph },
+        { label: "Kurang Bayar", full: "Kurang Bayar (Desember)", value: kurangBayar, color: COLORS.kurang },
+        { label: "PPN 11%", full: "PPN 11%", value: ppn, color: COLORS.ppn },
+        { label: "PB1 10%", full: "PB1 10%", value: pb1, color: COLORS.pb1 }
+      ];
+
+      lastResult = {
+        total: grandTotal,
+        gross: totalGross,
+        effPct: effPct,
+        items: items,
+        kurangBayar: kurangBayar,
+        lebihBayar: lebihBayar
+      };
+
+      updateChart(items);
+      renderGoods(grandTotal);
+    }
+
+    /* ------------------------------------------------------------------ */
+    /*  Visualisasi barang                                                */
+    /* ------------------------------------------------------------------ */
+    function goodsCard(item, total) {
+      const ratio = item.price > 0 ? total / item.price : 0;
+      const qty = Math.floor(ratio);
+      const progress = Math.min(100, ratio * 100);
+      const accent = CATEGORY_COLORS[item.category] || "#94a3b8";
+      const affordable = qty >= 1;
+      const iconPaths = ICON_PATHS[item.icon] || CATEGORY_ICONS[item.category] || CATEGORY_ICONS.Elektronik;
+
+      const badge = affordable
+        ? '<span class="rounded-full px-2 py-1 font-mono text-[11px] font-bold tabular" style="background:' + tint(accent, 0.15) + ";color:" + accent + '">×' + formatNumber(qty) + "</span>"
+        : '<span class="rounded-full bg-slate-800/80 px-2 py-1 font-mono text-[10px] font-semibold tabular text-slate-400">' + Math.round(progress) + "%</span>";
+
+      const caption = affordable
+        ? 'Bisa beli <span class="font-semibold" style="color:' + accent + '">' + formatNumber(qty) + " unit</span>"
+        : 'Butuh <span class="font-semibold text-slate-300">' + formatIDR(item.price - total) + "</span> lagi";
+
+      return `
+        <article class="group rounded-2xl border border-slate-800 bg-slate-900/60 p-4 transition hover:border-slate-700 hover:bg-slate-900">
+          <div class="flex items-start justify-between gap-2">
+            <div class="grid h-11 w-11 shrink-0 place-items-center rounded-xl" style="background:${tint(accent, 0.12)};border:1px solid ${tint(accent, 0.18)};color:${accent}">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${iconPaths}</svg>
+            </div>
+            ${badge}
+          </div>
+          <h3 class="mt-3 text-[13px] font-semibold leading-snug text-slate-100">${item.name}</h3>
+          <p class="mt-1 font-mono text-[10px] tabular text-slate-500">${formatIDR(item.price)}<span class="text-slate-600"> / unit</span></p>
+          <div class="mt-3 h-1.5 overflow-hidden rounded-full bg-slate-800">
+            <div class="h-full rounded-full" style="width:${progress}%;background:${accent};opacity:${affordable ? 1 : 0.5}"></div>
+          </div>
+          <p class="mt-2 text-[10px] text-slate-500">${caption}</p>
+        </article>
+      `;
+    }
+
+    function buildHaul(total) {
+      const affordable = GOODS.filter(function (item) { return item.price <= total; });
+      if (!affordable.length) return null;
+
+      const premium = affordable.filter(function (item) { return item.price >= 1000000; });
+      const pool = premium.length ? premium : affordable;
+      const hero = pool.reduce(function (best, item) {
+        return item.price > best.price ? item : best;
+      }, pool[0]);
+
+      const qty = Math.floor(total / hero.price);
+      let leftover = total - qty * hero.price;
+      let extra = null;
+
+      if (qty === 1 && leftover > 0) {
+        const options = GOODS.filter(function (item) {
+          return item !== hero && item.price <= leftover && item.price >= 1000000 && item.category !== "Lifestyle";
+        });
+        if (options.length) {
+          extra = options.reduce(function (best, item) {
+            return item.price > best.price ? item : best;
+          }, options[0]);
+          leftover -= extra.price;
+        }
+      }
+
+      return { hero: hero, qty: qty, extra: extra, leftover: leftover };
+    }
+
+    function renderGoods(total) {
+      setText("goodsTotal", formatIDR(total));
+      setText("goldGrams", formatNumber(total / GOLD_PRICE, 1));
+
+      const affordable = GOODS.filter(function (item) { return item.price <= total; });
+      const top = affordable.reduce(function (best, item) {
+        return !best || item.price > best.price ? item : best;
+      }, null);
+
+      let bulk = null;
+      let bulkQty = 0;
+      GOODS.forEach(function (item) {
+        const qty = Math.floor(total / item.price);
+        if (qty > bulkQty) {
+          bulkQty = qty;
+          bulk = item;
+        }
+      });
+
+      setText("topItem", top ? "1 × " + top.name : "Belum cukup untuk 1 unit");
+      setText("bulkItem", bulk && bulkQty >= 1 ? formatNumber(bulkQty) + " × " + bulk.name : "Belum ada");
+
+      const haul = buildHaul(total);
+      let combo = "—";
+      if (haul) {
+        combo = haul.qty + " × " + haul.hero.name;
+        if (haul.extra) combo += " + 1 × " + haul.extra.name;
+      }
+      setText("comboItem", combo);
+
+      const list = goodsFilter === "Semua" ? GOODS : GOODS.filter(function (item) { return item.category === goodsFilter; });
+      const grid = byId("goodsGrid");
+      if (grid) grid.innerHTML = list.map(function (item) { return goodsCard(item, total); }).join("");
+    }
+
+    /* ------------------------------------------------------------------ */
+    /*  Poster JPG (Canvas 2D, 100% lokal)                                */
+    /* ------------------------------------------------------------------ */
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    }
+
+    function drawDonut(ctx, cx, cy, radius, thickness, items) {
+      const total = items.reduce(function (sum, item) { return sum + Math.max(0, item.value); }, 0);
+
+      if (total <= 0) {
+        ctx.beginPath();
+        ctx.strokeStyle = "#1e293b";
+        ctx.lineWidth = thickness;
+        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+        ctx.stroke();
+        return;
+      }
+
+      const gap = 0.028;
+      let angle = -Math.PI / 2;
+
+      items.forEach(function (item) {
+        const sweep = (Math.max(0, item.value) / total) * Math.PI * 2;
+        if (sweep > gap * 2) {
+          ctx.beginPath();
+          ctx.strokeStyle = item.color;
+          ctx.lineWidth = thickness;
+          ctx.lineCap = "butt";
+          ctx.arc(cx, cy, radius, angle + gap / 2, angle + sweep - gap / 2);
+          ctx.stroke();
+        }
+        angle += sweep;
+      });
+    }
+
+    function fitFont(ctx, text, weight, startSize, minSize, maxWidth) {
+      let size = startSize;
+      ctx.font = weight + " " + size + "px " + FONT_STACK;
+      while (ctx.measureText(text).width > maxWidth && size > minSize) {
+        size -= 2;
+        ctx.font = weight + " " + size + "px " + FONT_STACK;
+      }
+      return size;
+    }
+
+    function drawBagIcon(ctx, x, y, size, color) {
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 3;
+      ctx.lineJoin = "round";
+      ctx.lineCap = "round";
+
+      ctx.beginPath();
+      ctx.arc(x + size * 0.5, y + size * 0.34, size * 0.2, Math.PI, 0);
+      ctx.stroke();
+
+      roundRect(ctx, x, y + size * 0.34, size, size * 0.62, size * 0.13);
+      ctx.fillStyle = "rgba(245, 158, 11, 0.10)";
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function renderSharePoster(result) {
+      const W = 1080;
+      const H = 1350;
+      const PAD = 64;
+
+      const canvas = document.createElement("canvas");
+      canvas.width = W;
+      canvas.height = H;
+      const ctx = canvas.getContext("2d");
+
+      // Latar & glow
+      ctx.fillStyle = "#020617";
+      ctx.fillRect(0, 0, W, H);
+
+      const glow1 = ctx.createRadialGradient(170, 40, 0, 170, 40, 620);
+      glow1.addColorStop(0, "rgba(239, 68, 68, 0.22)");
+      glow1.addColorStop(1, "rgba(239, 68, 68, 0)");
+      ctx.fillStyle = glow1;
+      ctx.fillRect(0, 0, W, 760);
+
+      const glow2 = ctx.createRadialGradient(940, 460, 0, 940, 460, 520);
+      glow2.addColorStop(0, "rgba(59, 130, 246, 0.16)");
+      glow2.addColorStop(1, "rgba(59, 130, 246, 0)");
+      ctx.fillStyle = glow2;
+      ctx.fillRect(0, 0, W, 950);
+
+      const glow3 = ctx.createRadialGradient(180, 1080, 0, 180, 1080, 520);
+      glow3.addColorStop(0, "rgba(245, 158, 11, 0.12)");
+      glow3.addColorStop(1, "rgba(245, 158, 11, 0)");
+      ctx.fillStyle = glow3;
+      ctx.fillRect(0, 700, W, 650);
+
+      // Bingkai
+      roundRect(ctx, 26, 26, W - 52, H - 52, 34);
+      ctx.strokeStyle = "#1e293b";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Header: logo
+      const logo = ctx.createLinearGradient(64, 64, 116, 116);
+      logo.addColorStop(0, "#ef4444");
+      logo.addColorStop(1, "#9f1239");
+      roundRect(ctx, 64, 64, 52, 52, 14);
+      ctx.fillStyle = logo;
+      ctx.fill();
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "800 28px " + FONT_STACK;
+      ctx.textAlign = "center";
+      ctx.fillText("T", 90, 100);
+      ctx.textAlign = "left";
+
+      ctx.font = "800 29px " + FONT_STACK;
+      ctx.fillStyle = "#f8fafc";
+      ctx.fillText("TaxLens", 132, 92);
+      const brandWidth = ctx.measureText("TaxLens ").width;
+      ctx.fillStyle = "#f87171";
+      ctx.fillText("ID", 132 + brandWidth, 92);
+
+      ctx.font = "500 14px " + FONT_STACK;
+      ctx.fillStyle = "#94a3b8";
+      ctx.fillText("Personal statutory & tax flow tracker", 132, 116);
+
+      // Chip tahun
+      roundRect(ctx, W - PAD - 194, 66, 194, 36, 18);
+      ctx.strokeStyle = "rgba(148, 163, 184, 0.25)";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.font = "700 12px " + FONT_STACK;
+      ctx.fillStyle = "#cbd5e1";
+      ctx.textAlign = "center";
+      ctx.fillText("TAHUN PAJAK 2026", W - PAD - 97, 89);
+      ctx.textAlign = "left";
+
+      // Kicker + headline
+      ctx.font = "700 14px " + FONT_STACK;
+      if ("letterSpacing" in ctx) ctx.letterSpacing = "1.4px";
+      ctx.fillStyle = "#f87171";
+      ctx.fillText("EMANG LU UDAH KONTRIBUSI APA AJA BUAT NEGARA?", PAD, 180);
+      if ("letterSpacing" in ctx) ctx.letterSpacing = "0px";
+
+      ctx.font = "800 60px " + FONT_STACK;
+      ctx.fillStyle = "#f8fafc";
+      ctx.fillText("Segini kontribusi gue.", PAD, 254);
+
+      // Total
+      ctx.font = "700 12px " + FONT_STACK;
+      if ("letterSpacing" in ctx) ctx.letterSpacing = "1.8px";
+      ctx.fillStyle = "#94a3b8";
+      ctx.fillText("TOTAL KONTRIBUSI & IURAN WAJIB · SETAHUN", PAD, 318);
+      if ("letterSpacing" in ctx) ctx.letterSpacing = "0px";
+
+      const amount = formatNumber(result.total);
+      fitFont(ctx, amount, "800", 82, 44, 780);
+      ctx.fillStyle = "#f8fafc";
+      ctx.fillText(amount, PAD + 58, 408);
+      ctx.font = "600 30px " + FONT_STACK;
+      ctx.fillStyle = "#64748b";
+      ctx.fillText("Rp", PAD, 408);
+
+      ctx.font = "500 15px " + FONT_STACK;
+      ctx.fillStyle = "#64748b";
+      ctx.fillText("PPh 21 · BPJS · PPN 11% · PB1 10%", PAD, 444);
+
+      // Kartu grafik
+      const cardX = PAD;
+      const cardY = 482;
+      const cardW = W - PAD * 2;
+      const cardH = 390;
+
+      roundRect(ctx, cardX, cardY, cardW, cardH, 26);
+      ctx.fillStyle = "#0b1220";
+      ctx.fill();
+      ctx.strokeStyle = "#1e293b";
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      ctx.font = "700 12px " + FONT_STACK;
+      if ("letterSpacing" in ctx) ctx.letterSpacing = "1.6px";
+      ctx.fillStyle = "#94a3b8";
+      ctx.fillText("RINCIAN PER JENIS", cardX + 32, cardY + 44);
+      if ("letterSpacing" in ctx) ctx.letterSpacing = "0px";
+
+      const activeItems = result.items.filter(function (item) { return item.value > 0; });
+      const shownItems = activeItems.length ? activeItems : result.items;
+
+      ctx.font = "600 12px " + FONT_STACK;
+      ctx.fillStyle = "#475569";
+      ctx.textAlign = "right";
+      ctx.fillText(shownItems.length + " komponen", cardX + cardW - 32, cardY + 44);
+      ctx.textAlign = "left";
+
+      const donutCx = cardX + 190;
+      const donutCy = cardY + 216;
+      drawDonut(ctx, donutCx, donutCy, 96, 30, shownItems);
+
+      const shownTotal = shownItems.reduce(function (sum, item) { return sum + Math.max(0, item.value); }, 0);
+      ctx.textAlign = "center";
+      ctx.font = "700 10px " + FONT_STACK;
+      ctx.fillStyle = "#64748b";
+      ctx.fillText("TOTAL OUTFLOW", donutCx, donutCy - 18);
+      ctx.font = "800 25px " + FONT_STACK;
+      ctx.fillStyle = "#f8fafc";
+      ctx.fillText(formatCompact(shownTotal), donutCx, donutCy + 8);
+      ctx.font = "600 9px " + FONT_STACK;
+      ctx.fillStyle = "#475569";
+      ctx.fillText("TAHUN 2026", donutCx, donutCy + 28);
+      ctx.textAlign = "left";
+
+      const legendX = cardX + 390;
+      const amountX = cardX + cardW - 32;
+      const percentX = amountX - 190;
+      const rowStart = cardY + 122;
+      const rowGap = 52;
+
+      shownItems.forEach(function (item, index) {
+        const y = rowStart + index * rowGap;
+
+        ctx.beginPath();
+        ctx.fillStyle = item.color;
+        ctx.arc(legendX, y - 6, 5, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.font = "500 17px " + FONT_STACK;
+        ctx.fillStyle = "#cbd5e1";
+        ctx.fillText(item.full, legendX + 18, y);
+
+        ctx.font = "600 15px " + FONT_STACK;
+        ctx.fillStyle = "#64748b";
+        ctx.textAlign = "right";
+        ctx.fillText(percentage(item.value, shownTotal) + "%", percentX, y);
+
+        ctx.font = "700 17px " + FONT_STACK;
+        ctx.fillStyle = "#f8fafc";
+        ctx.fillText(formatIDR(item.value), amountX, y);
+        ctx.textAlign = "left";
+      });
+
+      ctx.font = "400 12px " + FONT_STACK;
+      ctx.fillStyle = "#475569";
+      ctx.fillText("Termasuk potongan Jan–Nov dan rekonsiliasi PPh 21 bulan Desember.", cardX + 32, cardY + cardH - 24);
+
+      // Kartu barang
+      const goodsX = PAD;
+      const goodsY = 902;
+      const goodsW = cardW;
+      const goodsH = 296;
+
+      const goodsGradient = ctx.createLinearGradient(goodsX, goodsY, goodsX + goodsW, goodsY + goodsH);
+      goodsGradient.addColorStop(0, "rgba(245, 158, 11, 0.16)");
+      goodsGradient.addColorStop(0.55, "rgba(245, 158, 11, 0.05)");
+      goodsGradient.addColorStop(1, "rgba(15, 23, 42, 0.3)");
+
+      roundRect(ctx, goodsX, goodsY, goodsW, goodsH, 28);
+      ctx.fillStyle = "#0f172a";
+      ctx.fill();
+      ctx.fillStyle = goodsGradient;
+      ctx.fill();
+      ctx.strokeStyle = "rgba(245, 158, 11, 0.28)";
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      ctx.font = "700 12px " + FONT_STACK;
+      if ("letterSpacing" in ctx) ctx.letterSpacing = "1.4px";
+      ctx.fillStyle = "#fbbf24";
+      ctx.fillText("KALAU UANG INI TETAP DI KANTONGMU...", goodsX + 36, goodsY + 46);
+      if ("letterSpacing" in ctx) ctx.letterSpacing = "0px";
+
+      const haul = buildHaul(result.total);
+
+      if (haul) {
+        const heroText = haul.qty + " × " + haul.hero.name;
+        const heroSize = fitFont(ctx, heroText, "800", 40, 24, goodsW - 190);
+
+        drawBagIcon(ctx, goodsX + 42, goodsY + 88, 54, "#fbbf24");
+
+        ctx.font = "800 " + heroSize + "px " + FONT_STACK;
+        ctx.fillStyle = "#f8fafc";
+        ctx.fillText(heroText, goodsX + 118, goodsY + 138);
+
+        let subline = "Sisa " + formatIDR(haul.leftover) + " · setara " + formatNumber(result.total / GOLD_PRICE, 1) + " gram emas Antam";
+        if (haul.extra) {
+          subline = "Plus 1 × " + haul.extra.name + " · sisa " + formatIDR(haul.leftover);
+        }
+
+        ctx.font = "500 18px " + FONT_STACK;
+        ctx.fillStyle = "#cbd5e1";
+        ctx.fillText(subline, goodsX + 118, goodsY + 188);
+
+        ctx.font = "500 14px " + FONT_STACK;
+        ctx.fillStyle = "#64748b";
+        ctx.fillText("Harga indikatif 2026 — ilustrasi daya beli, bukan ajakan belanja.", goodsX + 36, goodsY + goodsH - 34);
+      } else {
+        drawBagIcon(ctx, goodsX + 42, goodsY + 88, 54, "#fbbf24");
+
+        ctx.font = "800 38px " + FONT_STACK;
+        ctx.fillStyle = "#f8fafc";
+        ctx.fillText("Belum cukup buat 1 barang.", goodsX + 118, goodsY + 132);
+        ctx.font = "500 18px " + FONT_STACK;
+        ctx.fillStyle = "#cbd5e1";
+        ctx.fillText("Tapi kontribusinya tetap nyata. Naikkan penghasilan untuk lihat daya belinya.", goodsX + 118, goodsY + 180);
+      }
+
+      // Footer
+      ctx.save();
+      ctx.strokeStyle = "#94a3b8";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(PAD + 5.5, 1241, 3.5, Math.PI, 0);
+      ctx.stroke();
+      roundRect(ctx, PAD, 1241, 11, 8, 2);
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.font = "600 13px " + FONT_STACK;
+      ctx.fillStyle = "#94a3b8";
+      ctx.fillText("100% diproses di browser — tidak ada data yang disimpan", PAD + 20, 1252);
+
+      ctx.textAlign = "right";
+      ctx.font = "700 13px " + FONT_STACK;
+      ctx.fillStyle = "#f87171";
+      ctx.fillText("TaxLens ID", W - PAD, 1252);
+      ctx.textAlign = "left";
+
+      ctx.font = "400 11px " + FONT_STACK;
+      ctx.fillStyle = "#475569";
+      ctx.fillText("Estimasi, bukan bukti potong resmi · UU HPP 7/2021 · PP 58/2023 · PMK 168/2023 · UU HKPD", PAD, 1284);
+
+      return canvas.toDataURL("image/jpeg", 0.95);
+    }
+
+    /* ------------------------------------------------------------------ */
+    /*  Modal, unduh, toast                                               */
+    /* ------------------------------------------------------------------ */
+    function openShareModal() {
+      const modal = byId("shareModal");
+      const preview = byId("sharePreview");
+      if (!modal || !preview) return;
+
+      if (!shareDataUrl) {
+        shareDataUrl = renderSharePoster(lastResult || {
+          total: 0,
+          items: [
+            { full: "BPJS Kesehatan, JHT & JP", value: 0, color: COLORS.bpjs },
+            { full: "PPh 21 (Jan–Nov)", value: 0, color: COLORS.pph },
+            { full: "Kurang Bayar (Desember)", value: 0, color: COLORS.kurang },
+            { full: "PPN 11%", value: 0, color: COLORS.ppn },
+            { full: "PB1 10%", value: 0, color: COLORS.pb1 }
+          ]
+        });
+      }
+
+      preview.src = shareDataUrl;
+      modal.classList.remove("hidden");
+      document.body.classList.add("overflow-hidden");
+    }
+
+    function closeShareModal() {
+      const modal = byId("shareModal");
+      if (!modal) return;
+      modal.classList.add("hidden");
+      document.body.classList.remove("overflow-hidden");
+    }
+
+    function downloadJpg() {
+      if (!shareDataUrl) return;
+      const link = document.createElement("a");
+      link.href = shareDataUrl;
+      link.download = "TaxLens-Kontribusi-Pajak-2026.jpg";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      showToast("JPG berhasil diunduh. Balas pantas untuk mereka yang nanya.");
+    }
+
+    function showToast(message) {
+      const toast = byId("toast");
+      if (!toast) return;
+      toast.textContent = message;
+      toast.classList.add("opacity-100");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () {
+        toast.classList.remove("opacity-100");
+      }, 3200);
+    }
+
+    /* ------------------------------------------------------------------ */
+    /*  Binding event                                                     */
+    /* ------------------------------------------------------------------ */
+    function bindEvents() {
+      byId("ptkpStatus").addEventListener("change", calculate);
+      byId("terCategory").addEventListener("change", calculate);
+      byId("job1Salary").addEventListener("input", calculate);
+      byId("monthlyConsumption").addEventListener("input", calculate);
+      byId("monthlyDining").addEventListener("input", calculate);
+
+      document.querySelectorAll("[data-preset]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          byId("job1Salary").value = button.getAttribute("data-preset");
+          calculate();
+        });
+      });
+
+      byId("addJob2Btn").addEventListener("click", function () { addJob(2); });
+      byId("addJob3Btn").addEventListener("click", function () { addJob(3); });
+
+      byId("additionalJobsContainer").addEventListener("input", function (event) {
+        const input = event.target.closest("[data-salary-job]");
+        if (!input) return;
+        const n = Number(input.getAttribute("data-salary-job"));
+        secondarySalaries[n] = readNumber(input.value);
+        calculate();
+      });
+
+      byId("additionalJobsContainer").addEventListener("click", function (event) {
+        const button = event.target.closest("[data-remove-job]");
+        if (!button) return;
+        removeJob(Number(button.getAttribute("data-remove-job")));
+      });
+
+      byId("dismissPrivacy").addEventListener("click", function () {
+        const banner = byId("privacyBanner");
+        if (banner) banner.remove();
+      });
+
+      byId("goodsFilters").addEventListener("click", function (event) {
+        const button = event.target.closest("[data-filter]");
+        if (!button) return;
+        goodsFilter = button.getAttribute("data-filter");
+        byId("goodsFilters").querySelectorAll("[data-filter]").forEach(function (item) {
+          item.classList.toggle("is-active", item === button);
+        });
+        if (lastResult) renderGoods(lastResult.total);
+      });
+
+      const downloadButton = byId("downloadShareBtn");
+      downloadButton.addEventListener("click", async function () {
+        const label = downloadButton.querySelector("span");
+        const originalLabel = label ? label.textContent : "";
+        downloadButton.disabled = true;
+        if (label) label.textContent = "Menyiapkan gambar…";
+
+        try {
+          // Pastikan font siap sebelum menggambar ke canvas.
+          if (document.fonts && document.fonts.ready) await document.fonts.ready;
+          shareDataUrl = renderSharePoster(lastResult);
+          const preview = byId("sharePreview");
+          preview.src = shareDataUrl;
+          byId("shareModal").classList.remove("hidden");
+          document.body.classList.add("overflow-hidden");
+        } catch (error) {
+          console.error(error);
+          showToast("Gagal membuat gambar. Coba lagi ya.");
+        } finally {
+          downloadButton.disabled = false;
+          if (label) label.textContent = originalLabel;
+        }
+      });
+
+      byId("downloadJpgBtn").addEventListener("click", downloadJpg);
+
+      byId("shareModal").addEventListener("click", function (event) {
+        if (event.target.closest("[data-close-share]")) closeShareModal();
+      });
+
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") closeShareModal();
+      });
+    }
+
+    /* ------------------------------------------------------------------ */
+    /*  Init                                                              */
+    /* ------------------------------------------------------------------ */
+    function init() {
+      bindEvents();
+      renderJobs();
+      initChart();
+      calculate();
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", init);
+    } else {
+      init();
+    }
+  })();
+  </script>
+</body>
+</html>
