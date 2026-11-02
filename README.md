@@ -13,7 +13,7 @@ Personal statutory & tax flow tracker untuk Indonesia. Menghitung PPh 21, BPJS, 
 - **Rekonsiliasi tahunan** — Pasal 17, biaya jabatan 5% (maks Rp 6 jt), PTKP sekali. Satu pekerjaan: tidak ada kurang bayar tambahan karena diselesaikan pemberi kerja. Multi-pekerjaan: selisih tahunan ditampilkan.
 - **Pajak konsumsi** — PPN 11% dan PB1 10%.
 - **Belanja Pajak** — elektronik (harga iBox), bahan pokok (e-commerce), pemerintah (MBG & UMP DKI 2026), olahraga, gaming, liburan per hari, ibadah, keluarga, emas, dan lifestyle.
-- **Download JPG 1080 × 1350 (4:5)** — poster berisi total kontribusi, grafik per jenis, barang setara, dan branding **#SadarDipalak** (hijau–biru–merah); pas untuk Threads, Instagram, dan foto TikTok. Dibuat sepenuhnya di browser dengan Canvas API.
+- **Download JPG 1080 × 1350 (4:5)** — poster berisi total kontribusi, grafik per jenis, barang setara, dan branding **#SadarDipalak** dengan tiga warna solid: hijau `#1b8a3e`, biru `#123c8a`, merah `#dc2626`; pas untuk Threads, Instagram, dan foto TikTok. Dibuat sepenuhnya di browser dengan Canvas API.
 - **Bantu posting** — tombol Threads/Instagram/TikTok memakai Web Share API di HP; di desktop gambar diunduh lalu halaman platform dibuka. Download JPG tetap tersedia.
 - **Privasi** — tanpa backend, tanpa cookie, tanpa localStorage. Tidak ada data yang dikirim atau disimpan.
 
