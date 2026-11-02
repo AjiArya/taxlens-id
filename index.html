@@ -494,14 +494,16 @@
             <div class="mt-4 border-t border-slate-800 pt-4">
               <button type="button" id="downloadShareBtn"
                 class="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-red-950/50 transition hover:from-red-500 hover:to-rose-500 focus:outline-none focus:ring-4 focus:ring-red-500/20 disabled:cursor-wait disabled:opacity-70">
-                <svg class="h-4 w-4 transition-transform group-hover:translate-y-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                  <path d="m7 10 5 5 5-5"></path>
-                  <path d="M12 15V3"></path>
+                <svg class="h-4 w-4 transition-transform group-hover:-translate-y-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="18" cy="5" r="3"></circle>
+                  <circle cx="6" cy="12" r="3"></circle>
+                  <circle cx="18" cy="19" r="3"></circle>
+                  <path d="m8.59 13.51 6.83 3.98"></path>
+                  <path d="m15.41 6.51-6.82 3.98"></path>
                 </svg>
-                <span>Download Bukti Kontribusi (JPG)</span>
+                <span>Share Bukti Kontribusi (JPG)</span>
               </button>
-              <p class="mt-2 text-center text-[10px] text-slate-500">4:5 · 1080 × 1350 px · download atau bagikan ke Threads, IG &amp; TikTok</p>
+              <p class="mt-2 text-center text-[10px] text-slate-500">4:5 · 1080 × 1350 px · bagikan atau simpan ke Threads, IG &amp; TikTok</p>
             </div>
           </div>
         </div>
@@ -673,8 +675,8 @@
   <div id="shareModal" class="fixed inset-0 z-[110] hidden" role="dialog" aria-modal="true" aria-labelledby="shareModalTitle">
     <div class="absolute inset-0 bg-slate-950/85 backdrop-blur-sm" data-close-share></div>
     <div class="relative flex min-h-full items-center justify-center p-4">
-      <div class="w-full max-w-2xl overflow-hidden rounded-2xl border border-slate-700 bg-slate-900 shadow-2xl">
-        <div class="flex items-center justify-between border-b border-slate-800 px-5 py-4">
+      <div class="flex max-h-[calc(100dvh-2rem)] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-slate-700 bg-slate-900 shadow-2xl">
+        <div class="flex shrink-0 items-center justify-between border-b border-slate-800 px-5 py-4">
           <div>
             <h2 id="shareModalTitle" class="text-sm font-bold text-white">Bukti Kontribusi Kamu</h2>
             <p class="mt-0.5 text-[10px] text-slate-500">JPG 1080 × 1350 (4:5) · pas untuk Threads, Instagram &amp; TikTok foto</p>
@@ -683,10 +685,10 @@
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
           </button>
         </div>
-        <div class="max-h-[54vh] overflow-y-auto bg-slate-950 p-4 sm:max-h-[60vh]">
+        <div class="min-h-0 flex-1 overflow-y-auto bg-slate-950 p-4">
           <img id="sharePreview" class="mx-auto w-full max-w-md rounded-xl border border-slate-800" alt="Pratinjau bukti kontribusi pajak tahunan">
         </div>
-        <div class="border-t border-slate-800 px-4 py-3">
+        <div class="shrink-0 border-t border-slate-800 px-4 py-3">
           <p class="text-[9px] font-bold uppercase tracking-[0.16em] text-slate-500">Bagikan ke</p>
           <div class="mt-2 grid grid-cols-3 gap-2">
             <button type="button" data-share="threads"
@@ -707,7 +709,7 @@
           </div>
           <p class="mt-2 text-[9px] leading-relaxed text-slate-500">Di HP, tombol bagikan membuka share sheet; di desktop, gambar disalin ke clipboard atau diunduh.</p>
         </div>
-        <div class="grid grid-cols-2 gap-2 border-t border-slate-800 p-4">
+        <div class="grid shrink-0 grid-cols-2 gap-2 border-t border-slate-800 p-4">
           <button type="button" id="shareImageBtn"
             class="col-span-2 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:from-red-500 hover:to-rose-500 focus:outline-none focus:ring-4 focus:ring-red-500/20">
             Bagikan / Simpan Foto
