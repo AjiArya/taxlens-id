@@ -436,7 +436,7 @@
           <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-amber-400 sm:text-xs">Daya beli pajakmu</p>
           <h2 class="mt-1 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">Kalau Pajakmu Jadi Barang</h2>
           <p class="mt-1.5 max-w-2xl text-sm leading-relaxed text-slate-400">
-            Gambaran barang yang setara dengan total uang yang mengalir keluar tahun ini. Angka harga ilustratif, bukan belanja sungguhan.
+            Gambaran barang, pengalaman, dan ibadah yang setara dengan total uang yang mengalir keluar tahun ini. Angka harga ilustratif, bukan belanja sungguhan.
           </p>
         </div>
         <div class="inline-flex shrink-0 items-center gap-2 self-start rounded-full border border-amber-500/20 bg-amber-500/10 px-4 py-2 sm:self-auto">
@@ -489,12 +489,13 @@
             <button type="button" class="goods-filter" data-filter="Elektronik">Elektronik</button>
             <button type="button" class="goods-filter" data-filter="Kendaraan">Kendaraan</button>
             <button type="button" class="goods-filter" data-filter="Liburan">Liburan</button>
+            <button type="button" class="goods-filter" data-filter="Ibadah">Ibadah</button>
             <button type="button" class="goods-filter" data-filter="Emas">Emas</button>
             <button type="button" class="goods-filter" data-filter="Lifestyle">Lifestyle</button>
           </div>
           <div id="goodsGrid" class="grid grid-cols-2 gap-3 md:grid-cols-3"></div>
           <p class="mt-3 text-[10px] leading-relaxed text-slate-500">
-            Setiap barang dihitung terpisah dari total outflow — bukan akumulasi semuanya sekaligus. Harga indikatif pasar 2026.
+            Setiap item dihitung terpisah dari total outflow — bukan akumulasi semuanya sekaligus. Harga indikatif pasar 2026.
           </p>
         </div>
       </div>
@@ -668,8 +669,8 @@
       { name: "Yamaha NMAX Turbo", price: 38000000, icon: "scooter", category: "Kendaraan" },
       { name: "Toyota Avanza", price: 245000000, icon: "car", category: "Kendaraan" },
       { name: "Trip Bali 4D3N", price: 4500000, icon: "plane", category: "Liburan" },
-      { name: "Umrah 9 Hari", price: 32000000, icon: "plane", category: "Liburan" },
       { name: "Trip Jepang 7D", price: 28000000, icon: "plane", category: "Liburan" },
+      { name: "Umrah 9 Hari", price: 32000000, icon: "kaaba", category: "Ibadah" },
       { name: "Emas Antam 1 gram", price: 2150000, icon: "gold", category: "Emas" },
       { name: "Emas Antam 10 gram", price: 20500000, icon: "gold", category: "Emas" },
       { name: "Kopi susu artisan", price: 28000, icon: "coffee", category: "Lifestyle" },
@@ -681,6 +682,7 @@
       Elektronik: "#60a5fa",
       Kendaraan: "#f87171",
       Liburan: "#c084fc",
+      Ibadah: "#2dd4bf",
       Emas: "#fbbf24",
       Lifestyle: "#34d399"
     };
@@ -689,6 +691,7 @@
       Elektronik: '<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M12 18h.01"/>',
       Kendaraan: '<path d="M5 16h14"/><path d="M4 16v-3l2-5h12l2 5v3"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M9 17h6"/>',
       Liburan: '<path d="M17.8 19.2 16 11l3.5-3.5a2.12 2.12 0 0 0-3-3L13 8 4.8 6.2a1 1 0 0 0-.9 1.7l5.6 4.1-2.1 2.1-2.3-.5a1 1 0 0 0-.9 1.6l2.6 2.6 2.6 2.6a1 1 0 0 0 1.6-.9l-.5-2.3 2.1-2.1 4.1 5.6a1 1 0 0 0 1.7-.9Z"/>',
+      Ibadah: '<path d="M12 2.5 20 6.5v11L12 21.5 4 17.5v-11L12 2.5Z"/><path d="M4 6.5 12 10.5l8-4M12 10.5v11"/><path d="M4 10.5 12 14.5l8-4"/>',
       Emas: '<rect x="5" y="13" width="14" height="6" rx="1"/><rect x="8" y="8" width="10" height="4" rx="1"/>',
       Lifestyle: '<path d="M17 8h1a3 3 0 1 1 0 6h-1"/><path d="M3 8h14v6a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8Z"/><path d="M6 2v2M10 2v2M14 2v2"/>'
     };
@@ -701,6 +704,7 @@
       scooter: '<circle cx="5.5" cy="17.5" r="3"/><circle cx="18.5" cy="17.5" r="3"/><path d="M8.5 17.5h6l2.5-8h2"/><path d="M13 9.5H9l-2 4"/>',
       car: '<path d="M5 16h14"/><path d="M4 16v-3l2-5h12l2 5v3"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M9 17h6"/>',
       plane: '<path d="M17.8 19.2 16 11l3.5-3.5a2.12 2.12 0 0 0-3-3L13 8 4.8 6.2a1 1 0 0 0-.9 1.7l5.6 4.1-2.1 2.1-2.3-.5a1 1 0 0 0-.9 1.6l2.6 2.6 2.6 2.6a1 1 0 0 0 1.6-.9l-.5-2.3 2.1-2.1 4.1 5.6a1 1 0 0 0 1.7-.9Z"/>',
+      kaaba: '<path d="M12 2.5 20 6.5v11L12 21.5 4 17.5v-11L12 2.5Z"/><path d="M4 6.5 12 10.5l8-4M12 10.5v11"/><path d="M4 10.5 12 14.5l8-4"/>',
       gold: '<rect x="5" y="13" width="14" height="6" rx="1"/><rect x="8" y="8" width="10" height="4" rx="1"/>',
       coffee: '<path d="M17 8h1a3 3 0 1 1 0 6h-1"/><path d="M3 8h14v6a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8Z"/><path d="M6 2v2M10 2v2M14 2v2"/>',
       tv: '<rect x="2" y="6" width="20" height="14" rx="2"/><path d="m10 10 5 3-5 3z"/><path d="M8 2v4M16 2v4"/>',
@@ -1116,8 +1120,8 @@
         : '<span class="rounded-full bg-slate-800/80 px-2 py-1 font-mono text-[10px] font-semibold tabular text-slate-400">' + Math.round(progress) + "%</span>";
 
       const caption = affordable
-        ? 'Bisa beli <span class="font-semibold" style="color:' + accent + '">' + formatNumber(qty) + " unit</span>"
-        : 'Butuh <span class="font-semibold text-slate-300">' + formatIDR(item.price - total) + "</span> lagi";
+        ? 'Setara <span class="font-semibold" style="color:' + accent + '">' + formatNumber(qty) + " unit</span>"
+        : 'Kurang <span class="font-semibold text-slate-300">' + formatIDR(item.price - total) + "</span> lagi";
 
       return `
         <article class="group rounded-2xl border border-slate-800 bg-slate-900/60 p-4 transition hover:border-slate-700 hover:bg-slate-900">
@@ -1501,7 +1505,7 @@
 
         ctx.font = "500 14px " + FONT_STACK;
         ctx.fillStyle = "#64748b";
-        ctx.fillText("Harga indikatif 2026 — ilustrasi daya beli, bukan ajakan belanja.", goodsX + 36, goodsY + goodsH - 34);
+        ctx.fillText("Harga indikatif 2026 — ilustrasi daya beli semata.", goodsX + 36, goodsY + goodsH - 34);
       } else {
         drawBagIcon(ctx, goodsX + 42, goodsY + 88, 54, "#fbbf24");
 

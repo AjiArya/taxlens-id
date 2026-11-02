@@ -11,7 +11,7 @@ Personal statutory & tax flow tracker untuk Indonesia. Menghitung PPh 21, BPJS, 
 - **Pekerjaan tambahan** — hingga 3 sumber penghasilan, PPh 21 progresif tanpa PTKP.
 - **Rekonsiliasi tahunan** — Pasal 17, biaya jabatan 5% (maks Rp 6 jt), PTKP sekali, dan perhitungan kurang bayar Desember.
 - **Pajak konsumsi** — PPN 11% dan PB1 10%.
-- **Visualisasi barang** — daya beli total outflow terhadap katalog barang ilustratif (termasuk iPhone 18 Pro Max 2TB Burgundy).
+- **Visualisasi daya beli** — katalog barang, pengalaman, dan ibadah (termasuk Umrah) terhadap total outflow. Ada juga iPhone 18 Pro Max 2TB Burgundy.
 - **Download JPG 1080 × 1350** — poster berisi total kontribusi, grafik per jenis, dan barang yang setara. Dibuat sepenuhnya di browser dengan Canvas API.
 - **Privasi** — tanpa backend, tanpa cookie, tanpa localStorage. Tidak ada data yang dikirim atau disimpan.
 
