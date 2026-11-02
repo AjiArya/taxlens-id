@@ -7,13 +7,14 @@ Personal statutory & tax flow tracker untuk Indonesia. Menghitung PPh 21, BPJS, 
 ## Fitur
 
 - **Profil wajib pajak** — PTKP (TK/0 s.d. K/3) dan kategori TER A/B/C.
-- **Input gaji bersih (take-home)** — bruto dihitung otomatis; PPh 21 dan BPJS dihitung dari bruto hasil rekonstruksi.
+- **Input gaji bersih (take-home)** — bruto dihitung otomatis dengan gross-up tahunan; PPh 21 terutang dan BPJS dihitung dari bruto hasil rekonstruksi.
 - **Pekerjaan utama** — BPJS Kesehatan (1%, cap Rp 12 jt), JHT (2%), JP (1%, cap Rp 11.086.300 per Maret 2026), dan PPh 21 TER Jan–Nov.
 - **Pekerjaan tambahan** — hingga 3 sumber penghasilan, PPh 21 progresif tanpa PTKP.
-- **Rekonsiliasi tahunan** — Pasal 17, biaya jabatan 5% (maks Rp 6 jt per pemberi kerja), PTKP sekali. Satu pekerjaan: tidak ada kurang bayar tambahan karena diselesaikan pemberi kerja. Multi-pekerjaan: selisih kurang/lebih bayar ditampilkan sebagai rekonsiliasi.
+- **Rekonsiliasi tahunan** — Pasal 17, biaya jabatan 5% (maks Rp 6 jt per pemberi kerja), PTKP sekali. Satu pekerjaan: selisih Desember ditampilkan sebagai info dan diselesaikan pemberi kerja. Multi-pekerjaan: kurang/lebih bayar SPT ditampilkan.
 - **Pajak konsumsi** — PPN 11% dan PB1 10%.
+- **Visualisasi aliran gaji** — Sankey dan Donut memakai data yang sama: **Gaji Bruto** → PPh 21, BPJS Kesehatan, BPJSTK (JHT + JP), PPN 11%, PB1 10%, dan **Dompet Kamu** (sisa setelah pajak & iuran). Sankey jadi tampilan utama; Donut opsi sekunder.
 - **Belanja Pajak** — elektronik (harga iBox), bahan pokok (e-commerce), pemerintah (MBG & UMP DKI 2026), olahraga, gaming, liburan per hari, ibadah, keluarga, emas, dan lifestyle.
-- **Download JPG 1080 × 1350 (4:5)** — poster berisi total kontribusi, grafik per jenis, barang setara, dan branding **#SadarDipalak** dengan tiga warna solid: hijau `#1b8a3e`, biru `#123c8a`, merah `#dc2626`; pas untuk Threads, Instagram, dan foto TikTok. Dibuat sepenuhnya di browser dengan Canvas API.
+- **Download JPG 1080 × 1350 (4:5)** — poster berisi total kontribusi, grafik sesuai pilihan (Sankey atau Donut), barang setara, dan branding **#SadarDipalak** dengan tiga warna solid: hijau `#1b8a3e`, biru `#123c8a`, merah `#dc2626`; pas untuk Threads, Instagram, dan foto TikTok. Dibuat sepenuhnya di browser dengan Canvas API.
 - **Bantu posting** — tombol Threads/Instagram/TikTok memakai Web Share API di HP; di desktop gambar diunduh lalu halaman platform dibuka. Download JPG tetap tersedia.
 - **Privasi** — tanpa backend, tanpa cookie, tanpa localStorage. Tidak ada data yang dikirim atau disimpan.
 - **Build ID** — footer menampilkan build ID dari commit deploy (tanggal + SHA pendek) untuk memudahkan verifikasi versi yang sedang dilihat.
@@ -35,7 +36,7 @@ Situs: **https://ajiarya.github.io/taxlens-id/**
 
 ## Metodologi singkat
 
-- Input adalah gaji bersih (take-home). Bruto dihitung dengan iterasi BPJS + TER; PPh 21 tahunan dihitung dari bruto tersebut.
+- Input adalah gaji bersih bulanan (take-home); gross-up dilakukan pada basis tahunan: BPJS + PPh 21 terutang (Pasal 17) + take-home. PPh 21 bulanan Jan–Nov memakai TER; Desember direkonsiliasi.
 - TER PPh 21 mengikuti PP 58/2023 & PMK 168/2023; tabel TER dan tarif Pasal 17 diverifikasi terhadap [Buku PPh 21/26 DJP](https://static.pajak.go.id/download/kalkulator/Buku_PPh2126_Release_20240108.pdf). Desember memakai tarif Pasal 17 UU HPP.
 - Satu pemberi kerja: rekonsiliasi Desember diselesaikan pemberi kerja, sehingga tidak ada kurang bayar tambahan.
 - Multi-pekerjaan: total PPh tahunan dibandingkan dengan potongan Jan–Nov; selisih kurang/lebih bayar ditampilkan sebagai rekonsiliasi Desember (bukan komponen pajak tambahan).
@@ -44,7 +45,8 @@ Situs: **https://ajiarya.github.io/taxlens-id/**
 - JHT dan JP mengurangi PKP; BPJS Kesehatan tidak.
 - Pekerjaan tambahan tidak mendapat PTKP dan dihitung progresif dari rupiah pertama.
 - PPN 11% (UU HPP) dan PB1 10% (UU HKPD).
-- Effective out-of-pocket rate dihitung terhadap gaji bersih tahunan.
+- Dompet Kamu pada Sankey/Donut adalah sisa setelah PPh 21, BPJS, PPN, dan PB1; Sankey dan Donut memakai komponen yang sama.
+- Effective out-of-pocket rate dihitung terhadap Dompet Kamu (sisa setelah pajak & iuran).
 
 ## Sumber harga & foto
 

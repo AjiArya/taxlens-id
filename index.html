@@ -60,21 +60,14 @@
       paint-order: stroke fill;
     }
 
-    .goldbar {
-      display: inline-block;
-      background: linear-gradient(135deg, #fde68a 0%, #f59e0b 55%, #b45309 100%);
-      border-radius: 3px;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 6px 16px -8px rgba(245, 158, 11, .7);
-    }
-
     .goods-filter {
       border: 1px solid #1e293b;
       background: rgba(15, 23, 42, .65);
       color: #94a3b8;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 600;
       line-height: 1;
-      padding: 8px 14px;
+      padding: 5px 9px;
       border-radius: 9999px;
       transition: color .18s ease, background-color .18s ease, border-color .18s ease, transform .18s ease;
       cursor: pointer;
@@ -82,6 +75,49 @@
     }
     .goods-filter:hover { color: #e2e8f0; border-color: #334155; transform: translateY(-1px); }
     .goods-filter.is-active { background: #f59e0b; border-color: #f59e0b; color: #1c1917; }
+
+    .rekon-row { border: 1px solid rgba(148, 163, 184, .14); background: rgba(148, 163, 184, .04); }
+    .rekon-label, .rekon-value { color: #94a3b8; }
+    .rekon-row.is-info { border-color: rgba(16, 185, 129, .18); background: rgba(16, 185, 129, .06); }
+    .rekon-row.is-info .rekon-label,
+    .rekon-row.is-info .rekon-value { color: #34d399; }
+    .rekon-row.is-over { border-color: rgba(245, 158, 11, .18); background: rgba(245, 158, 11, .06); }
+    .rekon-row.is-over .rekon-label,
+    .rekon-row.is-over .rekon-value { color: #fbbf24; }
+    .rekon-row.is-under { border-color: rgba(239, 68, 68, .18); background: rgba(239, 68, 68, .06); }
+    .rekon-row.is-under .rekon-label,
+    .rekon-row.is-under .rekon-value { color: #f87171; }
+    #kurangNote.is-info { color: rgba(52, 211, 153, .85); }
+    #kurangNote.is-over { color: rgba(251, 191, 36, .85); }
+    #kurangNote.is-under { color: rgba(248, 113, 113, .85); }
+
+    .chart-tab {
+      border-radius: 6px;
+      padding: 5px 9px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: #64748b;
+      transition: background-color .18s ease, color .18s ease, box-shadow .18s ease;
+      cursor: pointer;
+    }
+    .chart-tab:hover { color: #cbd5e1; }
+    .chart-tab.is-active { background: #1e293b; color: #f8fafc; box-shadow: inset 0 0 0 1px rgba(148, 163, 184, .18); }
+
+    .sankey-chart { cursor: default; }
+    .sankey-seg { cursor: pointer; transition: opacity .16s ease; }
+    .sankey-chart.has-hover .sankey-seg:not(.is-hovered) { opacity: .24; }
+    .sankey-seg .sankey-link { transition: filter .16s ease, stroke-opacity .16s ease; }
+    .sankey-seg .sankey-node { transition: stroke .16s ease, stroke-width .16s ease; }
+    .sankey-seg .sankey-connector { transition: stroke .16s ease, opacity .16s ease; }
+    .sankey-seg .sankey-label-name,
+    .sankey-seg .sankey-label-value { transition: font-size .16s ease, fill .16s ease; }
+    .sankey-seg.is-hovered .sankey-link { filter: brightness(1.35) drop-shadow(0 0 7px var(--seg-color)); stroke-opacity: .9; }
+    .sankey-seg.is-hovered .sankey-node { stroke: var(--seg-color); stroke-width: 2; }
+    .sankey-seg.is-hovered .sankey-connector { stroke: #cbd5e1; opacity: 1; }
+    .sankey-seg.is-hovered .sankey-label-name { font-size: 13px; fill: #ffffff; }
+    .sankey-seg.is-hovered .sankey-label-value { font-size: 10.5px; fill: #f8fafc; }
 
     input[type="number"]::-webkit-outer-spin-button,
     input[type="number"]::-webkit-inner-spin-button { opacity: .25; }
@@ -240,7 +276,7 @@
                 <input id="job1Salary" type="number" min="0" step="500000" value="15000000" inputmode="numeric"
                   class="w-full rounded-xl border border-slate-800 bg-slate-950/80 py-3 pl-10 pr-4 font-mono text-sm tabular text-slate-100 outline-none transition focus:border-blue-500/60 focus:ring-4 focus:ring-blue-500/10">
               </div>
-              <p class="mt-1.5 text-[10px] text-slate-500">Masukkan yang kamu terima di rekening. Bruto dihitung otomatis.</p>
+              <p class="mt-1.5 text-[10px] text-slate-500">Masukkan take-home bulanan. Bruto dihitung dengan gross-up tahunan (BPJS + PPh terutang).</p>
               <div class="mt-2 flex flex-wrap gap-1.5">
                 <button type="button" data-preset="10000000" class="rounded-md border border-slate-800 bg-slate-950/60 px-2 py-1 text-[10px] font-semibold text-slate-500 transition hover:border-slate-700 hover:text-slate-300">10 jt</button>
                 <button type="button" data-preset="15000000" class="rounded-md border border-slate-800 bg-slate-950/60 px-2 py-1 text-[10px] font-semibold text-slate-500 transition hover:border-slate-700 hover:text-slate-300">15 jt</button>
@@ -375,7 +411,14 @@
               <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-red-400">Total Pajak &amp; Iuran Wajib / Tahun</p>
               <div id="totalOutflowYear" aria-live="polite" class="mt-1.5 break-words font-mono text-3xl font-extrabold tabular tracking-tight text-red-400">Rp 0</div>
               <div id="summaryMonthly" class="mt-1 font-mono text-[11px] text-slate-500">≈ Rp 0 / bulan</div>
-              <div class="mt-3 rounded-lg border border-slate-800/80 bg-slate-950/60 px-3 py-2">
+              <div class="mt-3 flex items-center justify-between gap-2 rounded-lg border border-amber-500/15 bg-amber-500/[0.05] px-3 py-2">
+                <span class="flex items-center gap-2 text-[11px] text-slate-400">
+                  <span class="h-2 w-2 rounded-full bg-amber-500"></span>Dompet Kamu · sisa setelah pajak &amp; iuran
+                </span>
+                <span id="summaryWallet" class="font-mono text-[11px] font-bold tabular text-amber-300">Rp 0</span>
+              </div>
+              <p id="walletDeltaNote" class="hidden mt-1 text-[9px] leading-relaxed text-slate-500"></p>
+              <div class="mt-2 rounded-lg border border-slate-800/80 bg-slate-950/60 px-3 py-2">
                 <div id="effectiveTaxRate" class="text-[11px] leading-relaxed text-slate-400">Effective Out-of-Pocket Rate: 0% dari gaji bersih</div>
               </div>
             </div>
@@ -386,9 +429,15 @@
             <div class="space-y-0.5 text-sm">
               <div class="flex items-center justify-between gap-3 border-b border-slate-800/70 py-2.5">
                 <span class="flex items-center gap-2 text-slate-400">
-                  <span class="h-2 w-2 rounded-full bg-blue-500"></span>Total BPJS
+                  <span class="h-2 w-2 rounded-full bg-blue-500"></span>BPJS Kesehatan
                 </span>
-                <span id="summaryBPJS" class="font-mono text-[13px] font-semibold tabular text-slate-200">Rp 0</span>
+                <span id="summaryBpjsKes" class="font-mono text-[13px] font-semibold tabular text-slate-200">Rp 0</span>
+              </div>
+              <div class="flex items-center justify-between gap-3 border-b border-slate-800/70 py-2.5">
+                <span class="flex items-center gap-2 text-slate-400">
+                  <span class="h-2 w-2 rounded-full bg-cyan-500"></span>BPJSTK (JHT + JP)
+                </span>
+                <span id="summaryBpjstk" class="font-mono text-[13px] font-semibold tabular text-slate-200">Rp 0</span>
               </div>
               <div class="flex items-center justify-between gap-3 border-b border-slate-800/70 py-2.5">
                 <span class="flex items-center gap-2 text-slate-400">
@@ -396,14 +445,14 @@
                 </span>
                 <span id="summaryPPh21" class="font-mono text-[13px] font-semibold tabular text-slate-200">Rp 0</span>
               </div>
-              <div id="kurangRow" class="my-1 flex items-center justify-between gap-3 rounded-lg border border-amber-500/15 bg-amber-500/[0.06] px-2.5 py-2.5">
-                <span class="flex items-center gap-2 text-[12px] font-medium text-amber-400">
-                  <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4M12 17h.01"/></svg>
-                  Kurang Bayar (Des)
+              <div id="kurangRow" class="rekon-row my-1 flex items-center justify-between gap-3 rounded-lg px-2.5 py-2.5">
+                <span class="rekon-label flex items-center gap-2 text-[12px] font-medium">
+                  <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                  <span id="kurangLabel">Rekonsiliasi Desember (info)</span>
                 </span>
-                <span id="summaryKurangBayar" class="font-mono text-[13px] font-bold tabular text-amber-400">Rp 0</span>
+                <span id="summaryKurangBayar" class="rekon-value font-mono text-[13px] font-bold tabular">Rp 0</span>
               </div>
-              <p id="kurangNote" class="hidden px-1 pb-1 text-[10px] leading-relaxed text-amber-400/80">Sudah termasuk dalam PPh 21 tahunan — bukan tambahan.</p>
+              <p id="kurangNote" class="hidden px-1 pb-1 text-[10px] leading-relaxed text-slate-500">Sudah termasuk dalam PPh 21 tahunan — bukan tambahan.</p>
               <p id="refundNote" class="hidden px-1 pb-1 text-[10px] leading-relaxed text-emerald-400"></p>
               <div class="flex items-center justify-between gap-3 border-b border-slate-800/70 py-2.5">
                 <span class="flex items-center gap-2 text-slate-400">
@@ -421,13 +470,24 @@
 
             <!-- Chart -->
             <div class="mt-5 border-t border-slate-800 pt-4">
-              <div class="flex items-center justify-between">
-                <h3 class="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">Komposisi Outflow</h3>
-                <span class="text-[10px] text-slate-600">Tahunan</span>
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <h3 class="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">Aliran Gaji</h3>
+                  <p class="mt-0.5 text-[10px] text-slate-600">Tahunan · bruto → dompet</p>
+                </div>
+                <div class="inline-flex shrink-0 rounded-lg border border-slate-800 bg-slate-950/60 p-0.5" role="group" aria-label="Pilih jenis grafik">
+                  <button type="button" class="chart-tab is-active" data-chart-view="sankey" aria-pressed="true">Sankey</button>
+                  <button type="button" class="chart-tab" data-chart-view="donut" aria-pressed="false">Donut</button>
+                </div>
               </div>
-              <div class="relative mt-2 h-[212px]">
-                <canvas id="outflowChart" aria-label="Grafik donat komposisi pajak dan iuran wajib tahunan" role="img"></canvas>
+              <div class="relative mt-2 h-[330px]">
+                <div id="sankeyChart" class="sankey-chart h-full w-full" aria-label="Diagram Sankey aliran dana dari gaji bruto ke pajak, iuran, dan dompet kamu" role="img"></div>
+                <div id="donutChartWrap" class="hidden h-full w-full">
+                  <canvas id="outflowChart" aria-label="Grafik donat komposisi pajak dan iuran wajib tahunan" role="img"></canvas>
+                </div>
               </div>
+              <p id="chartNote" class="mt-2 text-[10px] leading-relaxed text-slate-500">Gaji bruto terbagi ke PPh 21, BPJS Kesehatan, BPJSTK, dan Dompet Kamu.</p>
+
             </div>
 
             <!-- Download -->
@@ -457,61 +517,55 @@
     </div>
 
     <!-- ====================== GOODS VISUALIZATION ==================== -->
-    <section id="belanja" class="mt-12 scroll-mt-28 sm:mt-14">
-      <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+    <section id="belanja" class="mt-8 scroll-mt-28 sm:mt-10">
+      <div class="mb-3 flex flex-col gap-2.5 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-amber-400 sm:text-xs">Daya beli pajakmu</p>
-          <h2 class="mt-1 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">Kalau Pajakmu Jadi Barang</h2>
-          <p class="mt-1.5 max-w-2xl text-sm leading-relaxed text-slate-400">
+          <p class="text-[9px] font-bold uppercase tracking-[0.22em] text-amber-400 sm:text-[10px]">Daya beli pajakmu</p>
+          <h2 class="mt-1 text-xl font-extrabold tracking-tight text-white sm:text-2xl">Kalau Pajakmu Jadi Barang</h2>
+          <p class="mt-1 max-w-2xl text-[11px] leading-relaxed text-slate-400 sm:text-xs">
             Gambaran barang, pengalaman, dan ibadah yang setara dengan total uang yang mengalir keluar tahun ini. Angka harga ilustratif, bukan belanja sungguhan.
           </p>
         </div>
-        <div class="inline-flex shrink-0 items-center gap-2 self-start rounded-full border border-amber-500/20 bg-amber-500/10 px-4 py-2 sm:self-auto">
-          <span class="text-[10px] font-semibold uppercase tracking-wider text-amber-500/80">Total outflow</span>
-          <span id="goodsTotal" class="font-mono text-sm font-bold tabular text-amber-300">Rp 0</span>
+        <div class="inline-flex shrink-0 items-center gap-1.5 self-start rounded-full border border-amber-500/20 bg-amber-500/10 px-2.5 py-1 sm:self-auto">
+          <span class="text-[9px] font-semibold uppercase tracking-wider text-amber-500/80">Total outflow</span>
+          <span id="goodsTotal" class="font-mono text-[11px] font-bold tabular text-amber-300">Rp 0</span>
         </div>
       </div>
 
       <div class="grid grid-cols-1 gap-4 lg:grid-cols-4">
         <!-- Gold hero -->
-        <div class="relative overflow-hidden rounded-2xl border border-amber-500/20 bg-gradient-to-b from-amber-500/[0.09] via-slate-900/60 to-slate-900/40 p-5 lg:sticky lg:top-24 lg:self-start">
-          <div class="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-amber-500/10 blur-2xl"></div>
-          <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-amber-400/80">Setara emas Antam</p>
-          <div class="mt-2 flex items-baseline gap-1.5">
-            <span id="goldGrams" class="bg-gradient-to-r from-amber-200 to-amber-500 bg-clip-text font-mono text-4xl font-extrabold tabular text-transparent">0</span>
-            <span class="text-sm font-semibold text-amber-200/70">gram</span>
+        <div class="relative overflow-hidden rounded-2xl border border-amber-500/20 bg-gradient-to-b from-amber-500/[0.09] via-slate-900/60 to-slate-900/40 p-4 lg:sticky lg:top-24 lg:self-start">
+          <div class="pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full bg-amber-500/10 blur-2xl"></div>
+          <p class="text-[9px] font-bold uppercase tracking-[0.18em] text-amber-400/80">Setara emas Antam</p>
+          <div class="mt-1.5 flex items-baseline gap-1.5">
+            <span id="goldGrams" class="bg-gradient-to-r from-amber-200 to-amber-500 bg-clip-text font-mono text-3xl font-extrabold tabular text-transparent">0</span>
+            <span class="text-xs font-semibold text-amber-200/70">gram</span>
           </div>
-          <p class="mt-1 text-[10px] text-slate-500">@ Rp 2.150.000 / gram</p>
+          <p class="mt-0.5 text-[9px] text-slate-500">@ Rp 2.150.000 / gram</p>
 
-          <div class="mt-4 flex items-end gap-1.5" aria-hidden="true">
-            <span class="goldbar h-2 w-8"></span>
-            <span class="goldbar h-2.5 w-11"></span>
-            <span class="goldbar h-3 w-14"></span>
-          </div>
-
-          <div class="mt-5 space-y-3 border-t border-amber-500/10 pt-4">
-            <div>
-              <p class="text-[9px] font-bold uppercase tracking-[0.16em] text-slate-500">Termahal yang kebeli</p>
-              <p id="topItem" class="mt-1 text-[13px] font-semibold leading-snug text-slate-100">—</p>
+          <div class="mt-3 space-y-1.5 border-t border-amber-500/10 pt-2.5">
+            <div class="flex items-baseline justify-between gap-2">
+              <span class="shrink-0 text-[8px] font-bold uppercase tracking-[0.12em] text-slate-500">Termahal</span>
+              <span id="topItem" class="text-right text-[11px] font-semibold leading-snug text-slate-100">—</span>
             </div>
-            <div>
-              <p class="text-[9px] font-bold uppercase tracking-[0.16em] text-slate-500">Paling banyak</p>
-              <p id="bulkItem" class="mt-1 text-[13px] font-semibold leading-snug text-slate-100">—</p>
+            <div class="flex items-baseline justify-between gap-2">
+              <span class="shrink-0 text-[8px] font-bold uppercase tracking-[0.12em] text-slate-500">Paling banyak</span>
+              <span id="bulkItem" class="text-right text-[11px] font-semibold leading-snug text-slate-100">—</span>
             </div>
-            <div>
-              <p class="text-[9px] font-bold uppercase tracking-[0.16em] text-slate-500">Kombinasi pas</p>
-              <p id="comboItem" class="mt-1 text-[13px] font-semibold leading-snug text-slate-100">—</p>
+            <div class="flex items-baseline justify-between gap-2">
+              <span class="shrink-0 text-[8px] font-bold uppercase tracking-[0.12em] text-slate-500">Kombinasi</span>
+              <span id="comboItem" class="text-right text-[11px] font-semibold leading-snug text-slate-100">—</span>
             </div>
           </div>
 
-          <p class="mt-4 border-t border-amber-500/10 pt-3 text-[9px] leading-relaxed text-slate-600">
-            Dihitung dari total outflow tahunan ÷ harga satuan. Bukan akumulasi semua barang sekaligus.
+          <p class="mt-3 border-t border-amber-500/10 pt-2.5 text-[8px] leading-relaxed text-slate-600">
+            Total outflow tahunan ÷ harga satuan. Bukan akumulasi semua barang sekaligus.
           </p>
         </div>
 
         <!-- Goods grid -->
         <div class="lg:col-span-3">
-          <div id="goodsFilters" class="mb-3.5 flex flex-wrap gap-2">
+          <div id="goodsFilters" class="mb-2.5 flex flex-wrap gap-1.5">
             <button type="button" class="goods-filter is-active" data-filter="Semua">Semua</button>
             <button type="button" class="goods-filter" data-filter="Elektronik">Elektronik</button>
             <button type="button" class="goods-filter" data-filter="Bahan Pokok">Bahan Pokok</button>
@@ -524,7 +578,7 @@
             <button type="button" class="goods-filter" data-filter="Emas">Emas</button>
             <button type="button" class="goods-filter" data-filter="Lifestyle">Lifestyle</button>
           </div>
-          <div id="goodsGrid" class="grid grid-cols-2 gap-3 md:grid-cols-3"></div>
+          <div id="goodsGrid" class="grid grid-cols-3 gap-1.5 sm:gap-2 lg:grid-cols-5"></div>
           <p class="mt-3 text-[10px] leading-relaxed text-slate-500">
             Setiap item dihitung terpisah dari total outflow — bukan akumulasi semuanya sekaligus.
             Harga Apple: iBox; bahan pokok: e-commerce; GTA 6: PlayStation Store; olahraga &amp; PS5: harga pasar/Google; UMR: UMP DKI 2026. Harga dapat berubah.
@@ -589,6 +643,14 @@
       </div>
     </section>
   </main>
+
+  <!-- ========================== DISCLAIMER ========================== -->
+  <div class="mx-auto max-w-7xl px-4 pb-2">
+    <div class="rounded-xl border border-amber-500/15 bg-amber-500/[0.05] px-4 py-3 text-[10px] leading-relaxed text-amber-200/80">
+      <span class="font-bold text-amber-300">Disclaimer:</span>
+      Perhitungan ini adalah estimasi dan <span class="font-semibold text-amber-200">bisa saja salah</span>. Hasil aktual dapat berbeda karena status PTKP, komponen penghasilan, iuran pensiun, BPJS, kebijakan pemberi kerja, dan perubahan regulasi. Bukan bukti potong resmi atau nasihat pajak.
+    </div>
+  </div>
 
   <!-- ============================ FOOTER ============================ -->
   <footer class="mt-4 border-t border-slate-800/80">
@@ -829,7 +891,10 @@
     };
 
     const COLORS = {
-      bpjs: "#3b82f6",
+      bruto: "#64748b",
+      wallet: "#f59e0b",
+      bpjsKes: "#3b82f6",
+      bpjstk: "#06b6d4",
       pph: "#ef4444",
       ppn: "#a855f7",
       pb1: "#10b981"
@@ -844,6 +909,7 @@
     const secondarySalaries = {};
     let goodsFilter = "Semua";
     let chart = null;
+    let currentChartView = "sankey";
     let lastResult = null;
     let shareDataUrl = null;
     let toastTimer = null;
@@ -884,7 +950,9 @@
     }
 
     function percentage(value, total) {
-      return (total > 0 ? (value / total) * 100 : 0).toLocaleString("id-ID", { maximumFractionDigits: 1 });
+      const pct = total > 0 ? (value / total) * 100 : 0;
+      const digits = pct > 0 && pct < 1 ? 2 : 1;
+      return pct.toLocaleString("id-ID", { maximumFractionDigits: digits });
     }
 
     function readNumber(value) {
@@ -895,6 +963,12 @@
     function setText(id, text) {
       const node = byId(id);
       if (node) node.textContent = text;
+    }
+
+    function escapeXml(value) {
+      return String(value).replace(/[<>&"']/g, function (ch) {
+        return { "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;", "'": "&apos;" }[ch];
+      });
     }
 
     function tint(hex, alpha) {
@@ -1059,7 +1133,7 @@
         ctx.textBaseline = "middle";
         ctx.fillStyle = "#64748b";
         ctx.font = "700 9px " + FONT_STACK;
-        ctx.fillText("TOTAL / TAHUN", x, y - 16);
+        ctx.fillText("GAJI BRUTO", x, y - 16);
         ctx.fillStyle = "#f8fafc";
         ctx.font = "800 18px " + FONT_STACK;
         ctx.fillText(formatCompact(total), x, y + 3);
@@ -1079,10 +1153,10 @@
       chart = new Chart(canvas.getContext("2d"), {
         type: "doughnut",
         data: {
-          labels: ["BPJS", "PPh 21", "PPN 11%", "PB1 10%"],
+          labels: ["PPh 21", "BPJS Kesehatan", "BPJSTK", "PPN 11%", "PB1 10%", "Dompet Kamu"],
           datasets: [{
-            data: [0, 0, 0, 0],
-            backgroundColor: [COLORS.bpjs, COLORS.pph, COLORS.ppn, COLORS.pb1],
+            data: [0, 0, 0, 0, 0, 0],
+            backgroundColor: [COLORS.pph, COLORS.bpjsKes, COLORS.bpjstk, COLORS.ppn, COLORS.pb1, COLORS.wallet],
             borderColor: "#020617",
             borderWidth: 3,
             hoverOffset: 5
@@ -1123,6 +1197,204 @@
       chart.update("none");
     }
 
+    function renderSankey(sourceValue, targets, sourceSubLabel, sourceTitle) {
+      const container = byId("sankeyChart");
+      if (!container) return;
+      const sourceName = sourceTitle || "Dompet Kamu";
+
+      const visibleTargets = targets.filter(function (item) { return item.value > 0; });
+      if (!sourceValue || sourceValue <= 0 || !visibleTargets.length) {
+        container.setAttribute("aria-label", "Belum ada penghasilan.");
+        container.innerHTML =
+          '<div class="flex h-full items-center justify-center px-6 text-center text-[11px] leading-relaxed text-slate-500">' +
+          "Belum ada penghasilan. Isi gaji untuk melihat Sankey." +
+          "</div>";
+        return;
+      }
+
+      const W = 440;
+      const H = 330;
+      const PAD_Y = 14;
+      const GAP = 8;
+      const leftLabelX = 136;
+      const sourceX = 146;
+      const nodeW = 14;
+      const targetX = 300;
+      const rightLabelX = targetX + nodeW + 10;
+      const availableH = H - PAD_Y * 2 - GAP * Math.max(0, visibleTargets.length - 1);
+      const scale = availableH / sourceValue;
+
+      const gradients = [];
+      const links = [];
+      const nodes = [];
+      let sourceCursor = PAD_Y;
+      let targetCursor = PAD_Y;
+
+      visibleTargets.forEach(function (item, index) {
+        const h = item.value * scale;
+        const sy0 = sourceCursor;
+        const ty0 = targetCursor;
+        const sx0 = sourceX + nodeW;
+        const midX = (sx0 + targetX) / 2;
+        const path =
+          "M" + sx0 + "," + sy0 +
+          " C" + midX + "," + sy0 + " " + midX + "," + ty0 + " " + targetX + "," + ty0 +
+          " L" + targetX + "," + (ty0 + h) +
+          " C" + midX + "," + (ty0 + h) + " " + midX + "," + (sy0 + h) + " " + sx0 + "," + (sy0 + h) +
+          " Z";
+
+        gradients.push(
+          '<linearGradient id="sankeyGrad' + index + '" x1="0" y1="0" x2="1" y2="0">' +
+          '<stop offset="0%" stop-color="' + COLORS.bruto + '" stop-opacity="0.10"/>' +
+          '<stop offset="100%" stop-color="' + item.color + '" stop-opacity="0.42"/>' +
+          "</linearGradient>"
+        );
+
+        links.push(
+          '<path class="sankey-link" d="' + path + '" fill="url(#sankeyGrad' + index + ')" stroke="var(--seg-color)" stroke-width="1.2" stroke-opacity="0">' +
+          "<title>" + escapeXml(sourceName) + " → " + escapeXml(item.label) + ": " + formatIDR(item.value) + "</title>" +
+          "</path>"
+        );
+
+        nodes.push({
+          label: item.label,
+          value: item.value,
+          color: item.color,
+          y: ty0,
+          h: h,
+          center: ty0 + h / 2
+        });
+
+        sourceCursor += h;
+        targetCursor += h + GAP;
+      });
+
+      // Label diletakkan dengan jarak minimum agar irisan kecil tetap terbaca.
+      const labelGap = 31;
+      let lastLabelY = -Infinity;
+      nodes.forEach(function (node) {
+        node.labelY = Math.max(node.center, lastLabelY + labelGap);
+        lastLabelY = node.labelY;
+      });
+      const maxLabelY = H - PAD_Y - 4;
+      if (lastLabelY > maxLabelY) {
+        const shift = lastLabelY - maxLabelY;
+        nodes.forEach(function (node) { node.labelY -= shift; });
+      }
+      const minLabelY = PAD_Y + 8;
+      if (nodes.length && nodes[0].labelY < minLabelY) {
+        const shift = minLabelY - nodes[0].labelY;
+        nodes.forEach(function (node) { node.labelY += shift; });
+      }
+
+      const segments = nodes.map(function (node, index) {
+        const drawH = Math.max(6, node.h);
+        const drawY = node.y - (drawH - node.h) / 2;
+        const nodeRect = '<rect class="sankey-node" x="' + targetX + '" y="' + drawY + '" width="' + nodeW + '" height="' + drawH + '" rx="4" fill="' + node.color + '" stroke="transparent">' +
+          "<title>" + escapeXml(node.label) + ": " + formatIDR(node.value) + "</title>" +
+          "</rect>";
+        const connector =
+          "M" + (targetX + nodeW) + "," + node.center +
+          " L" + (rightLabelX - 6) + "," + node.labelY +
+          " L" + rightLabelX + "," + node.labelY;
+        const connectorPath = '<path class="sankey-connector" d="' + connector + '" fill="none" stroke="#334155" stroke-width="1" opacity="0.65"/>';
+        const nameText = '<text class="sankey-label-name" x="' + (rightLabelX + 2) + '" y="' + (node.labelY - 3) + '" fill="#e2e8f0" font-size="10.5" font-weight="700">' + escapeXml(node.label) + "</text>";
+        const valueText = '<text class="sankey-label-value" x="' + (rightLabelX + 2) + '" y="' + (node.labelY + 10) + '" fill="#94a3b8" font-size="9" font-weight="500">' + formatCompact(node.value) + " · " + percentage(node.value, sourceValue) + "%</text>";
+        return '<g class="sankey-seg" data-sankey-index="' + index + '" style="--seg-color:' + node.color + '">' +
+          links[index] + nodeRect + connectorPath + nameText + valueText +
+          "</g>";
+      }).join("");
+
+      const sourceCenter = PAD_Y + availableH / 2;
+      const sourceLabel =
+        '<text x="' + leftLabelX + '" y="' + (sourceCenter - 10) + '" text-anchor="end" fill="#f8fafc" font-size="13" font-weight="800">' + escapeXml(sourceName) + "</text>" +
+        '<text x="' + leftLabelX + '" y="' + (sourceCenter + 7) + '" text-anchor="end" fill="#e2e8f0" font-size="11" font-weight="700">' + formatIDR(sourceValue) + "</text>" +
+        '<text x="' + leftLabelX + '" y="' + (sourceCenter + 22) + '" text-anchor="end" fill="#64748b" font-size="9" font-weight="500">' + escapeXml(sourceSubLabel) + "</text>";
+
+      const sourceRect =
+        '<rect x="' + sourceX + '" y="' + PAD_Y + '" width="' + nodeW + '" height="' + availableH + '" rx="4" fill="' + COLORS.bruto + '">' +
+        "<title>" + escapeXml(sourceName) + ": " + formatIDR(sourceValue) + "</title>" +
+        "</rect>";
+
+      const summary = visibleTargets.map(function (item) {
+        return item.label + " " + formatIDR(item.value);
+      }).join(", ");
+      container.setAttribute("aria-label", "Diagram Sankey aliran dana dari gaji bruto: " + summary);
+      container.classList.remove("has-hover");
+
+      container.innerHTML =
+        '<svg viewBox="0 0 ' + W + " " + H + '" class="h-full w-full" preserveAspectRatio="xMidYMid meet" aria-hidden="true" style=\'font-family:' + FONT_STACK + "'>" +
+        "<defs>" + gradients.join("") + "</defs>" +
+        segments +
+        sourceRect +
+        sourceLabel +
+        "</svg>";
+
+      const segmentNodes = container.querySelectorAll(".sankey-seg");
+      function clearSankeyHover() {
+        container.classList.remove("has-hover");
+        segmentNodes.forEach(function (segment) { segment.classList.remove("is-hovered"); });
+      }
+      segmentNodes.forEach(function (segment) {
+        segment.addEventListener("mouseenter", function () {
+          segmentNodes.forEach(function (other) { other.classList.remove("is-hovered"); });
+          container.classList.add("has-hover");
+          segment.classList.add("is-hovered");
+        });
+        segment.addEventListener("mouseleave", clearSankeyHover);
+      });
+    }
+
+    function updateChartNote() {
+      setText(
+        "chartNote",
+        lastResult && lastResult.chartNote
+          ? lastResult.chartNote
+          : "Gaji bruto terbagi ke pajak, iuran, dan Dompet Kamu."
+      );
+    }
+
+    function setChartView(view) {
+      const isDonut = view === "donut";
+      if (isDonut && typeof Chart === "undefined") {
+        showToast("Grafik donut tidak tersedia di browser ini.");
+        return;
+      }
+
+      currentChartView = isDonut ? "donut" : "sankey";
+      const sankey = byId("sankeyChart");
+      const donut = byId("donutChartWrap");
+      if (sankey) {
+        sankey.classList.toggle("hidden", isDonut);
+        if (isDonut) {
+          sankey.classList.remove("has-hover");
+          sankey.querySelectorAll(".sankey-seg").forEach(function (segment) {
+            segment.classList.remove("is-hovered");
+          });
+        }
+      }
+      if (donut) donut.classList.toggle("hidden", !isDonut);
+      updateChartNote();
+
+      document.querySelectorAll("[data-chart-view]").forEach(function (button) {
+        const active = button.getAttribute("data-chart-view") === currentChartView;
+        button.classList.toggle("is-active", active);
+        button.setAttribute("aria-pressed", active ? "true" : "false");
+      });
+
+      if (isDonut) {
+        requestAnimationFrame(function () {
+          if (currentChartView !== "donut") return;
+          if (!chart) initChart();
+          if (chart && lastResult) {
+            updateChart(lastResult.items);
+            chart.resize();
+            chart.update();
+          }
+        });
+      }
+    }
+
     /* ------------------------------------------------------------------ */
     /*  Hitung utama                                                      */
     /* ------------------------------------------------------------------ */
@@ -1137,15 +1409,44 @@
       return gross;
     }
 
+    // Gross-up tahunan: cari bruto bulanan yang menghasilkan take-home
+    // setahun sesuai input setelah PPh 21 terutang dan BPJS.
+    function annualPrimary(grossMonthly, category, ptkp) {
+      const primary = calcPrimary(grossMonthly, category);
+      const annualGross = grossMonthly * 12;
+      const biayaJabatan = Math.min(annualGross * BIYA_JABATAN.rate, BIYA_JABATAN.cap);
+      const bpjsDeductible = (primary.jht + primary.jp) * 12;
+      const pkp = Math.floor(Math.max(0, annualGross - biayaJabatan - bpjsDeductible - ptkp) / 1000) * 1000;
+      const tax = progressiveTax(pkp);
+      const net = annualGross - (primary.kes + primary.jht + primary.jp) * 12 - tax;
+      return { primary, annualGross, biayaJabatan, bpjsDeductible, pkp, tax, net };
+    }
+
+    function solveGrossFromAnnualNet(netAnnual, category, ptkp) {
+      if (netAnnual <= 0) return 0;
+      let low = 0;
+      let high = Math.max(netAnnual / 12, 1);
+      let guard = 0;
+      while (annualPrimary(high, category, ptkp).net < netAnnual && guard < 80) {
+        high *= 1.5;
+        guard += 1;
+      }
+      for (let i = 0; i < 100; i += 1) {
+        const mid = (low + high) / 2;
+        if (annualPrimary(mid, category, ptkp).net < netAnnual) low = mid;
+        else high = mid;
+      }
+      return (low + high) / 2;
+    }
+
     function calculate() {
       const ptkp = readNumber(byId("ptkpStatus").value) || 54000000;
       const category = byId("terCategory").value;
 
-      // Input adalah gaji bersih (take-home); bruto dihitung balik.
+      // Input adalah gaji bersih tahunan (take-home); bruto dicari dengan
+      // gross-up tahunan agar PPh 21 terutang dan BPJS ikut diperhitungkan.
       const job1Net = readNumber(byId("job1Salary").value);
-      const job1Gross = solveGrossFromNet(job1Net, function (gross) {
-        return calcPrimary(gross, category).total;
-      });
+      const job1Gross = solveGrossFromAnnualNet(job1Net * 12, category, ptkp);
       const job1 = calcPrimary(job1Gross, category);
 
       const secondaries = activeJobs.map(function (n) {
@@ -1198,81 +1499,149 @@
       const delta = trueTax - withheldYear;
 
       // PPh 21 tahunan yang benar adalah trueTax. Selisih terhadap potongan
-      // Jan–Nov adalah rekonsiliasi Desember: kurang bayar ditambahkan, lebih
-      // bayar dikembalikan. Keduanya bukan komponen pajak tambahan.
-      const kurangBayar = isSingle ? 0 : Math.max(0, delta);
-      const lebihBayar = isSingle ? 0 : Math.max(0, -delta);
+      // Jan–Nov adalah rekonsiliasi Desember. Untuk satu pemberi kerja,
+      // selisih ini diselesaikan lewat payroll Desember, bukan kurang bayar SPT.
+      const kurangBayar = Math.max(0, delta);
+      const lebihBayar = Math.max(0, -delta);
+      const rekonAbs = Math.abs(delta);
+      const hasRekon = rekonAbs > 1;
+      const rekonLabel = isSingle
+        ? "Rekonsiliasi Desember (info)"
+        : (delta >= 0 ? "Kurang Bayar (SPT)" : "Lebih Bayar (SPT)");
+      const rekonNote = isSingle
+        ? (delta >= 0
+            ? "Tambahan potongan PPh 21 Desember. Diselesaikan pemberi kerja lewat payroll; bukan kurang bayar SPT."
+            : "Kelebihan potong PPh 21. Dikembalikan pemberi kerja lewat payroll Desember; bukan lebih bayar SPT.")
+        : "Sudah termasuk dalam PPh 21 tahunan; selisih diselesaikan lewat rekonsiliasi/SPT.";
       const pphAnnual = trueTax;
 
-      const bpjsYear = (job1.kes + job1.jht + job1.jp) * 12;
+      const kesYear = job1.kes * 12;
+      const bpjstkYear = (job1.jht + job1.jp) * 12;
+      const bpjsYear = kesYear + bpjstkYear;
+      const netFromGross = Math.max(0, totalGross - bpjsYear - trueTax);
       const consumption = readNumber(byId("monthlyConsumption").value);
       const dining = readNumber(byId("monthlyDining").value);
       const ppn = consumption * PPN_RATE * 12;
       const pb1 = dining * PB1_RATE * 12;
+      const dompetAkhir = Math.max(0, netFromGross - ppn - pb1);
 
       const grandTotal = bpjsYear + pphAnnual + ppn + pb1;
-      const effPct = totalNet > 0 ? (grandTotal / totalNet) * 100 : 0;
+      const effPct = dompetAkhir > 0 ? (grandTotal / dompetAkhir) * 100 : 0;
 
       // ---- DOM ringkasan
       setText("totalOutflowYear", formatIDR(grandTotal));
       setText("summaryMonthly", "≈ " + formatIDR(grandTotal / 12) + " / bulan");
+      setText("summaryWallet", formatIDR(dompetAkhir));
+      const walletDeltaNote = byId("walletDeltaNote");
+      if (walletDeltaNote) {
+        const walletNotes = [];
+        const walletDelta = netFromGross - totalNet;
+        if (Math.abs(walletDelta) > 1000) {
+          walletNotes.push("Rekonsiliasi tahunan: input " + formatIDR(totalNet) + " → efektif " + formatIDR(netFromGross) + ".");
+        }
+        if (ppn + pb1 > 0) {
+          walletNotes.push("Take-home sebelum PPN/PB1: " + formatIDR(netFromGross) + ".");
+        }
+        if (walletNotes.length) {
+          walletDeltaNote.textContent = walletNotes.join(" ");
+          walletDeltaNote.classList.remove("hidden");
+        } else {
+          walletDeltaNote.classList.add("hidden");
+        }
+      }
       setText(
         "effectiveTaxRate",
         "Effective Out-of-Pocket Rate: " + effPct.toLocaleString("id-ID", { maximumFractionDigits: 1 }) +
-        "% dari gaji bersih " + formatIDR(totalNet)
+        "% dari Dompet Kamu " + formatIDR(dompetAkhir)
       );
-      setText("summaryBPJS", formatIDR(bpjsYear));
+      setText("summaryBpjsKes", formatIDR(kesYear));
+      setText("summaryBpjstk", formatIDR(bpjstkYear));
       setText("summaryPPh21", formatIDR(trueTax));
       setText("summaryPPh21Label", isSingle ? "PPh 21 Tahunan (pemberi kerja)" : "PPh 21 Tahunan");
-      setText("summaryKurangBayar", formatIDR(kurangBayar));
+      setText("summaryKurangBayar", formatIDR(rekonAbs));
+      const rekonState = isSingle ? "is-info" : (delta < 0 ? "is-over" : "is-under");
       const kurangRow = byId("kurangRow");
-      if (kurangRow) kurangRow.classList.toggle("hidden", kurangBayar <= 0);
+      if (kurangRow) {
+        kurangRow.classList.toggle("hidden", !hasRekon);
+        kurangRow.classList.remove("is-info", "is-over", "is-under");
+        if (hasRekon) kurangRow.classList.add(rekonState);
+      }
+      const kurangLabel = byId("kurangLabel");
+      if (kurangLabel) kurangLabel.textContent = rekonLabel;
       const kurangNote = byId("kurangNote");
-      if (kurangNote) kurangNote.classList.toggle("hidden", kurangBayar <= 0);
+      if (kurangNote) {
+        kurangNote.textContent = rekonNote;
+        kurangNote.classList.toggle("hidden", !hasRekon);
+        kurangNote.classList.remove("is-info", "is-over", "is-under");
+        if (hasRekon) kurangNote.classList.add(rekonState);
+      }
       setText("summaryPPN", formatIDR(ppn));
       setText("summaryPB1", formatIDR(pb1));
       setText("ppnMonthlyHint", formatIDR(consumption * PPN_RATE));
       setText("pb1MonthlyHint", formatIDR(dining * PB1_RATE));
       setText(
         "insightText",
-        "Dari setiap Rp100 gaji bersih, sekitar Rp" +
+        "Dari setiap Rp100 di Dompet Kamu, sekitar Rp" +
         effPct.toLocaleString("id-ID", { maximumFractionDigits: 1 }) +
         " mengalir ke pajak & iuran wajib."
       );
 
       const refundNote = byId("refundNote");
       if (refundNote) {
-        if (isSingle) {
+        if (isSingle && !hasRekon) {
           refundNote.textContent = "Rekonsiliasi Desember diselesaikan pemberi kerja.";
-          refundNote.classList.remove("hidden");
-        } else if (lebihBayar > 0) {
-          refundNote.textContent = "Estimasi lebih bayar " + formatIDR(lebihBayar) + " — sudah diperhitungkan dalam PPh 21 tahunan dan berpotensi dikembalikan saat rekonsiliasi.";
           refundNote.classList.remove("hidden");
         } else {
           refundNote.classList.add("hidden");
         }
       }
 
-      // ---- Data untuk chart & poster
+      // ---- Data untuk chart & poster (dipakai Sankey dan Donut)
       const items = [
-        { label: "BPJS", full: "BPJS Kesehatan, JHT & JP", value: bpjsYear, color: COLORS.bpjs },
         { label: "PPh 21", full: "PPh 21 Tahunan", value: trueTax, color: COLORS.pph },
+        { label: "BPJS Kesehatan", full: "BPJS Kesehatan", value: kesYear, color: COLORS.bpjsKes },
+        { label: "BPJSTK", full: "BPJSTK (JHT + JP)", value: bpjstkYear, color: COLORS.bpjstk },
         { label: "PPN 11%", full: "PPN 11%", value: ppn, color: COLORS.ppn },
-        { label: "PB1 10%", full: "PB1 10%", value: pb1, color: COLORS.pb1 }
+        { label: "PB1 10%", full: "PB1 10%", value: pb1, color: COLORS.pb1 },
+        { label: "Dompet Kamu", full: "Dompet Kamu (sisa)", value: dompetAkhir, color: COLORS.wallet }
       ];
+
+      const chartSum = items.reduce(function (sum, item) { return sum + Math.max(0, item.value); }, 0);
+      const sourceValue = Math.max(totalGross, chartSum);
+      const overBudget = chartSum > totalGross + 1;
+      const sankeyTargets = items.map(function (item) {
+        return { label: item.label, value: item.value, color: item.color };
+      });
+      const chartNote = totalGross <= 0
+        ? "Belum ada penghasilan pada input ini."
+        : overBudget
+          ? "Pajak konsumsi melebihi take-home; Dompet Kamu dihitung 0. Selisih diasumsikan dari tabungan."
+          : "Gaji bruto terbagi ke PPh 21, BPJS Kesehatan, BPJSTK, PPN 11%, PB1 10%, dan Dompet Kamu. Dompet Kamu = sisa setelah pajak & iuran.";
 
       lastResult = {
         total: grandTotal,
         gross: totalGross,
-        net: totalNet,
+        net: dompetAkhir,
+        takeHome: netFromGross,
+        inputNet: totalNet,
         effPct: effPct,
         items: items,
+        kesYear: kesYear,
+        bpjstkYear: bpjstkYear,
+        ppn: ppn,
+        pb1: pb1,
+        dompetAkhir: dompetAkhir,
+        chartTotal: sourceValue,
+        sourceValue: sourceValue,
+        chartNote: chartNote,
         kurangBayar: kurangBayar,
         lebihBayar: lebihBayar,
         single: isSingle
       };
 
       updateChart(items);
+      renderSankey(sourceValue, sankeyTargets, "penghasilan bruto setahun", overBudget ? "Gaji Bruto + Tabungan" : "Gaji Bruto");
+      updateChartNote();
       renderGoods(grandTotal);
     }
 
@@ -1290,8 +1659,8 @@
       const priceUnit = item.unit || "unit";
 
       const badge = affordable
-        ? '<span class="rounded-full px-2 py-1 font-mono text-[11px] font-bold tabular backdrop-blur-sm" style="background:rgba(2,6,23,.82);border:1px solid ' + tint(accent, 0.45) + ";color:" + accent + '">×' + formatNumber(qty) + "</span>"
-        : '<span class="rounded-full bg-slate-950/80 px-2 py-1 font-mono text-[10px] font-semibold tabular text-slate-300 backdrop-blur-sm">' + Math.round(progress) + "%</span>";
+        ? '<span class="rounded-full px-1.5 py-0.5 font-mono text-[10px] font-bold tabular backdrop-blur-sm" style="background:rgba(2,6,23,.82);border:1px solid ' + tint(accent, 0.45) + ";color:" + accent + '">×' + formatNumber(qty) + "</span>"
+        : '<span class="rounded-full bg-slate-950/80 px-1.5 py-0.5 font-mono text-[9px] font-semibold tabular text-slate-300 backdrop-blur-sm">' + Math.round(progress) + "%</span>";
 
       const caption = affordable
         ? 'Setara <span class="font-semibold" style="color:' + accent + '">' + formatNumber(qty) + " " + unit + "</span>"
@@ -1299,28 +1668,28 @@
 
       const media = item.image
         ? '<img src="' + item.image + '" alt="' + item.name + '" width="800" height="600" loading="eager" decoding="async" class="h-full w-full ' +
-          (item.imageFit === "contain" ? "object-contain p-4" : "object-cover") +
+          (item.imageFit === "contain" ? "object-contain p-3" : "object-cover") +
           ' transition duration-500 group-hover:scale-[1.03]">'
         : '<div class="flex h-full w-full items-center justify-center" style="color:' + accent + '"><svg class="h-16 w-16 opacity-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + iconPaths + "</svg></div>";
 
       const source = item.source
-        ? '<span class="absolute bottom-2.5 left-2.5 rounded-md bg-slate-950/80 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider text-slate-300 backdrop-blur-sm">' + item.source + "</span>"
+        ? '<span class="absolute bottom-2 left-2 hidden rounded-md bg-slate-950/80 px-1 py-0.5 text-[7px] font-bold uppercase tracking-wider text-slate-300 backdrop-blur-sm sm:block">' + item.source + "</span>"
         : "";
 
       return `
-        <article class="group overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 transition hover:border-slate-700 hover:bg-slate-900">
-          <div class="relative aspect-[4/3] overflow-hidden" style="background:radial-gradient(circle at 50% 40%, ${tint(accent, 0.14)}, rgba(2,6,23,.35) 72%)">
+        <article class="group overflow-hidden rounded-xl border border-slate-800 bg-slate-900/60 transition hover:border-slate-700 hover:bg-slate-900">
+          <div class="relative aspect-[16/9] overflow-hidden" style="background:radial-gradient(circle at 50% 40%, ${tint(accent, 0.14)}, rgba(2,6,23,.35) 72%)">
             ${media}
-            <div class="absolute right-2.5 top-2.5">${badge}</div>
+            <div class="absolute right-2 top-2">${badge}</div>
             ${source}
           </div>
-          <div class="p-4">
-            <h3 class="text-[13px] font-semibold leading-snug text-slate-100">${item.name}</h3>
-            <p class="mt-1 font-mono text-[10px] tabular text-slate-500">${formatIDR(item.price)}<span class="text-slate-600"> / ${priceUnit}</span></p>
-            <div class="mt-3 h-1.5 overflow-hidden rounded-full bg-slate-800">
+          <div class="p-2 sm:p-2.5">
+            <h3 class="text-[10px] font-semibold leading-snug text-slate-100 sm:text-[11px]">${item.name}</h3>
+            <p class="mt-0.5 font-mono text-[7px] tabular text-slate-500 sm:text-[8px]">${formatIDR(item.price)}<span class="text-slate-600"> / ${priceUnit}</span></p>
+            <div class="mt-1.5 h-1 overflow-hidden rounded-full bg-slate-800">
               <div class="h-full rounded-full" style="width:${progress}%;background:${accent};opacity:${affordable ? 1 : 0.5}"></div>
             </div>
-            <p class="mt-2 text-[10px] text-slate-500">${caption}</p>
+            <p class="mt-1 text-[7px] text-slate-500 sm:text-[8px]">${caption}</p>
           </div>
         </article>
       `;
@@ -1430,6 +1799,54 @@
         }
         angle += sweep;
       });
+    }
+
+    function drawPosterSankey(ctx, x, y, w, h, sourceValue, items) {
+      const pad = 10;
+      const gap = 10;
+      const nodeW = 14;
+      const sourceX = x + 120;
+      const targetX = x + w - 40;
+      const availableH = h - pad * 2 - gap * Math.max(0, items.length - 1);
+      const scale = availableH / sourceValue;
+      let sourceY = y + pad;
+      let targetY = y + pad;
+
+      items.forEach(function (item) {
+        const linkH = Math.max(0.5, item.value * scale);
+        const sx0 = sourceX + nodeW;
+        const midX = (sx0 + targetX) / 2;
+
+        ctx.beginPath();
+        ctx.moveTo(sx0, sourceY);
+        ctx.bezierCurveTo(midX, sourceY, midX, targetY, targetX, targetY);
+        ctx.lineTo(targetX, targetY + linkH);
+        ctx.bezierCurveTo(midX, targetY + linkH, midX, sourceY + linkH, sx0, sourceY + linkH);
+        ctx.closePath();
+        ctx.globalAlpha = 0.28;
+        ctx.fillStyle = item.color;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+
+        ctx.fillStyle = item.color;
+        roundRect(ctx, targetX, targetY, nodeW, Math.max(4, linkH), 3);
+        ctx.fill();
+
+        sourceY += linkH;
+        targetY += linkH + gap;
+      });
+
+      ctx.fillStyle = COLORS.bruto;
+      roundRect(ctx, sourceX, y + pad, nodeW, availableH, 3);
+      ctx.fill();
+
+      ctx.textAlign = "left";
+      ctx.font = "700 10px " + FONT_STACK;
+      ctx.fillStyle = "#94a3b8";
+      ctx.fillText("GAJI BRUTO", x + 4, y + 16);
+      ctx.font = "800 20px " + FONT_STACK;
+      ctx.fillStyle = "#f8fafc";
+      ctx.fillText(formatCompact(sourceValue), x + 4, y + 40);
     }
 
     function fitFont(ctx, text, weight, startSize, minSize, maxWidth) {
@@ -1604,14 +2021,16 @@
       ctx.lineWidth = 1.5;
       ctx.stroke();
 
+      const isSankeyPoster = currentChartView === "sankey";
+      const activeItems = result.items.filter(function (item) { return item.value > 0; });
+      const shownItems = activeItems.length ? activeItems : result.items;
+      const chartTotal = result.chartTotal || shownItems.reduce(function (sum, item) { return sum + Math.max(0, item.value); }, 0);
+
       ctx.font = "700 12px " + FONT_STACK;
       if ("letterSpacing" in ctx) ctx.letterSpacing = "1.6px";
       ctx.fillStyle = "#94a3b8";
-      ctx.fillText("RINCIAN PER JENIS", cardX + 32, cardY + 44);
+      ctx.fillText("ALIRAN GAJI", cardX + 32, cardY + 44);
       if ("letterSpacing" in ctx) ctx.letterSpacing = "0px";
-
-      const activeItems = result.items.filter(function (item) { return item.value > 0; });
-      const shownItems = activeItems.length ? activeItems : result.items;
 
       ctx.font = "600 12px " + FONT_STACK;
       ctx.fillStyle = "#475569";
@@ -1619,28 +2038,31 @@
       ctx.fillText(shownItems.length + " komponen", cardX + cardW - 32, cardY + 44);
       ctx.textAlign = "left";
 
-      const donutCx = cardX + 190;
-      const donutCy = cardY + 216;
-      drawDonut(ctx, donutCx, donutCy, 96, 30, shownItems);
+      if (isSankeyPoster) {
+        drawPosterSankey(ctx, cardX + 36, cardY + 82, 320, 252, chartTotal, shownItems);
+      } else {
+        const donutCx = cardX + 190;
+        const donutCy = cardY + 216;
+        drawDonut(ctx, donutCx, donutCy, 96, 30, shownItems);
 
-      const shownTotal = shownItems.reduce(function (sum, item) { return sum + Math.max(0, item.value); }, 0);
-      ctx.textAlign = "center";
-      ctx.font = "700 10px " + FONT_STACK;
-      ctx.fillStyle = "#64748b";
-      ctx.fillText("TOTAL OUTFLOW", donutCx, donutCy - 18);
-      ctx.font = "800 25px " + FONT_STACK;
-      ctx.fillStyle = "#f8fafc";
-      ctx.fillText(formatCompact(shownTotal), donutCx, donutCy + 8);
-      ctx.font = "600 9px " + FONT_STACK;
-      ctx.fillStyle = "#475569";
-      ctx.fillText("TAHUN 2026", donutCx, donutCy + 28);
-      ctx.textAlign = "left";
+        ctx.textAlign = "center";
+        ctx.font = "700 10px " + FONT_STACK;
+        ctx.fillStyle = "#64748b";
+        ctx.fillText("GAJI BRUTO", donutCx, donutCy - 18);
+        ctx.font = "800 25px " + FONT_STACK;
+        ctx.fillStyle = "#f8fafc";
+        ctx.fillText(formatCompact(chartTotal), donutCx, donutCy + 8);
+        ctx.font = "600 9px " + FONT_STACK;
+        ctx.fillStyle = "#475569";
+        ctx.fillText("TAHUN 2026", donutCx, donutCy + 28);
+        ctx.textAlign = "left";
+      }
 
       const legendX = cardX + 390;
       const amountX = cardX + cardW - 32;
       const percentX = amountX - 190;
       const rowStart = cardY + 122;
-      const rowGap = 52;
+      const rowGap = shownItems.length >= 6 ? 40 : 52;
 
       shownItems.forEach(function (item, index) {
         const y = rowStart + index * rowGap;
@@ -1657,7 +2079,7 @@
         ctx.font = "600 15px " + FONT_STACK;
         ctx.fillStyle = "#64748b";
         ctx.textAlign = "right";
-        ctx.fillText(percentage(item.value, shownTotal) + "%", percentX, y);
+        ctx.fillText(percentage(item.value, chartTotal) + "%", percentX, y);
 
         ctx.font = "700 17px " + FONT_STACK;
         ctx.fillStyle = "#f8fafc";
@@ -1665,11 +2087,10 @@
         ctx.textAlign = "left";
       });
 
-      ctx.font = "400 12px " + FONT_STACK;
+      const posterNote = "Dompet Kamu = sisa setelah PPh 21, BPJS, PPN, dan PB1.";
+      const noteSize = fitFont(ctx, posterNote, "400", 12, 9, cardW - 64);
+      ctx.font = "400 " + noteSize + "px " + FONT_STACK;
       ctx.fillStyle = "#475569";
-      const posterNote = result.single
-        ? "PPh 21 tahunan sudah termasuk rekonsiliasi Desember yang diselesaikan pemberi kerja."
-        : "Termasuk potongan Jan–Nov dan rekonsiliasi PPh 21 bulan Desember.";
       ctx.fillText(posterNote, cardX + 32, cardY + cardH - 24);
 
       // Kartu barang
@@ -1871,6 +2292,12 @@
       byId("monthlyConsumption").addEventListener("input", calculate);
       byId("monthlyDining").addEventListener("input", calculate);
 
+      document.querySelectorAll("[data-chart-view]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          setChartView(button.getAttribute("data-chart-view"));
+        });
+      });
+
       document.querySelectorAll("[data-preset]").forEach(function (button) {
         button.addEventListener("click", function () {
           byId("job1Salary").value = button.getAttribute("data-preset");
@@ -1965,7 +2392,7 @@
       syncTerCategory();
       bindEvents();
       renderJobs();
-      initChart();
+      setChartView("sankey");
       calculate();
     }
 
