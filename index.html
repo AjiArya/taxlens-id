@@ -1544,29 +1544,6 @@
     /* ------------------------------------------------------------------ */
     /*  Modal, unduh, toast                                               */
     /* ------------------------------------------------------------------ */
-    function openShareModal() {
-      const modal = byId("shareModal");
-      const preview = byId("sharePreview");
-      if (!modal || !preview) return;
-
-      if (!shareDataUrl) {
-        shareDataUrl = renderSharePoster(lastResult || {
-          total: 0,
-          items: [
-            { full: "BPJS Kesehatan, JHT & JP", value: 0, color: COLORS.bpjs },
-            { full: "PPh 21 (Jan–Nov)", value: 0, color: COLORS.pph },
-            { full: "Kurang Bayar (Desember)", value: 0, color: COLORS.kurang },
-            { full: "PPN 11%", value: 0, color: COLORS.ppn },
-            { full: "PB1 10%", value: 0, color: COLORS.pb1 }
-          ]
-        });
-      }
-
-      preview.src = shareDataUrl;
-      modal.classList.remove("hidden");
-      document.body.classList.add("overflow-hidden");
-    }
-
     function closeShareModal() {
       const modal = byId("shareModal");
       if (!modal) return;
