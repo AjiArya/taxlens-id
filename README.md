@@ -26,7 +26,9 @@ python3 -m http.server 4173
 
 ## Deploy
 
-Push ke `main`. Workflow `.github/workflows/deploy.yml` akan mengaktifkan GitHub Pages (jika belum) dan men-deploy situs dari root repo.
+Push ke `main`. Workflow `.github/workflows/deploy.yml` akan menerbitkan `index.html` ke branch `gh-pages`; GitHub Pages menyajikan branch tersebut secara otomatis.
+
+Situs: **https://ajiarya.github.io/taxlens-id/**
 
 ## Metodologi singkat
 
