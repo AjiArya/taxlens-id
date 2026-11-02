@@ -138,9 +138,15 @@
         <p class="mt-2 max-w-2xl text-sm leading-relaxed text-slate-400">
           Hitung potongan wajib dari gaji, rekonsiliasi PPh 21 progresif, dan pajak konsumsi dalam satu tampilan.
         </p>
-        <div class="mt-4 flex flex-wrap items-center gap-2.5">
-          <span class="bg-gradient-to-r from-red-400 via-rose-400 to-amber-300 bg-clip-text text-3xl font-black tracking-tight text-transparent sm:text-4xl">#SadarDipalak</span>
-          <span class="rounded-full border border-red-500/20 bg-red-500/10 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.14em] text-red-300">gerakan melek pajak</span>
+        <div class="mt-4 flex flex-wrap items-end gap-3">
+          <div>
+            <span class="bg-gradient-to-r from-emerald-400 via-blue-400 to-red-500 bg-clip-text text-3xl font-black tracking-tight text-transparent sm:text-4xl">#SadarDipalak</span>
+            <div class="mt-1.5 flex gap-1" aria-hidden="true">
+              <span class="h-1 w-7 rounded-full bg-emerald-400"></span>
+              <span class="h-1 w-7 rounded-full bg-blue-400"></span>
+              <span class="h-1 w-7 rounded-full bg-red-500"></span>
+            </div>
+          </div>
         </div>
       </div>
       <div class="hidden shrink-0 items-center gap-2.5 rounded-xl border border-slate-800 bg-slate-900/60 px-4 py-2.5 sm:flex">
@@ -379,7 +385,7 @@
                 </span>
                 <span id="summaryPPh21" class="font-mono text-[13px] font-semibold tabular text-slate-200">Rp 0</span>
               </div>
-              <div class="my-1 flex items-center justify-between gap-3 rounded-lg border border-amber-500/15 bg-amber-500/[0.06] px-2.5 py-2.5">
+              <div id="kurangRow" class="my-1 flex items-center justify-between gap-3 rounded-lg border border-amber-500/15 bg-amber-500/[0.06] px-2.5 py-2.5">
                 <span class="flex items-center gap-2 text-[12px] font-medium text-amber-400">
                   <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4M12 17h.01"/></svg>
                   Kurang Bayar (Des)
@@ -423,7 +429,7 @@
                 </svg>
                 <span>Download Bukti Kontribusi (JPG)</span>
               </button>
-              <p class="mt-2 text-center text-[10px] text-slate-500">4:5 · 1080 × 1350 px · pas untuk Threads, Instagram &amp; TikTok foto</p>
+              <p class="mt-2 text-center text-[10px] text-slate-500">4:5 · 1080 × 1350 px · download atau bagikan ke Threads, IG &amp; TikTok</p>
             </div>
           </div>
         </div>
@@ -516,9 +522,8 @@
             <p class="mt-2 text-[10px] leading-relaxed text-slate-500">
               Foto produk Apple: iBox/Eraspace. Foto pendukung dari Wikimedia Commons:
               PS5 © Soberian/Osh33m (CC BY-SA 4.0), Bali © Jakub Hałun (CC BY-SA 4.0),
-              MBG © Indonesiagood (CC BY 4.0), Jakarta © Sam Hidayat (CC BY-SA 4.0),
-              Fuji © Romain Guy (CC0), emas © Stevebidmead (CC0),
-              beras, gula, dan minyak dari Wikimedia Commons.
+              MBG/ompreng © Fitrah 9131 (CC0), Fuji © Romain Guy (CC0),
+              emas © Stevebidmead (CC0), beras &amp; gula dari Wikimedia Commons.
               Harga dan ketersediaan dapat berubah; visualisasi ini bukan penawaran.
             </p>
           </details>
@@ -576,7 +581,7 @@
   <!-- ============================ FOOTER ============================ -->
   <footer class="mt-4 border-t border-slate-800/80">
     <div class="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-7 text-[11px] text-slate-500 sm:flex-row sm:items-center sm:justify-between">
-      <p>© 2026 TaxLens ID · <span class="font-bold text-red-400/80">#SadarDipalak</span> · Dibuat untuk literasi pajak, bukan nasihat pajak.</p>
+      <p>© 2026 TaxLens ID · <span class="bg-gradient-to-r from-emerald-400 via-blue-400 to-red-500 bg-clip-text font-bold text-transparent">#SadarDipalak</span> · Dibuat untuk literasi pajak, bukan nasihat pajak.</p>
       <p class="flex items-center gap-1.5">
         <svg class="h-3.5 w-3.5 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
         100% client-side · tidak ada data yang disimpan
@@ -598,8 +603,29 @@
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
           </button>
         </div>
-        <div class="max-h-[66vh] overflow-y-auto bg-slate-950 p-4">
+        <div class="max-h-[54vh] overflow-y-auto bg-slate-950 p-4 sm:max-h-[60vh]">
           <img id="sharePreview" class="mx-auto w-full max-w-md rounded-xl border border-slate-800" alt="Pratinjau bukti kontribusi pajak tahunan">
+        </div>
+        <div class="border-t border-slate-800 px-4 py-3">
+          <p class="text-[9px] font-bold uppercase tracking-[0.16em] text-slate-500">Bagikan ke</p>
+          <div class="mt-2 grid grid-cols-3 gap-2">
+            <button type="button" data-share="threads"
+              class="flex items-center justify-center gap-1.5 rounded-xl border border-slate-700 bg-slate-800/60 px-2 py-2 text-[11px] font-semibold text-slate-200 transition hover:border-slate-600 hover:bg-slate-800 hover:text-white focus:outline-none focus:ring-2 focus:ring-slate-500/40">
+              <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"/></svg>
+              Threads
+            </button>
+            <button type="button" data-share="instagram"
+              class="flex items-center justify-center gap-1.5 rounded-xl border border-slate-700 bg-slate-800/60 px-2 py-2 text-[11px] font-semibold text-slate-200 transition hover:border-slate-600 hover:bg-slate-800 hover:text-white focus:outline-none focus:ring-2 focus:ring-slate-500/40">
+              <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg>
+              Instagram
+            </button>
+            <button type="button" data-share="tiktok"
+              class="flex items-center justify-center gap-1.5 rounded-xl border border-slate-700 bg-slate-800/60 px-2 py-2 text-[11px] font-semibold text-slate-200 transition hover:border-slate-600 hover:bg-slate-800 hover:text-white focus:outline-none focus:ring-2 focus:ring-slate-500/40">
+              <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+              TikTok
+            </button>
+          </div>
+          <p class="mt-2 text-[9px] leading-relaxed text-slate-500">Di HP tombol ini membuka share sheet; pilih aplikasinya. Di desktop, gambar diunduh lalu halaman platform dibuka.</p>
         </div>
         <div class="flex flex-col gap-2 border-t border-slate-800 p-4 sm:flex-row">
           <button type="button" id="downloadJpgBtn"
@@ -694,11 +720,11 @@
       // Bahan pokok — harga e-commerce.
       { name: "Beras premium 1 kg", price: 14500, category: "Bahan Pokok", icon: "rice", image: "assets/beras.webp", imageFit: "cover", source: "E-commerce", unit: "kg" },
       { name: "Gula pasir 1 kg", price: 17500, category: "Bahan Pokok", icon: "sugar", image: "assets/gula.webp", imageFit: "cover", source: "E-commerce", unit: "kg" },
-      { name: "Minyak goreng 1 liter", price: 17900, category: "Bahan Pokok", icon: "oil", image: "assets/minyak.webp", imageFit: "cover", source: "E-commerce", unit: "liter" },
+      { name: "Minyak goreng 1 liter", price: 17900, category: "Bahan Pokok", icon: "oil", source: "E-commerce", unit: "liter" },
 
       // Pemerintah.
       { name: "1 porsi MBG", price: 10000, category: "Pemerintah", icon: "meal", image: "assets/mbg.webp", imageFit: "cover", source: "Program MBG", unit: "porsi" },
-      { name: "Gaji 1 pegawai UMR Jakarta", price: 5729876, category: "Pemerintah", icon: "worker", image: "assets/umr-jakarta.webp", imageFit: "cover", source: "UMP DKI 2026", unit: "bulan", captionUnit: "pegawai/bulan" },
+      { name: "Gaji 1 pegawai UMR Jakarta", price: 5729876, category: "Pemerintah", icon: "worker", source: "UMP DKI 2026", unit: "bulan", captionUnit: "pegawai/bulan" },
 
       // Olahraga — sewa lapangan per jam.
       { name: "Sewa lapangan padel", price: 350000, category: "Olahraga", icon: "padel", source: "Google / harga pasar", unit: "jam" },
@@ -723,7 +749,7 @@
       { name: "Emas Antam 10 gram", price: 20500000, category: "Emas", icon: "gold", image: "assets/gold.webp", imageFit: "cover", source: "Harga pasar", unit: "batang" },
 
       // Lifestyle.
-      { name: "Kopi susu artisan", price: 28000, category: "Lifestyle", icon: "coffee", unit: "gelas" },
+      { name: "Kopi susu kekinian", price: 25000, category: "Lifestyle", icon: "coffee", unit: "gelas" },
       { name: "Netflix 1 tahun", price: 2280000, category: "Lifestyle", icon: "tv", unit: "tahun" },
       { name: "Sepeda Brompton", price: 32000000, category: "Lifestyle", icon: "bike", unit: "unit" }
     ];
@@ -1160,6 +1186,8 @@
       setText("summaryPPh21", formatIDR(isSingle ? trueTax : withheldYear));
       setText("summaryPPh21Label", isSingle ? "PPh 21 Tahunan (pemberi kerja)" : "PPh 21 Dipotong (Jan–Nov)");
       setText("summaryKurangBayar", formatIDR(kurangBayar));
+      const kurangRow = byId("kurangRow");
+      if (kurangRow) kurangRow.classList.toggle("hidden", kurangBayar <= 0);
       setText("summaryPPN", formatIDR(ppn));
       setText("summaryPB1", formatIDR(pb1));
       setText("ppnMonthlyHint", formatIDR(consumption * PPN_RATE));
@@ -1174,7 +1202,7 @@
       const refundNote = byId("refundNote");
       if (refundNote) {
         if (isSingle) {
-          refundNote.textContent = "Rekonsiliasi Desember diselesaikan pemberi kerja — tidak ada kurang bayar tambahan.";
+          refundNote.textContent = "Rekonsiliasi Desember diselesaikan pemberi kerja.";
           refundNote.classList.remove("hidden");
         } else if (lebihBayar > 0) {
           refundNote.textContent = "Estimasi lebih bayar " + formatIDR(lebihBayar) + " — berpotensi dikembalikan saat rekonsiliasi.";
@@ -1456,17 +1484,29 @@
 
       // Branding kampanye
       const tagGradient = ctx.createLinearGradient(W - PAD - 340, 62, W - PAD, 110);
-      tagGradient.addColorStop(0, "#fb7185");
-      tagGradient.addColorStop(0.55, "#f87171");
-      tagGradient.addColorStop(1, "#fbbf24");
+      tagGradient.addColorStop(0, "#34d399");
+      tagGradient.addColorStop(0.5, "#60a5fa");
+      tagGradient.addColorStop(1, "#ef4444");
       ctx.font = "800 38px " + FONT_STACK;
       ctx.fillStyle = tagGradient;
       ctx.textAlign = "right";
       ctx.fillText("#SadarDipalak", W - PAD, 98);
+
+      // Tiga garis warna brand: hijau, biru, merah.
+      const barW = 32;
+      const barGap = 4;
+      const barStart = W - PAD - (barW * 3 + barGap * 2);
+      ctx.fillStyle = "#34d399";
+      ctx.fillRect(barStart, 107, barW, 4);
+      ctx.fillStyle = "#60a5fa";
+      ctx.fillRect(barStart + barW + barGap, 107, barW, 4);
+      ctx.fillStyle = "#ef4444";
+      ctx.fillRect(barStart + (barW + barGap) * 2, 107, barW, 4);
+
       ctx.font = "600 10px " + FONT_STACK;
       ctx.fillStyle = "#64748b";
       if ("letterSpacing" in ctx) ctx.letterSpacing = "1.4px";
-      ctx.fillText("TAHUN PAJAK 2026 · TAXLENS ID", W - PAD, 119);
+      ctx.fillText("TAHUN PAJAK 2026 · TAXLENS ID", W - PAD, 126);
       if ("letterSpacing" in ctx) ctx.letterSpacing = "0px";
       ctx.textAlign = "left";
 
@@ -1659,8 +1699,16 @@
 
       ctx.textAlign = "right";
       ctx.font = "700 12px " + FONT_STACK;
-      ctx.fillStyle = "#f87171";
-      ctx.fillText("TaxLens ID · #SadarDipalak", W - PAD, 1252);
+      const footerTag = "#SadarDipalak";
+      const footerTagWidth = ctx.measureText(footerTag).width;
+      const footerGradient = ctx.createLinearGradient(W - PAD - footerTagWidth, 1244, W - PAD, 1252);
+      footerGradient.addColorStop(0, "#34d399");
+      footerGradient.addColorStop(0.5, "#60a5fa");
+      footerGradient.addColorStop(1, "#ef4444");
+      ctx.fillStyle = footerGradient;
+      ctx.fillText(footerTag, W - PAD, 1252);
+      ctx.fillStyle = "#64748b";
+      ctx.fillText("TaxLens ID · ", W - PAD - footerTagWidth, 1252);
       ctx.textAlign = "left";
 
       ctx.font = "400 11px " + FONT_STACK;
@@ -1678,6 +1726,56 @@
       if (!modal) return;
       modal.classList.add("hidden");
       document.body.classList.remove("overflow-hidden");
+    }
+
+    function dataUrlToFile(dataUrl, filename) {
+      const parts = dataUrl.split(",");
+      const mime = parts[0].match(/:(.*?);/)[1];
+      const binary = atob(parts[1]);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
+      return new File([bytes], filename, { type: mime });
+    }
+
+    async function sharePoster(platform) {
+      if (!shareDataUrl || !lastResult) return;
+
+      const filename = "TaxLens-Kontribusi-Pajak-2026.jpg";
+      const file = dataUrlToFile(shareDataUrl, filename);
+      const caption = "Kontribusi pajak gue tahun ini " + formatIDR(lastResult.total) +
+        ". Cek punya lu: https://ajiarya.github.io/taxlens-id/ #SadarDipalak";
+      const shareData = {
+        files: [file],
+        text: caption,
+        title: "Kontribusi Pajak Gue — #SadarDipalak"
+      };
+
+      let canNativeShare = false;
+      try {
+        canNativeShare = !!(navigator.share && navigator.canShare && navigator.canShare({ files: [file] }));
+      } catch (error) {
+        canNativeShare = false;
+      }
+
+      if (canNativeShare) {
+        try {
+          await navigator.share(shareData);
+          return;
+        } catch (error) {
+          if (error && error.name === "AbortError") return;
+        }
+      }
+
+      // Fallback desktop / browser tanpa Web Share API.
+      downloadJpg();
+      const urls = {
+        threads: "https://www.threads.net/intent/post?text=" + encodeURIComponent(caption),
+        instagram: "https://www.instagram.com/",
+        tiktok: "https://www.tiktok.com/upload?lang=id-ID"
+      };
+      if (urls[platform]) window.open(urls[platform], "_blank", "noopener,noreferrer");
+      const name = platform.charAt(0).toUpperCase() + platform.slice(1);
+      showToast("Gambar diunduh. Tinggal upload ke " + name + ".");
     }
 
     function downloadJpg() {
@@ -1776,6 +1874,12 @@
       });
 
       byId("downloadJpgBtn").addEventListener("click", downloadJpg);
+
+      document.querySelectorAll("[data-share]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          sharePoster(button.getAttribute("data-share"));
+        });
+      });
 
       byId("shareModal").addEventListener("click", function (event) {
         if (event.target.closest("[data-close-share]")) closeShareModal();
