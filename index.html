@@ -8,6 +8,7 @@
   <meta property="og:description" content="Hitung pajak & iuran wajibmu, lihat kalau pajak itu jadi barang, lalu download bukti kontribusinya. 100% diproses di browser.">
   <meta property="og:type" content="website">
   <meta name="theme-color" content="#020617">
+  <meta name="build-id" content="__BUILD_ID__">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23ef4444'/%3E%3Ctext x='32' y='46' font-family='Arial,sans-serif' font-size='40' font-weight='800' text-anchor='middle' fill='white'%3ET%3C/text%3E%3C/svg%3E">
   <title>TaxLens ID — #SadarDipalak | Personal Statutory & Tax Flow Tracker</title>
 
@@ -198,12 +199,13 @@
               </select>
             </div>
             <div>
-              <label for="terCategory" class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-400">Kategori TER PPh 21 (Jan–Nov)</label>
-              <select id="terCategory" class="w-full rounded-xl border border-slate-800 bg-slate-950/80 px-4 py-3 text-sm text-slate-200 outline-none transition focus:border-blue-500/60 focus:ring-4 focus:ring-blue-500/10">
+              <label for="terCategory" class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-400">Kategori TER PPh 21 (otomatis)</label>
+              <select id="terCategory" disabled class="w-full cursor-not-allowed rounded-xl border border-slate-800 bg-slate-950/80 px-4 py-3 text-sm text-slate-200 opacity-70 outline-none transition focus:border-blue-500/60 focus:ring-4 focus:ring-blue-500/10">
                 <option value="A">Kategori A — TK/0, TK/1, K/0</option>
                 <option value="B">Kategori B — TK/2, TK/3, K/1, K/2</option>
                 <option value="C">Kategori C — K/3</option>
               </select>
+              <p class="mt-1.5 text-[10px] text-slate-500">Mengikuti status PTKP sesuai PP 58/2023.</p>
             </div>
           </div>
 
@@ -390,7 +392,7 @@
               </div>
               <div class="flex items-center justify-between gap-3 border-b border-slate-800/70 py-2.5">
                 <span class="flex items-center gap-2 text-slate-400">
-                  <span class="h-2 w-2 rounded-full bg-red-500"></span><span id="summaryPPh21Label">PPh 21 Dipotong (Jan–Nov)</span>
+                  <span class="h-2 w-2 rounded-full bg-red-500"></span><span id="summaryPPh21Label">PPh 21 Tahunan</span>
                 </span>
                 <span id="summaryPPh21" class="font-mono text-[13px] font-semibold tabular text-slate-200">Rp 0</span>
               </div>
@@ -401,6 +403,7 @@
                 </span>
                 <span id="summaryKurangBayar" class="font-mono text-[13px] font-bold tabular text-amber-400">Rp 0</span>
               </div>
+              <p id="kurangNote" class="hidden px-1 pb-1 text-[10px] leading-relaxed text-amber-400/80">Sudah termasuk dalam PPh 21 tahunan — bukan tambahan.</p>
               <p id="refundNote" class="hidden px-1 pb-1 text-[10px] leading-relaxed text-emerald-400"></p>
               <div class="flex items-center justify-between gap-3 border-b border-slate-800/70 py-2.5">
                 <span class="flex items-center gap-2 text-slate-400">
@@ -561,13 +564,13 @@
           <div class="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
             <p class="text-xs font-bold text-slate-200">PTKP &amp; Rekonsiliasi</p>
             <p class="mt-1.5 text-[11px] leading-relaxed text-slate-400">
-              PTKP dikurangkan sekali; biaya jabatan 5% (maks Rp 6 juta/tahun); PKP dibulatkan ke bawah ribuan. Satu pemberi kerja: rekonsiliasi Desember diselesaikan employer, jadi tidak ada kurang bayar tambahan. Multi-pekerjaan: selisihnya ditampilkan.
+              PTKP dikurangkan sekali; biaya jabatan 5% (maks Rp 6 juta/tahun <span class="font-semibold text-slate-300">per pemberi kerja</span>); PKP dibulatkan ke bawah ribuan. Satu pemberi kerja: rekonsiliasi Desember diselesaikan employer, jadi tidak ada kurang bayar tambahan. Multi-pekerjaan: selisih kurang/lebih bayar ditampilkan sebagai rekonsiliasi.
             </p>
           </div>
           <div class="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
             <p class="text-xs font-bold text-slate-200">BPJS Karyawan</p>
             <p class="mt-1.5 text-[11px] leading-relaxed text-slate-400">
-              Kesehatan 1% (batas upah Rp 12 juta), JHT 2% (tanpa batas), JP 1% (batas upah Rp 10.547.400). Hanya JHT &amp; JP yang mengurangi PKP.
+              Kesehatan 1% (batas upah Rp 12 juta), JHT 2% (tanpa batas), JP 1% (batas upah Rp 11.086.300 per Maret 2026). Hanya JHT &amp; JP yang mengurangi PKP.
             </p>
           </div>
           <div class="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
@@ -593,7 +596,7 @@
       <p>© 2026 TaxLens ID · <span class="brand-word-sm font-bold"><span style="color:#1b8a3e">#</span><span style="color:#123c8a">Sadar</span><span style="color:#dc2626">Dipalak</span></span> · Dibuat untuk literasi pajak, bukan nasihat pajak.</p>
       <p class="flex items-center gap-1.5">
         <svg class="h-3.5 w-3.5 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
-        100% client-side · tidak ada data yang disimpan
+        100% client-side · tidak ada data yang disimpan · Build <span id="buildId" class="font-mono text-slate-400">dev</span>
       </p>
     </div>
   </footer>
@@ -684,21 +687,21 @@
         [29350000, 0.11], [31450000, 0.12], [33950000, 0.13], [37100000, 0.14],
         [41100000, 0.15], [45800000, 0.16], [49500000, 0.17], [53800000, 0.18],
         [58500000, 0.19], [64000000, 0.20], [71000000, 0.21], [80000000, 0.22],
-        [91000000, 0.23], [106000000, 0.24], [128000000, 0.25], [161000000, 0.26],
-        [212000000, 0.27], [345000000, 0.28], [465000000, 0.29], [565000000, 0.30],
-        [715000000, 0.31], [935000000, 0.32], [1400000000, 0.33], [Infinity, 0.34]
+        [93000000, 0.23], [109000000, 0.24], [129000000, 0.25], [163000000, 0.26],
+        [211000000, 0.27], [374000000, 0.28], [459000000, 0.29], [555000000, 0.30],
+        [704000000, 0.31], [957000000, 0.32], [1405000000, 0.33], [Infinity, 0.34]
       ],
       C: [
         [6600000, 0], [6950000, 0.0025], [7350000, 0.005], [7800000, 0.0075],
-        [8850000, 0.01], [9800000, 0.015], [10950000, 0.02], [11200000, 0.025],
-        [12050000, 0.03], [12950000, 0.04], [14150000, 0.05], [15550000, 0.06],
-        [17050000, 0.07], [19500000, 0.08], [22700000, 0.09], [26600000, 0.10],
-        [28100000, 0.11], [30100000, 0.12], [32600000, 0.13], [35400000, 0.14],
-        [39100000, 0.15], [43850000, 0.16], [47800000, 0.17], [51400000, 0.18],
-        [56300000, 0.19], [62200000, 0.20], [68600000, 0.21], [77500000, 0.22],
-        [89000000, 0.23], [103000000, 0.24], [125000000, 0.25], [157000000, 0.26],
-        [206000000, 0.27], [337000000, 0.28], [454000000, 0.29], [550000000, 0.30],
-        [695000000, 0.31], [910000000, 0.32], [1400000000, 0.33], [Infinity, 0.34]
+        [8850000, 0.01], [9800000, 0.0125], [10950000, 0.015], [11200000, 0.0175],
+        [12050000, 0.02], [12950000, 0.03], [14150000, 0.04], [15550000, 0.05],
+        [17050000, 0.06], [19500000, 0.07], [22700000, 0.08], [26600000, 0.09],
+        [28100000, 0.10], [30100000, 0.11], [32600000, 0.12], [35400000, 0.13],
+        [38900000, 0.14], [43000000, 0.15], [47400000, 0.16], [51200000, 0.17],
+        [55800000, 0.18], [60400000, 0.19], [66700000, 0.20], [74500000, 0.21],
+        [83200000, 0.22], [95600000, 0.23], [110000000, 0.24], [134000000, 0.25],
+        [169000000, 0.26], [221000000, 0.27], [390000000, 0.28], [463000000, 0.29],
+        [561000000, 0.30], [709000000, 0.31], [965000000, 0.32], [1419000000, 0.33], [Infinity, 0.34]
       ]
     };
 
@@ -711,12 +714,26 @@
       [Infinity, 0.35]
     ];
 
-    const BPJS = { kesRate: 0.01, kesCap: 12000000, jhtRate: 0.02, jpRate: 0.01, jpCap: 10547400 };
+    // JP cap Rp11.086.300/bulan sejak Maret 2026 (SE BPJS B/1226/022026).
+    const BPJS = { kesRate: 0.01, kesCap: 12000000, jhtRate: 0.02, jpRate: 0.01, jpCap: 11086300 };
     const BIYA_JABATAN = { rate: 0.05, cap: 6000000 };
     const PPN_RATE = 0.11;
     const PB1_RATE = 0.10;
     const SECONDARY_DEFAULT = 5000000;
     const GOLD_PRICE = 2150000;
+
+    // Kategori TER ditentukan oleh status PTKP (PP 58/2023).
+    const TER_CATEGORY_BY_PTKP = {
+      54000000: "A",
+      58500000: "A",
+      63000000: "B",
+      67500000: "B",
+      72000000: "C"
+    };
+
+    function terCategoryForPtkp(ptkp) {
+      return TER_CATEGORY_BY_PTKP[ptkp] || "A";
+    }
 
     // Katalog ilustrasi daya beli (harga indikatif 2026, dalam Rupiah).
     const GOODS = [
@@ -814,7 +831,6 @@
     const COLORS = {
       bpjs: "#3b82f6",
       pph: "#ef4444",
-      kurang: "#f59e0b",
       ppn: "#a855f7",
       pb1: "#10b981"
     };
@@ -898,6 +914,14 @@
         if (monthlyGross <= table[i][0]) return table[i][1];
       }
       return 0.34;
+    }
+
+    function syncTerCategory() {
+      const select = byId("terCategory");
+      const ptkpSelect = byId("ptkpStatus");
+      if (!select || !ptkpSelect) return;
+      const ptkp = readNumber(ptkpSelect.value) || 54000000;
+      select.value = terCategoryForPtkp(ptkp);
     }
 
     function progressiveTax(pkp) {
@@ -1055,10 +1079,10 @@
       chart = new Chart(canvas.getContext("2d"), {
         type: "doughnut",
         data: {
-          labels: ["BPJS", "PPh 21", "Kurang Bayar", "PPN 11%", "PB1 10%"],
+          labels: ["BPJS", "PPh 21", "PPN 11%", "PB1 10%"],
           datasets: [{
-            data: [0, 0, 0, 0, 0],
-            backgroundColor: [COLORS.bpjs, COLORS.pph, COLORS.kurang, COLORS.ppn, COLORS.pb1],
+            data: [0, 0, 0, 0],
+            backgroundColor: [COLORS.bpjs, COLORS.pph, COLORS.ppn, COLORS.pb1],
             borderColor: "#020617",
             borderWidth: 3,
             hoverOffset: 5
@@ -1157,7 +1181,12 @@
       });
 
       // ---- Rekonsiliasi tahunan
-      const biayaJabatan = Math.min(totalGross * BIYA_JABATAN.rate, BIYA_JABATAN.cap);
+      // Biaya jabatan dihitung per pemberi kerja (bukan digabung), sesuai
+      // ketentuan: 5% dari bruto, maks Rp6 juta/tahun per pemberi kerja.
+      const job1BiayaJabatan = Math.min(job1Gross * 12 * BIYA_JABATAN.rate, BIYA_JABATAN.cap);
+      const biayaJabatan = secondaries.reduce(function (sum, job) {
+        return sum + job.biayaJabatan;
+      }, job1BiayaJabatan);
       const bpjsDeductible = (job1.jht + job1.jp) * 12;
       const pkpRaw = totalGross - biayaJabatan - bpjsDeductible - ptkp;
       const pkp = Math.floor(Math.max(0, pkpRaw) / 1000) * 1000;
@@ -1168,11 +1197,12 @@
       const withheldYear = withheldMonthly * 11;
       const delta = trueTax - withheldYear;
 
-      // Satu pemberi kerja: rekonsiliasi Desember diselesaikan pemberi kerja,
-      // sehingga tidak ada tambahan kurang bayar bagi karyawan.
+      // PPh 21 tahunan yang benar adalah trueTax. Selisih terhadap potongan
+      // Jan–Nov adalah rekonsiliasi Desember: kurang bayar ditambahkan, lebih
+      // bayar dikembalikan. Keduanya bukan komponen pajak tambahan.
       const kurangBayar = isSingle ? 0 : Math.max(0, delta);
       const lebihBayar = isSingle ? 0 : Math.max(0, -delta);
-      const pphAnnual = isSingle ? trueTax : withheldYear + kurangBayar;
+      const pphAnnual = trueTax;
 
       const bpjsYear = (job1.kes + job1.jht + job1.jp) * 12;
       const consumption = readNumber(byId("monthlyConsumption").value);
@@ -1192,11 +1222,13 @@
         "% dari gaji bersih " + formatIDR(totalNet)
       );
       setText("summaryBPJS", formatIDR(bpjsYear));
-      setText("summaryPPh21", formatIDR(isSingle ? trueTax : withheldYear));
-      setText("summaryPPh21Label", isSingle ? "PPh 21 Tahunan (pemberi kerja)" : "PPh 21 Dipotong (Jan–Nov)");
+      setText("summaryPPh21", formatIDR(trueTax));
+      setText("summaryPPh21Label", isSingle ? "PPh 21 Tahunan (pemberi kerja)" : "PPh 21 Tahunan");
       setText("summaryKurangBayar", formatIDR(kurangBayar));
       const kurangRow = byId("kurangRow");
       if (kurangRow) kurangRow.classList.toggle("hidden", kurangBayar <= 0);
+      const kurangNote = byId("kurangNote");
+      if (kurangNote) kurangNote.classList.toggle("hidden", kurangBayar <= 0);
       setText("summaryPPN", formatIDR(ppn));
       setText("summaryPB1", formatIDR(pb1));
       setText("ppnMonthlyHint", formatIDR(consumption * PPN_RATE));
@@ -1214,7 +1246,7 @@
           refundNote.textContent = "Rekonsiliasi Desember diselesaikan pemberi kerja.";
           refundNote.classList.remove("hidden");
         } else if (lebihBayar > 0) {
-          refundNote.textContent = "Estimasi lebih bayar " + formatIDR(lebihBayar) + " — berpotensi dikembalikan saat rekonsiliasi.";
+          refundNote.textContent = "Estimasi lebih bayar " + formatIDR(lebihBayar) + " — sudah diperhitungkan dalam PPh 21 tahunan dan berpotensi dikembalikan saat rekonsiliasi.";
           refundNote.classList.remove("hidden");
         } else {
           refundNote.classList.add("hidden");
@@ -1224,8 +1256,7 @@
       // ---- Data untuk chart & poster
       const items = [
         { label: "BPJS", full: "BPJS Kesehatan, JHT & JP", value: bpjsYear, color: COLORS.bpjs },
-        { label: "PPh 21", full: isSingle ? "PPh 21 Tahunan" : "PPh 21 (Jan–Nov)", value: isSingle ? trueTax : withheldYear, color: COLORS.pph },
-        { label: "Kurang Bayar", full: "Kurang Bayar (Desember)", value: kurangBayar, color: COLORS.kurang },
+        { label: "PPh 21", full: "PPh 21 Tahunan", value: trueTax, color: COLORS.pph },
         { label: "PPN 11%", full: "PPN 11%", value: ppn, color: COLORS.ppn },
         { label: "PB1 10%", full: "PB1 10%", value: pb1, color: COLORS.pb1 }
       ];
@@ -1832,8 +1863,10 @@
     /*  Binding event                                                     */
     /* ------------------------------------------------------------------ */
     function bindEvents() {
-      byId("ptkpStatus").addEventListener("change", calculate);
-      byId("terCategory").addEventListener("change", calculate);
+      byId("ptkpStatus").addEventListener("change", function () {
+        syncTerCategory();
+        calculate();
+      });
       byId("job1Salary").addEventListener("input", calculate);
       byId("monthlyConsumption").addEventListener("input", calculate);
       byId("monthlyDining").addEventListener("input", calculate);
@@ -1921,7 +1954,15 @@
     /* ------------------------------------------------------------------ */
     /*  Init                                                              */
     /* ------------------------------------------------------------------ */
+    function setBuildId() {
+      const meta = document.querySelector('meta[name="build-id"]');
+      const raw = meta ? meta.getAttribute("content") : "";
+      setText("buildId", raw && raw !== "__BUILD_ID__" ? raw : "dev");
+    }
+
     function init() {
+      setBuildId();
+      syncTerCategory();
       bindEvents();
       renderJobs();
       initChart();

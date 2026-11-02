@@ -19,6 +19,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Inject build ID
+        run: |
+          BUILD_ID="$(date -u +%Y.%m.%d)-${GITHUB_SHA::7}"
+          sed -i "s|name=\"build-id\" content=\"__BUILD_ID__\"|name=\"build-id\" content=\"${BUILD_ID}\"|" index.html
+
       - name: Publish site to gh-pages
         run: |
           git config user.name "github-actions[bot]"
