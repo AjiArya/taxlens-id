@@ -15,7 +15,7 @@ Personal statutory & tax flow tracker untuk Indonesia. Menghitung PPh 21, BPJS, 
 - **Visualisasi aliran gaji** — Sankey dan Donut memakai data yang sama: **Gaji Bruto** → PPh 21, BPJS Kesehatan, BPJSTK (JHT + JP), PPN 11%, PB1 10%, dan **Dompet Kamu** (sisa setelah pajak & iuran). Sankey jadi tampilan utama; Donut opsi sekunder.
 - **Belanja Pajak** — elektronik (harga iBox), bahan pokok (e-commerce), pemerintah (MBG & UMP DKI 2026), olahraga, gaming, liburan per hari, ibadah, keluarga, emas, dan lifestyle.
 - **Download JPG 1080 × 1350 (4:5)** — poster berisi total kontribusi, grafik sesuai pilihan (Sankey atau Donut), barang setara, dan branding **#SadarDipalak** dengan tiga warna solid: hijau `#1b8a3e`, biru `#123c8a`, merah `#dc2626`; pas untuk Threads, Instagram, dan foto TikTok. Dibuat sepenuhnya di browser dengan Canvas API.
-- **Bantu posting** — tombol Threads/Instagram/TikTok memakai Web Share API di HP; di desktop gambar diunduh lalu halaman platform dibuka. Download JPG tetap tersedia.
+- **Bantu posting** — tombol bagikan memakai Web Share API di HP; di desktop gambar disalin ke clipboard atau diunduh. Tersedia juga Salin Gambar, Simpan Foto, dan tombol Threads/Instagram/TikTok.
 - **Privasi** — tanpa backend, tanpa cookie, tanpa localStorage. Tidak ada data yang dikirim atau disimpan.
 - **Build ID** — footer menampilkan build ID dari commit deploy (tanggal + SHA pendek) untuk memudahkan verifikasi versi yang sedang dilihat.
 

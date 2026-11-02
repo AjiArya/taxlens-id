@@ -705,15 +705,23 @@
               TikTok
             </button>
           </div>
-          <p class="mt-2 text-[9px] leading-relaxed text-slate-500">Di HP tombol ini membuka share sheet; pilih aplikasinya. Di desktop, gambar diunduh lalu halaman platform dibuka.</p>
+          <p class="mt-2 text-[9px] leading-relaxed text-slate-500">Di HP, tombol bagikan membuka share sheet; di desktop, gambar disalin ke clipboard atau diunduh.</p>
         </div>
-        <div class="flex flex-col gap-2 border-t border-slate-800 p-4 sm:flex-row">
+        <div class="grid grid-cols-2 gap-2 border-t border-slate-800 p-4">
+          <button type="button" id="shareImageBtn"
+            class="col-span-2 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:from-red-500 hover:to-rose-500 focus:outline-none focus:ring-4 focus:ring-red-500/20">
+            Bagikan / Simpan Foto
+          </button>
+          <button type="button" id="copyImageBtn"
+            class="rounded-xl border border-slate-700 bg-slate-800/60 px-3 py-2.5 text-sm font-semibold text-slate-200 transition hover:bg-slate-800 hover:text-white focus:outline-none focus:ring-2 focus:ring-slate-500/40">
+            Salin Gambar
+          </button>
           <button type="button" id="downloadJpgBtn"
-            class="flex-1 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:from-red-500 hover:to-rose-500 focus:outline-none focus:ring-4 focus:ring-red-500/20">
-            Download JPG
+            class="rounded-xl border border-slate-700 bg-slate-800/60 px-3 py-2.5 text-sm font-semibold text-slate-200 transition hover:bg-slate-800 hover:text-white focus:outline-none focus:ring-2 focus:ring-slate-500/40">
+            Simpan Foto
           </button>
           <button type="button" data-close-share
-            class="rounded-xl border border-slate-700 bg-slate-800/60 px-4 py-2.5 text-sm font-semibold text-slate-300 transition hover:bg-slate-800 hover:text-white">
+            class="col-span-2 rounded-xl border border-slate-700 bg-slate-900/60 px-4 py-2.5 text-sm font-semibold text-slate-400 transition hover:bg-slate-800 hover:text-white">
             Tutup
           </button>
         </div>
@@ -2201,6 +2209,10 @@
       ctx.fillStyle = "#475569";
       ctx.fillText("Estimasi, bukan bukti potong resmi · UU HPP 7/2021 · PP 58/2023 · PMK 168/2023 · UU HKPD", PAD, 1284);
 
+      ctx.font = "600 10px " + FONT_STACK;
+      ctx.fillStyle = "#94a3b8";
+      ctx.fillText("Catatan: bukan ajakan untuk tidak membayar pajak. Pajak tetap wajib dibayar sesuai ketentuan.", PAD, 1306);
+
       return canvas.toDataURL("image/jpeg", 0.95);
     }
 
@@ -2221,6 +2233,83 @@
       const bytes = new Uint8Array(binary.length);
       for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
       return new File([bytes], filename, { type: mime });
+    }
+
+    async function dataUrlToPngBlob(dataUrl) {
+      const response = await fetch(dataUrl);
+      const blob = await response.blob();
+      return new Promise(function (resolve, reject) {
+        const img = new Image();
+        const url = URL.createObjectURL(blob);
+        img.onload = function () {
+          const canvas = document.createElement("canvas");
+          canvas.width = img.naturalWidth || 1080;
+          canvas.height = img.naturalHeight || 1350;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0);
+          URL.revokeObjectURL(url);
+          canvas.toBlob(function (pngBlob) {
+            if (pngBlob) resolve(pngBlob);
+            else reject(new Error("Gagal membuat PNG"));
+          }, "image/png");
+        };
+        img.onerror = function () {
+          URL.revokeObjectURL(url);
+          reject(new Error("Gagal memuat gambar"));
+        };
+        img.src = url;
+      });
+    }
+
+    async function copyPosterToClipboard() {
+      if (!shareDataUrl) return false;
+      if (!navigator.clipboard || typeof ClipboardItem === "undefined") {
+        showToast("Browser belum mendukung salin gambar.");
+        return false;
+      }
+      try {
+        const pngBlob = await dataUrlToPngBlob(shareDataUrl);
+        await navigator.clipboard.write([new ClipboardItem({ "image/png": pngBlob })]);
+        showToast("Gambar disalin ke clipboard.");
+        return true;
+      } catch (error) {
+        console.error(error);
+        showToast("Gagal menyalin gambar.");
+        return false;
+      }
+    }
+
+    async function sharePosterImage() {
+      if (!shareDataUrl || !lastResult) return;
+
+      const filename = "TaxLens-Kontribusi-Pajak-2026.jpg";
+      const file = dataUrlToFile(shareDataUrl, filename);
+      const caption = "Kontribusi pajak gue tahun ini " + formatIDR(lastResult.total) +
+        ". Cek punya lu: https://ajiarya.github.io/taxlens-id/ #SadarDipalak";
+      const shareData = {
+        files: [file],
+        text: caption,
+        title: "Kontribusi Pajak Gue — #SadarDipalak"
+      };
+
+      let canNativeShare = false;
+      try {
+        canNativeShare = !!(navigator.share && navigator.canShare && navigator.canShare({ files: [file] }));
+      } catch (error) {
+        canNativeShare = false;
+      }
+
+      if (canNativeShare) {
+        try {
+          await navigator.share(shareData);
+          return;
+        } catch (error) {
+          if (error && error.name === "AbortError") return;
+        }
+      }
+
+      const copied = await copyPosterToClipboard();
+      if (!copied) downloadJpg();
     }
 
     async function sharePoster(platform) {
@@ -2367,6 +2456,10 @@
         }
       });
 
+      byId("shareImageBtn").addEventListener("click", sharePosterImage);
+      byId("copyImageBtn").addEventListener("click", function () {
+        copyPosterToClipboard();
+      });
       byId("downloadJpgBtn").addEventListener("click", downloadJpg);
 
       document.querySelectorAll("[data-share]").forEach(function (button) {
