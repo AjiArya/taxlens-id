@@ -119,9 +119,6 @@
     .sankey-seg.is-hovered .sankey-label-name { font-size: 13px; fill: #ffffff; }
     .sankey-seg.is-hovered .sankey-label-value { font-size: 10.5px; fill: #f8fafc; }
 
-    input[type="number"]::-webkit-outer-spin-button,
-    input[type="number"]::-webkit-inner-spin-button { opacity: .25; }
-
     @media print {
       header, #privacyBanner, #downloadShareBtn, #goodsFilters { display: none !important; }
       body { background: #fff; color: #0f172a; }
@@ -273,7 +270,7 @@
               <label for="job1Salary" class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-400">Gaji Bersih Bulanan (take-home)</label>
               <div class="relative">
                 <span class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[11px] font-semibold text-slate-500">Rp</span>
-                <input id="job1Salary" type="number" min="0" step="500000" value="15000000" inputmode="numeric"
+                <input id="job1Salary" type="text" inputmode="numeric" autocomplete="off" value="15.000.000"
                   class="w-full rounded-xl border border-slate-800 bg-slate-950/80 py-3 pl-10 pr-4 font-mono text-sm tabular text-slate-100 outline-none transition focus:border-blue-500/60 focus:ring-4 focus:ring-blue-500/10">
               </div>
               <p class="mt-1.5 text-[10px] text-slate-500">Masukkan take-home bulanan. Bruto dihitung dengan gross-up tahunan (BPJS + PPh terutang).</p>
@@ -375,7 +372,7 @@
               <label for="monthlyConsumption" class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-400">Belanja Retail &amp; Digital / Bulan</label>
               <div class="relative">
                 <span class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[11px] font-semibold text-slate-500">Rp</span>
-                <input id="monthlyConsumption" type="number" min="0" step="500000" value="4000000" inputmode="numeric"
+                <input id="monthlyConsumption" type="text" inputmode="numeric" autocomplete="off" value="4.000.000"
                   class="w-full rounded-xl border border-slate-800 bg-slate-950/80 py-3 pl-10 pr-4 font-mono text-sm tabular text-slate-100 outline-none transition focus:border-purple-500/60 focus:ring-4 focus:ring-purple-500/10">
               </div>
               <p class="mt-2 text-[11px] text-slate-500">PPN 11% ≈ <span id="ppnMonthlyHint" class="font-mono font-semibold text-purple-300">Rp 0</span> / bulan</p>
@@ -384,7 +381,7 @@
               <label for="monthlyDining" class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-400">Makan Resto / Cafe / Bulan</label>
               <div class="relative">
                 <span class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[11px] font-semibold text-slate-500">Rp</span>
-                <input id="monthlyDining" type="number" min="0" step="250000" value="1500000" inputmode="numeric"
+                <input id="monthlyDining" type="text" inputmode="numeric" autocomplete="off" value="1.500.000"
                   class="w-full rounded-xl border border-slate-800 bg-slate-950/80 py-3 pl-10 pr-4 font-mono text-sm tabular text-slate-100 outline-none transition focus:border-emerald-500/60 focus:ring-4 focus:ring-emerald-500/10">
               </div>
               <p class="mt-2 text-[11px] text-slate-500">PB1 10% ≈ <span id="pb1MonthlyHint" class="font-mono font-semibold text-emerald-300">Rp 0</span> / bulan</p>
@@ -971,8 +968,32 @@
       return pct.toLocaleString("id-ID", { maximumFractionDigits: digits });
     }
 
+    function formatNumberInputValue(value) {
+      const digits = String(value == null ? "" : value).replace(/\D/g, "");
+      if (!digits) return "";
+      return Number(digits).toLocaleString("id-ID");
+    }
+
+    function formatNumberInput(input) {
+      const raw = input.value;
+      const caret = typeof input.selectionStart === "number" ? input.selectionStart : raw.length;
+      const digitsBefore = raw.slice(0, caret).replace(/\D/g, "").length;
+      const formatted = formatNumberInputValue(raw);
+      input.value = formatted;
+      if (document.activeElement === input) {
+        let pos = 0;
+        let seen = 0;
+        while (pos < formatted.length && seen < digitsBefore) {
+          if (/\d/.test(formatted[pos])) seen += 1;
+          pos += 1;
+        }
+        input.setSelectionRange(pos, pos);
+      }
+    }
+
     function readNumber(value) {
-      const n = parseFloat(value);
+      const digits = String(value == null ? "" : value).replace(/\D/g, "");
+      const n = digits ? Number(digits) : 0;
       return Number.isFinite(n) && n > 0 ? n : 0;
     }
 
@@ -1080,7 +1101,7 @@
               <label for="job${n}Salary" class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-400">Gaji Bersih Bulanan (take-home)</label>
               <div class="relative">
                 <span class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[11px] font-semibold text-slate-500">Rp</span>
-                <input id="job${n}Salary" data-salary-job="${n}" type="number" min="0" step="500000" value="${salary}" inputmode="numeric"
+                <input id="job${n}Salary" data-salary-job="${n}" type="text" inputmode="numeric" autocomplete="off" value="${formatNumberInputValue(salary)}"
                   class="w-full rounded-xl border border-slate-800 bg-slate-950/80 py-3 pl-10 pr-4 font-mono text-sm tabular text-slate-100 outline-none transition focus:border-amber-500/60 focus:ring-4 focus:ring-amber-500/10">
               </div>
               <p class="mt-1.5 text-[10px] text-slate-500">Bruto dihitung otomatis.</p>
@@ -2385,9 +2406,18 @@
         syncTerCategory();
         calculate();
       });
-      byId("job1Salary").addEventListener("input", calculate);
-      byId("monthlyConsumption").addEventListener("input", calculate);
-      byId("monthlyDining").addEventListener("input", calculate);
+      byId("job1Salary").addEventListener("input", function () {
+        formatNumberInput(this);
+        calculate();
+      });
+      byId("monthlyConsumption").addEventListener("input", function () {
+        formatNumberInput(this);
+        calculate();
+      });
+      byId("monthlyDining").addEventListener("input", function () {
+        formatNumberInput(this);
+        calculate();
+      });
 
       document.querySelectorAll("[data-chart-view]").forEach(function (button) {
         button.addEventListener("click", function () {
@@ -2397,7 +2427,8 @@
 
       document.querySelectorAll("[data-preset]").forEach(function (button) {
         button.addEventListener("click", function () {
-          byId("job1Salary").value = button.getAttribute("data-preset");
+          const input = byId("job1Salary");
+          input.value = formatNumberInputValue(button.getAttribute("data-preset"));
           calculate();
         });
       });
@@ -2408,6 +2439,7 @@
       byId("additionalJobsContainer").addEventListener("input", function (event) {
         const input = event.target.closest("[data-salary-job]");
         if (!input) return;
+        formatNumberInput(input);
         const n = Number(input.getAttribute("data-salary-job"));
         secondarySalaries[n] = readNumber(input.value);
         calculate();
@@ -2492,6 +2524,10 @@
       setBuildId();
       syncTerCategory();
       bindEvents();
+      ["job1Salary", "monthlyConsumption", "monthlyDining"].forEach(function (id) {
+        const input = byId(id);
+        if (input) formatNumberInput(input);
+      });
       renderJobs();
       setChartView("sankey");
       calculate();

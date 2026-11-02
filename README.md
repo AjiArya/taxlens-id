@@ -7,7 +7,7 @@ Personal statutory & tax flow tracker untuk Indonesia. Menghitung PPh 21, BPJS, 
 ## Fitur
 
 - **Profil wajib pajak** — PTKP (TK/0 s.d. K/3) dan kategori TER A/B/C.
-- **Input gaji bersih (take-home)** — bruto dihitung otomatis dengan gross-up tahunan; PPh 21 terutang dan BPJS dihitung dari bruto hasil rekonstruksi.
+- **Input gaji bersih (take-home)** — input memakai pemisah ribuan (contoh: 200.000.000); bruto dihitung otomatis dengan gross-up tahunan; PPh 21 terutang dan BPJS dihitung dari bruto hasil rekonstruksi.
 - **Pekerjaan utama** — BPJS Kesehatan (1%, cap Rp 12 jt), JHT (2%), JP (1%, cap Rp 11.086.300 per Maret 2026), dan PPh 21 TER Jan–Nov.
 - **Pekerjaan tambahan** — hingga 3 sumber penghasilan, PPh 21 progresif tanpa PTKP.
 - **Rekonsiliasi tahunan** — Pasal 17, biaya jabatan 5% (maks Rp 6 jt per pemberi kerja), PTKP sekali. Satu pekerjaan: selisih Desember ditampilkan sebagai info dan diselesaikan pemberi kerja. Multi-pekerjaan: kurang/lebih bayar SPT ditampilkan.
