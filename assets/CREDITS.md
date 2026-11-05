@@ -45,6 +45,7 @@ Foto produk resmi berasal dari situs resmi produsen dan merupakan hak cipta masi
 | NVIDIA DGX | [NVIDIA](https://www.nvidia.com/en-us/data-center/dgx-rubin-nvl8/) | © NVIDIA |
 | Bangunan SPPG | [Badan Gizi Nasional](https://bgn.go.id/) | © Badan Gizi Nasional |
 | Game PS5 | [PlayStation](https://www.playstation.com/) | © Sony Interactive Entertainment |
+| Nasi Padang | [Grab Indonesia](https://assets.grab.com/wp-content/uploads/sites/9/2019/12/19112921/ID-nasi-padang-pedas1-700x700.jpg) | © Grab |
 
 ## Foto lisensi bebas
 
@@ -95,7 +96,6 @@ Foto produk resmi berasal dari situs resmi produsen dan merupakan hak cipta masi
 | Patek Philippe Nautilus | [Patek Philippe Nautilus 5711/1A-010](https://commons.wikimedia.org/wiki/File:Patek-Philippe-Nautilus-5711-1A-010-1.jpg) | Patek Philippe SA | CC BY-SA 4.0 |
 | Audemars Piguet Royal Oak | [Audemars Piguet Royal Oak ref. 15202](https://commons.wikimedia.org/wiki/File:Audemars_Piguet_Royal_Oak_ref._15202.jpg) | OpaleHorse | CC BY-SA 4.0 |
 | Beras | [WhiteRice](https://commons.wikimedia.org/wiki/File:WhiteRice.jpg) | Sanjay Acharya | CC BY-SA 3.0 |
-| Nasi Padang | [Nasi padang](https://commons.wikimedia.org/wiki/File:Nasi_padang.jpg) | ProjectManhattan | CC BY-SA 3.0 |
 | Bangunan Kopdes | [Koperasi Desa Merah Putih Sawahan](https://commons.wikimedia.org/wiki/File:Koperasi_Desa_Merah_Putih_Sawahan,_Juwiring,_Klaten_1_Agustus_2026.jpg) | Dani Safa Adi Nugraha | CC BY-SA 3.0 |
 
 ## Teks lisensi

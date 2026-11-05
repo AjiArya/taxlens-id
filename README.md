@@ -67,7 +67,7 @@ Situs: **https://ajiarya.github.io/taxlens-id/**
 - GTA 6: PlayStation Store (estimasi pre-order).
 - PS5, sewa lapangan, refleksi keluarga: harga pasar/Google.
 - UMR Jakarta: UMP DKI Jakarta 2026 Rp 5.729.876; Bangunan Kopdes Rp 1.600.000.000; Bangunan SPPG Rp 4.500.000.000 (estimasi program).
-- Foto item: foto produk brand dan langganan digital (Apple, Samsung, Garmin, otomotif, PlayStation, Nintendo, Steam, Indomie, Netflix, Claude, ChatGPT, Gemini, Spotify, YouTube) berasal dari situs resmi masing-masing dan merupakan hak cipta pemilik merek; foto lain dari Wikimedia Commons dengan lisensi bebas (CC0, Public Domain, CC BY, CC BY-SA). Semua di-crop/resize untuk kartu. Daftar lengkap sumber, kreator, dan lisensi ada di [assets/CREDITS.md](assets/CREDITS.md).
+- Foto item: foto produk brand dan langganan digital (Apple, Samsung, Garmin, otomotif, PlayStation, Nintendo, Steam, Indomie, Netflix, Claude, ChatGPT, Gemini, Spotify, YouTube) berasal dari situs resmi masing-masing dan merupakan hak cipta pemilik merek; foto nasi padang dari Grab Indonesia; foto lain dari Wikimedia Commons dengan lisensi bebas (CC0, Public Domain, CC BY, CC BY-SA). Semua di-crop/resize untuk kartu. Daftar lengkap sumber, kreator, dan lisensi ada di [assets/CREDITS.md](assets/CREDITS.md).
 - Semua harga bersifat ilustratif dan dapat berubah, bukan penawaran.
 
 > Aplikasi ini adalah alat edukasi dan estimasi, bukan bukti potong resmi, nasihat pajak, atau pengganti perhitungan konsultan/pemberi kerja.
