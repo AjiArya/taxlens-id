@@ -76,6 +76,29 @@
     .goods-filter:hover { color: #e2e8f0; border-color: #334155; transform: translateY(-1px); }
     .goods-filter.is-active { background: #f59e0b; border-color: #f59e0b; color: #1c1917; }
 
+    #chartPanel.chart-panel-is-fullscreen {
+      display: flex;
+      flex-direction: column;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      margin: 0;
+      padding: 1.25rem;
+      border: 0;
+      background: #020617;
+    }
+    #chartPanel.chart-panel-faux-fullscreen {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+    }
+    aside.chart-panel-host-fallback { z-index: 200; }
+    #chartPanel.chart-panel-is-fullscreen #chartStage {
+      flex: 1 1 auto;
+      height: auto;
+      min-height: 0;
+    }
+
     .rekon-row { border: 1px solid rgba(148, 163, 184, .14); background: rgba(148, 163, 184, .04); }
     .rekon-label, .rekon-value { color: #94a3b8; }
     .rekon-row.is-info { border-color: rgba(16, 185, 129, .18); background: rgba(16, 185, 129, .06); }
@@ -218,7 +241,7 @@
             </span>
             1. Profil Wajib Pajak
           </h2>
-          <p class="mt-1 text-xs text-slate-500">PTKP dipakai sekali di rekonsiliasi tahunan; TER dipakai untuk potongan Jan–Nov.</p>
+          <p class="mt-1 text-xs text-slate-500">PTKP dipakai sekali; bruto dihitung dengan gross-up PPh 21. TER kategori A/B/C ditampilkan sebagai referensi potongan Jan–Nov.</p>
 
           <div class="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
@@ -267,13 +290,13 @@
 
           <div class="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
-              <label for="job1Salary" class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-400">Gaji Bersih Bulanan (take-home)</label>
+              <label for="job1Salary" class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-400">THP Bulanan setelah PPh 21 (sebelum BPJS)</label>
               <div class="relative">
                 <span class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[11px] font-semibold text-slate-500">Rp</span>
                 <input id="job1Salary" type="text" inputmode="numeric" autocomplete="off" value="15.000.000"
                   class="w-full rounded-xl border border-slate-800 bg-slate-950/80 py-3 pl-10 pr-4 font-mono text-sm tabular text-slate-100 outline-none transition focus:border-blue-500/60 focus:ring-4 focus:ring-blue-500/10">
               </div>
-              <p class="mt-1.5 text-[10px] text-slate-500">Masukkan take-home bulanan. Bruto dihitung dengan gross-up tahunan (BPJS + PPh terutang).</p>
+              <p class="mt-1.5 text-[10px] text-slate-500">Masukkan THP bulanan setelah PPh 21. Bruto dihitung dengan gross-up PPh 21; BPJS dihitung terpisah dari bruto.</p>
               <div class="mt-2 flex flex-wrap gap-1.5">
                 <button type="button" data-preset="10000000" class="rounded-md border border-slate-800 bg-slate-950/60 px-2 py-1 text-[10px] font-semibold text-slate-500 transition hover:border-slate-700 hover:text-slate-300">10 jt</button>
                 <button type="button" data-preset="15000000" class="rounded-md border border-slate-800 bg-slate-950/60 px-2 py-1 text-[10px] font-semibold text-slate-500 transition hover:border-slate-700 hover:text-slate-300">15 jt</button>
@@ -286,7 +309,7 @@
             <div class="flex flex-col justify-center rounded-xl border border-slate-800 bg-slate-950/60 p-4">
               <div class="flex items-center justify-between gap-2">
                 <span class="text-[11px] text-slate-400">Potongan wajib / bulan</span>
-                <span id="j1TerBadge" class="rounded-full bg-slate-800/80 px-2 py-0.5 font-mono text-[10px] font-semibold text-blue-300">TER A · 6%</span>
+                <span id="j1TerBadge" class="rounded-full bg-slate-800/80 px-2 py-0.5 font-mono text-[10px] font-semibold text-blue-300">TER A · 6% (Jan–Nov)</span>
               </div>
               <div id="job1DeductionsSummary" class="mt-1 font-mono text-lg font-extrabold tabular text-red-400">Rp 0 / bln</div>
               <div class="mt-1 text-[10px] text-slate-500">BPJS + PPh 21 (estimasi)</div>
@@ -322,14 +345,14 @@
             <div class="rounded-lg border border-slate-800 bg-slate-950/50 px-3 py-2">
               <div class="flex items-center justify-between gap-1">
                 <span class="text-[9px] font-bold uppercase tracking-wider text-slate-500">PPh 21</span>
-                <span class="text-[9px] text-slate-600">TER</span>
+                <span class="text-[9px] text-slate-600">rata-rata</span>
               </div>
               <div id="j1Pph" class="mt-0.5 font-mono text-xs font-semibold tabular text-slate-200">Rp 0</div>
             </div>
           </div>
 
           <div class="mt-3 flex items-center justify-between gap-3 rounded-xl border border-slate-800 bg-slate-950/40 px-4 py-2.5">
-            <span class="text-[11px] text-slate-400">Take-home (input) / bulan</span>
+            <span class="text-[11px] text-slate-400">THP setelah PPh (sebelum BPJS) / bulan</span>
             <span id="j1TakeHome" class="font-mono text-sm font-bold tabular text-emerald-400">Rp 0</span>
           </div>
         </div>
@@ -466,18 +489,29 @@
             </div>
 
             <!-- Chart -->
-            <div class="mt-5 border-t border-slate-800 pt-4">
+            <div id="chartPanel" class="mt-5 border-t border-slate-800 pt-4">
               <div class="flex items-start justify-between gap-3">
                 <div>
                   <h3 class="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">Aliran Gaji</h3>
                   <p class="mt-0.5 text-[10px] text-slate-600">Tahunan · bruto → dompet</p>
                 </div>
-                <div class="inline-flex shrink-0 rounded-lg border border-slate-800 bg-slate-950/60 p-0.5" role="group" aria-label="Pilih jenis grafik">
-                  <button type="button" class="chart-tab is-active" data-chart-view="sankey" aria-pressed="true">Sankey</button>
-                  <button type="button" class="chart-tab" data-chart-view="donut" aria-pressed="false">Donut</button>
+                <div class="flex shrink-0 items-center gap-1.5">
+                  <div class="inline-flex rounded-lg border border-slate-800 bg-slate-950/60 p-0.5" role="group" aria-label="Pilih jenis grafik">
+                    <button type="button" class="chart-tab is-active" data-chart-view="sankey" aria-pressed="true">Sankey</button>
+                    <button type="button" class="chart-tab" data-chart-view="donut" aria-pressed="false">Donut</button>
+                  </div>
+                  <button type="button" id="chartFullscreenBtn" title="Layar penuh" aria-label="Tampilkan grafik dalam layar penuh" aria-pressed="false"
+                    class="grid h-[26px] w-[26px] shrink-0 place-items-center rounded-lg border border-slate-800 bg-slate-950/60 text-slate-400 transition hover:border-slate-700 hover:bg-slate-800/80 hover:text-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40">
+                    <svg id="chartFullscreenIcon" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>
+                    </svg>
+                    <svg id="chartExitFullscreenIcon" class="hidden h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/>
+                    </svg>
+                  </button>
                 </div>
               </div>
-              <div class="relative mt-2 h-[330px]">
+              <div id="chartStage" class="relative mt-2 h-[330px]">
                 <div id="sankeyChart" class="sankey-chart h-full w-full" aria-label="Diagram Sankey aliran dana dari gaji bruto ke pajak, iuran, dan dompet kamu" role="img"></div>
                 <div id="donutChartWrap" class="hidden h-full w-full">
                   <canvas id="outflowChart" aria-label="Grafik donat komposisi pajak dan iuran wajib tahunan" role="img"></canvas>
@@ -564,10 +598,23 @@
 
         <!-- Goods grid -->
         <div class="lg:col-span-3">
+          <div class="mb-2.5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div class="relative w-full sm:max-w-xs">
+              <svg class="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <input id="goodsSearch" type="text" inputmode="search" aria-label="Cari barang atau kategori" placeholder="Cari barang atau kategori..." autocomplete="off"
+                class="w-full rounded-xl border border-slate-800 bg-slate-950/60 py-2 pl-9 pr-9 text-xs text-slate-200 outline-none transition placeholder:text-slate-600 focus:border-amber-500/50 focus:ring-2 focus:ring-amber-500/10">
+              <button type="button" id="goodsSearchClear" aria-label="Hapus pencarian" style="display:none"
+                class="absolute right-2 top-1/2 h-5 w-5 -translate-y-1/2 place-items-center rounded-md text-slate-500 transition hover:bg-slate-800 hover:text-slate-200">
+                <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+              </button>
+            </div>
+            <p id="goodsCount" class="text-[10px] font-semibold uppercase tracking-wider text-slate-500">0 item</p>
+          </div>
           <div id="goodsFilters" class="mb-2.5 flex flex-wrap gap-1.5">
             <button type="button" class="goods-filter is-active" data-filter="Semua">Semua</button>
             <button type="button" class="goods-filter" data-filter="Elektronik">Elektronik</button>
             <button type="button" class="goods-filter" data-filter="Bahan Pokok">Bahan Pokok</button>
+            <button type="button" class="goods-filter" data-filter="Transportasi">Transportasi</button>
             <button type="button" class="goods-filter" data-filter="Pemerintah">Pemerintah</button>
             <button type="button" class="goods-filter" data-filter="Olahraga">Olahraga</button>
             <button type="button" class="goods-filter" data-filter="Gaming">Gaming</button>
@@ -576,21 +623,113 @@
             <button type="button" class="goods-filter" data-filter="Keluarga">Keluarga</button>
             <button type="button" class="goods-filter" data-filter="Emas">Emas</button>
             <button type="button" class="goods-filter" data-filter="Lifestyle">Lifestyle</button>
+            <button type="button" class="goods-filter" data-filter="Hiburan">Hiburan</button>
+            <button type="button" class="goods-filter" data-filter="Produktifitas">Produktifitas</button>
+            <button type="button" class="goods-filter" data-filter="Luxury">Luxury</button>
+            <button type="button" class="goods-filter" data-filter="Wearable">Wearable</button>
           </div>
-          <div id="goodsGrid" class="grid grid-cols-3 gap-1.5 sm:gap-2 lg:grid-cols-5"></div>
+          <div id="goodsGrid" class="grid grid-cols-3 gap-1.5 sm:gap-2 lg:grid-cols-4"></div>
           <p class="mt-3 text-[10px] leading-relaxed text-slate-500">
             Setiap item dihitung terpisah dari total outflow — bukan akumulasi semuanya sekaligus.
-            Harga Apple: iBox; bahan pokok: e-commerce; GTA 6: PlayStation Store; olahraga &amp; PS5: harga pasar/Google; UMR: UMP DKI 2026. Harga dapat berubah.
+            Harga Apple: iBox; Samsung: Samsung Indonesia; Garmin: Eraspace/Urban Republic; otomotif: AHM/Auto2000/OTR 2026; travel: estimasi paket; sepatu &amp; gadget lain: harga pasar; RTX: harga pasar + foto FE NVIDIA; bahan pokok: e-commerce; Pertamax: Pertamina; Dufan: Ancol; GTA 6: PlayStation Store; UMR: UMP DKI 2026. Harga dapat berubah.
           </p>
           <details class="mt-2 rounded-lg border border-slate-800 bg-slate-950/30 px-3 py-2">
             <summary class="cursor-pointer text-[10px] font-semibold text-slate-500 hover:text-slate-300">Sumber &amp; kredit foto</summary>
-            <p class="mt-2 text-[10px] leading-relaxed text-slate-500">
-              Foto produk Apple: iBox/Eraspace. Foto pendukung dari Wikimedia Commons:
-              PS5 © Soberian/Osh33m (CC BY-SA 4.0), Bali © Jakub Hałun (CC BY-SA 4.0),
-              MBG/ompreng © Fitrah 9131 (CC0), Fuji © Romain Guy (CC0),
-              emas © Stevebidmead (CC0), beras &amp; gula dari Wikimedia Commons.
-              Harga dan ketersediaan dapat berubah; visualisasi ini bukan penawaran.
-            </p>
+            <div class="mt-2 text-[10px] leading-relaxed text-slate-500">
+              <p>Foto katalog: sebagian dari <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener noreferrer" class="font-semibold text-slate-400 underline decoration-slate-600 underline-offset-2 hover:text-slate-200">Wikimedia Commons</a> dengan lisensi bebas. Beberapa foto produk brand dan langganan digital berasal dari situs resmi dan <span class="font-semibold text-slate-300">© pemilik merek masing-masing</span>, digunakan untuk identifikasi produk. Foto di-crop/resize; foto bersifat ilustratif.</p>
+              <ul class="mt-2 max-h-80 space-y-1 overflow-y-auto pr-1">
+                <li class="font-semibold text-slate-400">Foto produk resmi</li>
+                <li>iPhone 18 Pro Max — <a href="https://www.apple.com/id/iphone-18-pro/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Apple Indonesia</a> · © Apple</li>
+                <li>MacBook Pro M6 — <a href="https://www.apple.com/id/macbook-pro/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Apple Indonesia</a> · © Apple</li>
+                <li>iPad Pro M5 — <a href="https://www.apple.com/id/ipad-pro/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Apple Indonesia</a> · © Apple</li>
+                <li>Mac mini M6 — <a href="https://www.apple.com/id/mac-mini/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Apple Indonesia</a> · © Apple</li>
+                <li>iPhone Duo — <a href="https://www.apple.com/id/iphone-duo/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Apple Indonesia</a> · © Apple</li>
+                <li>Samsung Galaxy Z Fold8 — <a href="https://www.samsung.com/id/smartphones/galaxy-z-fold8/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Samsung Indonesia</a> · © Samsung</li>
+                <li>Samsung Galaxy S26 / S26+ — <a href="https://www.samsung.com/id/smartphones/galaxy-s26/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Samsung Indonesia</a> · © Samsung</li>
+                <li>Samsung Galaxy S26 Ultra — <a href="https://www.samsung.com/id/smartphones/galaxy-s26-ultra/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Samsung Indonesia</a> · © Samsung</li>
+                <li>Garmin Forerunner 70 — <a href="https://www.garmin.co.id/products/wearables/forerunner-70-whitestone/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Garmin Indonesia</a> · © Garmin</li>
+                <li>Garmin Instinct 3 Solar — <a href="https://www.garmin.co.id/products/wearables/instinct-3-solar-45-sunburst/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Garmin Indonesia</a> · © Garmin</li>
+                <li>Garmin Venu 4 — <a href="https://www.garmin.co.id/products/wearables/venu-4-41-bone/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Garmin Indonesia</a> · © Garmin</li>
+                <li>Garmin Venu X1 — <a href="https://www.garmin.co.id/products/wearables/venu-x1-gray/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Garmin Indonesia</a> · © Garmin</li>
+                <li>Garmin Fenix 8 — <a href="https://www.garmin.co.id/products/wearables/fenix-8-51-solar-gray/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Garmin Indonesia</a> · © Garmin</li>
+                <li>Honda BeAT — <a href="https://www.astra-honda.com/product/beat" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Astra Honda Motor</a> · © Honda/AHM</li>
+                <li>Toyota Calya — <a href="https://www.toyota.astra.co.id/product/calya" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Toyota Astra</a> · © Toyota</li>
+                <li>Daihatsu Sigra — <a href="https://daihatsu.co.id/product/sigra/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Daihatsu Indonesia</a> · © Daihatsu</li>
+                <li>Honda Brio — <a href="https://www.honda-indonesia.com/Brio" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Honda Indonesia</a> · © Honda</li>
+                <li>PlayStation 5 — <a href="https://www.playstation.com/en-id/ps5/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">PlayStation</a> · © Sony Interactive Entertainment</li>
+                <li>Indomie — <a href="https://www.indomie.com/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Indomie</a> · © Indofood</li>
+                <li>GTA 6 — <a href="https://www.rockstargames.com/VI" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Rockstar Games</a> · © Rockstar Games</li>
+                <li>Netflix — <a href="https://www.netflix.com/id/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Netflix</a> · © Netflix</li>
+                <li>Whoosh — <a href="https://kcic.co.id/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">KCIC</a> · © KCIC</li>
+                <li>Nintendo Switch 2 — <a href="https://www.nintendo.com/us/gaming-systems/switch-2/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Nintendo</a> · © Nintendo</li>
+                <li>Steam Deck — <a href="https://www.steamdeck.com/id/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Valve</a> · © Valve</li>
+                <li>Dufan — <a href="https://www.ancol.com/unit-rekreasi/dufan-ancol--2" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Ancol</a> · © Ancol</li>
+                <li>Mens Rea — <a href="https://www.netflix.com/title/82627260" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Netflix / Pandji</a> · © Netflix/Pandji</li>
+                <li>YouTube — <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">YouTube</a> · © YouTube</li>
+                <li>On Cloudboom — <a href="https://www.on.com/en-us/products/cloudboom-strike-3me3048" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">On</a> · © On</li>
+                <li>Puma Fast-R — <a href="https://us.puma.com/us/en/pd/fast-r-nitro-elite-3-mens-road-running-shoes/312060" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Puma</a> · © Puma</li>
+                <li>Claude Pro — <a href="https://www.anthropic.com/claude" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Anthropic</a> · © Anthropic</li>
+                <li>ChatGPT Plus — <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">OpenAI</a> · © OpenAI</li>
+                <li>Gemini Pro — <a href="https://gemini.google/subscriptions/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Google</a> · © Google</li>
+                <li>YouTube Premium — <a href="https://www.youtube.com/premium" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">YouTube</a> · © YouTube</li>
+                <li>Spotify Premium — <a href="https://www.spotify.com/id-id/premium/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Spotify</a> · © Spotify</li>
+                <li>Nike Alphafly 3 — <a href="https://www.nike.com/t/alphafly-3-mens-road-racing-shoes-5gZBgL/IR0076-100" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Nike</a> · © Nike</li>
+                <li>GeForce RTX 50 Series Founders Edition — <a href="https://www.nvidia.com/id-id/geforce/graphics-cards/50-series/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">NVIDIA</a> · © NVIDIA</li>
+                <li>NVIDIA DGX — <a href="https://www.nvidia.com/en-us/data-center/dgx-rubin-nvl8/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">NVIDIA</a> · © NVIDIA</li>
+                <li>Bangunan SPPG — <a href="https://bgn.go.id/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Badan Gizi Nasional</a> · © Badan Gizi Nasional</li>
+                <li>Game PS5 — <a href="https://www.playstation.com/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">PlayStation</a> · © Sony Interactive Entertainment</li>
+                <li class="pt-1 font-semibold text-slate-400">Foto lisensi bebas</li>
+                <li>Gula — <a href="https://commons.wikimedia.org/wiki/File:Granulated_White_Sugar_with_Large_Crystals,_Bright_Front_Light.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Granulated White Sugar</a> · Tobias Erbsland · CC BY-SA 4.0</li>
+                <li>Minyak goreng — <a href="https://commons.wikimedia.org/wiki/File:Minyak_Goreng_Sawit_Kemasan_Di_Indonesia.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Minyak Goreng Sawit Kemasan</a> · DARMAS BS 9 · CC BY-SA 4.0</li>
+                <li>Bensin Pertamax — <a href="https://commons.wikimedia.org/wiki/File:Pertamina_Gas_Station_at_Jalan_Iwa_Kusumasumantri,_Ciamis.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Pertamina Gas Station Ciamis</a> · Rafka Aditia · CC BY-SA 4.0</li>
+                <li>MBG — <a href="https://commons.wikimedia.org/wiki/File:Makan_Bergizi_Gratis_2.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Makan Bergizi Gratis 2</a> · Fitrah 9131 · CC0</li>
+                <li>UMR Jakarta — <a href="https://commons.wikimedia.org/wiki/File:%D0%A0%D0%B0%D0%B7%D0%B3%D0%BE%D0%B2%D0%BE%D1%80_%D0%BF%D0%BE_%D1%82%D0%B5%D0%BB%D0%B5%D1%84%D0%BE%D0%BD%D1%83.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Разговор по телефону</a> · Антон Пищулин · CC BY-SA 4.0</li>
+                <li>Padel — <a href="https://commons.wikimedia.org/wiki/File:Padel_Court_in_Nsambya.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Padel Court in Nsambya</a> · Samson Ssemakadde · CC0</li>
+                <li>Tenis — <a href="https://commons.wikimedia.org/wiki/File:P%C3%B6rtschach_Johannes-Brahms-Promenade_Werzer-Tennis-Arena_27052017_8932.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Werzer-Tennis-Arena</a> · Johann Jaritz · CC BY-SA 4.0</li>
+                <li>Futsal — <a href="https://commons.wikimedia.org/wiki/File:Fu%C3%9Fballspiel,_Halle,_Sportstrasse,_2026_R%C3%A1calm%C3%A1s.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Fußballspiel, Halle</a> · Globetrotter19 · CC BY-SA 4.0</li>
+                <li>Membership Gym — <a href="https://commons.wikimedia.org/wiki/File:Gym,_GLV1,_Nairobi_(20250810-LRM_20250810_050004).jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Gym, GLV1, Nairobi</a> · Matti Blume · CC BY-SA 4.0</li>
+                <li>Bali — <a href="https://commons.wikimedia.org/wiki/File:Sunset,_Kuta,_Bali,_Indonesia,_20220825_1755_0879.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Sunset, Kuta, Bali</a> · Jakub Hałun · CC BY-SA 4.0</li>
+                <li>Jepang — <a href="https://commons.wikimedia.org/wiki/File:Mount_Fuji_at_sunset,_March_2025.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Mount Fuji at sunset</a> · Romain Guy · CC0</li>
+                <li>Tiket Liburan Singapura — <a href="https://commons.wikimedia.org/wiki/File:Marina_Bay_Sands_and_illuminated_polyhedral_building_Louis_Vuitton_over_the_water_at_blue_hour_with_pink_clouds_in_Singapore.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Marina Bay Sands</a> · Basile Morin · CC BY-SA 4.0</li>
+                <li>Tiket Liburan Malaysia — <a href="https://commons.wikimedia.org/wiki/File:Petronas_Panorama_II.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Petronas Panorama II</a> · Someformofhuman · CC BY-SA 4.0</li>
+                <li>Tiket Liburan Vietnam — <a href="https://commons.wikimedia.org/wiki/File:Ha_Long_Bay,_Vietnam,_Islands.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Ha Long Bay</a> · Vyacheslav Argenberg · CC BY 4.0</li>
+                <li>Umrah — <a href="https://commons.wikimedia.org/wiki/File:The_Kaaba_during_Hajj_-_edited.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">The Kaaba during Hajj</a> · Adli Wahid / Basile Morin · CC BY-SA 4.0</li>
+                <li>Ziarah Holyland — <a href="https://commons.wikimedia.org/wiki/File:Jerusalem-2013-Temple_Mount-Dome_of_the_Rock_%26_Chain_02.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Dome of the Rock, Jerusalem</a> · Godot13 · CC BY-SA 4.0</li>
+                <li>Refleksi keluarga — <a href="https://commons.wikimedia.org/wiki/File:Spa_massage_parlor_in_Amantaka_luxury_Resort_%26_Hotel_in_Luang_Prabang_Laos.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Spa massage parlor</a> · Basile Morin · CC BY-SA 4.0</li>
+                <li>Emas — <a href="https://commons.wikimedia.org/wiki/File:Gold_bullion_bars.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Gold bullion bars</a> · Stevebidmead · CC0</li>
+                <li>Kopi susu — <a href="https://commons.wikimedia.org/wiki/File:Iced_Coffee_in_Glass_-_Sunshine_Coffee_-_Laramie_Cafe_(53838344552).jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Iced Coffee in Glass</a> · Tony Webster · CC BY 2.0</li>
+                <li>Dubai Chewy Cookie — <a href="https://commons.wikimedia.org/wiki/File:Pistachio_%26_Chocolate_Cookie_-_Ikigai_Coffee_2026-02-02.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Pistachio &amp; Chocolate Cookie</a> · Andy Li · CC0</li>
+                <li>Game Steam — <a href="https://commons.wikimedia.org/wiki/File:Steam_Logo.png" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Steam Logo</a> · Valve · CC BY-SA 3.0</li>
+                <li>Adidas Adizero — <a href="https://commons.wikimedia.org/wiki/File:Adidas_Adizero_Boston_12_Taipei_Marathon_Collaboration_Edition.jpeg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Adidas Adizero Boston 12</a> · SUNSmania41 · CC BY-SA 4.0</li>
+                <li>Hoka Cielo — <a href="https://commons.wikimedia.org/wiki/File:Hoka_mafate_2.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Hoka mafate 2</a> · Apkurt · CC BY-SA 4.0</li>
+                <li>Asics Metaspeed — <a href="https://commons.wikimedia.org/wiki/File:Asics_Gel-1130.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Asics Gel-1130</a> · LeDroider · CC0</li>
+<li>Baju Kaos — <a href="https://commons.wikimedia.org/wiki/File:BlueIEditShirt-plainBackground.jpeg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">BlueIEditShirt</a> · Daniel Furon / Wikimedia Foundation · CC BY-SA 3.0</li>
+                <li>Baju Kemeja — <a href="https://commons.wikimedia.org/wiki/File:Arnaud_Rousseau_Dress_Shirt_with_a_Modern_Spread_Collar.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Arnaud Rousseau Dress Shirt</a> · Ashjini · CC BY-SA 3.0</li>
+                <li>Celana — <a href="https://commons.wikimedia.org/wiki/File:Trousers-colourisolated.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Trousers-colourisolated</a> · Ed Yourdon / Themightyquill · CC BY-SA 2.0</li>
+                <li>Rolex Cosmograph Daytona — <a href="https://commons.wikimedia.org/wiki/File:Rolex_Cosmograph_Daytona.png" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Rolex Cosmograph Daytona</a> · Matt C · CC BY 2.0</li>
+                <li>Rumah Mewah — <a href="https://commons.wikimedia.org/wiki/File:Cooper%27s_Hill_House,_Englefield_Green.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Cooper's Hill House</a> · Liz.Pope · CC BY-SA 4.0</li>
+                              <li>Porsche 911 GT3 RS — <a href="https://commons.wikimedia.org/wiki/File:Porsche_911_GT3_RS_(2022)_1X7A7164.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Porsche 911 GT3 RS (2022)</a> · Alexander-93 · CC BY-SA 4.0</li>
+                <li>Porsche 911 — <a href="https://commons.wikimedia.org/wiki/File:Porsche_992_Turbo_S_1X7A6046_(cropped).jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Porsche 992 Turbo S</a> · Alexander Migl · CC BY-SA 4.0</li>
+                <li>BMW M2 — <a href="https://commons.wikimedia.org/wiki/File:BMW_G87_M2_Motorworld_Munich_1X7A0071.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">BMW G87 M2</a> · Alexander-93 · CC BY-SA 4.0</li>
+                <li>BMW M3 — <a href="https://commons.wikimedia.org/wiki/File:BMW_M3_Competition_(G80)_1X7A1573.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">BMW M3 Competition (G80)</a> · Alexander-93 · CC BY-SA 4.0</li>
+                <li>BMW M4 — <a href="https://commons.wikimedia.org/wiki/File:BMW_M4_CS_(G82)_VR46_Edition_IAA_2025_DSC_1308.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">BMW M4 CS (G82)</a> · Alexander Migl · CC BY-SA 4.0</li>
+                <li>Mercedes-Benz G-Class — <a href="https://commons.wikimedia.org/wiki/File:MERCEDES-BENZ_G-CLASS_(W463)_China_(2).jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Mercedes-Benz G-Class (W463)</a> · Dinkun Chen · CC BY-SA 4.0</li>
+                <li>Mercedes-Maybach GLS — <a href="https://commons.wikimedia.org/wiki/File:MERCEDES_MAYBACH_GLS_China.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Mercedes-Maybach GLS</a> · Dinkun Chen · CC BY-SA 4.0</li>
+                <li>Mercedes-Maybach S-Class — <a href="https://commons.wikimedia.org/wiki/File:MERCEDES_MAYBACH_S-CLASS_(W222)_China_(2).jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Mercedes-Maybach S-Class (W222)</a> · Dinkun Chen · CC BY-SA 4.0</li>
+                <li>Lexus LM — <a href="https://commons.wikimedia.org/wiki/File:Lexus_LM_II_001.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Lexus LM II</a> · JustAnotherCarDesigner · CC BY-SA 4.0</li>
+                <li>Lexus RX — <a href="https://commons.wikimedia.org/wiki/File:Lexus_RX_500h_F_Sport_Performance_(TALH17)_1X7A7076.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Lexus RX 500h F Sport Performance</a> · Alexander-93 · CC BY-SA 4.0</li>
+                <li>Lexus LX — <a href="https://commons.wikimedia.org/wiki/File:Lexus_LX_570_(URJ201W)_IMG_4913.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Lexus LX 570 (URJ201W)</a> · Alexander Migl · CC BY-SA 4.0</li>
+                <li>Toyota Alphard — <a href="https://commons.wikimedia.org/wiki/File:2023_Toyota_Alphard_Hybrid_(AH40)_1.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">2023 Toyota Alphard Hybrid (AH40)</a> · Benespit · CC BY-SA 4.0</li>
+                <li>Toyota Land Cruiser — <a href="https://commons.wikimedia.org/wiki/File:2021_Toyota_Land_Cruieser_300_ZX.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">2021 Toyota Land Cruiser 300 ZX</a> · TTTNIS · CC0</li>
+                <li>Patek Philippe Nautilus — <a href="https://commons.wikimedia.org/wiki/File:Patek-Philippe-Nautilus-5711-1A-010-1.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Patek Philippe Nautilus 5711/1A-010</a> · Patek Philippe SA · CC BY-SA 4.0</li>
+                <li>Audemars Piguet Royal Oak — <a href="https://commons.wikimedia.org/wiki/File:Audemars_Piguet_Royal_Oak_ref._15202.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Audemars Piguet Royal Oak ref. 15202</a> · OpaleHorse · CC BY-SA 4.0</li>
+                <li>Beras — <a href="https://commons.wikimedia.org/wiki/File:WhiteRice.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">WhiteRice</a> · Sanjay Acharya · CC BY-SA 3.0</li>
+                <li>Nasi Padang — <a href="https://commons.wikimedia.org/wiki/File:Nasi_padang.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Nasi padang</a> · ProjectManhattan · CC BY-SA 3.0</li>
+                <li>Bangunan Kopdes — <a href="https://commons.wikimedia.org/wiki/File:Koperasi_Desa_Merah_Putih_Sawahan,_Juwiring,_Klaten_1_Agustus_2026.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Koperasi Desa Merah Putih Sawahan</a> · Dani Safa Adi Nugraha · CC BY-SA 3.0</li>
+                </ul>
+              <p class="mt-2">Lisensi: <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">CC BY 4.0</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">CC BY-SA 4.0</a> · <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">CC BY 3.0</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">CC BY-SA 3.0</a> · <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">CC BY 2.0</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">CC0</a> · <a href="https://creativecommons.org/publicdomain/mark/1.0/" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Public Domain Mark</a>.</p>
+              <p class="mt-2">Harga dan ketersediaan dapat berubah; visualisasi ini bukan penawaran.</p>
+            </div>
           </details>
         </div>
       </div>
@@ -611,7 +750,7 @@
           <div class="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
             <p class="text-xs font-bold text-slate-200">Gaji Bersih &amp; PPh 21</p>
             <p class="mt-1.5 text-[11px] leading-relaxed text-slate-400">
-              Input adalah take-home. Bruto dihitung otomatis dari gaji bersih + BPJS + TER. Jan–Nov memakai TER kategori A/B/C (PP 58/2023 &amp; PMK 168/2023); Desember direkonsiliasi dengan Pasal 17.
+              Input adalah THP setelah PPh 21. Bruto dihitung dengan gross-up PPh 21 memakai D = PTKP + biaya jabatan maksimum Rp6 juta; BPJS dihitung terpisah dari bruto. Kartu menampilkan PPh 21 rata-rata tahunan, sedangkan TER kategori A/B/C (PP 58/2023 &amp; PMK 168/2023) menjadi referensi potongan Jan–Nov.
             </p>
           </div>
           <div class="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
@@ -636,7 +775,7 @@
 
         <div class="mt-5 rounded-xl border border-amber-500/10 bg-amber-500/[0.04] px-4 py-3">
           <p class="text-[10px] leading-relaxed text-slate-500">
-            <span class="font-bold text-amber-400/80">Catatan:</span> angka bersifat estimasi untuk edukasi dan perencanaan. Pemotongan aktual dapat berbeda karena kebijakan pemberi kerja, status PTKP suami/istri, iuran pensiun lain, dan perubahan regulasi. Harga: iBox (Apple), e-commerce (bahan pokok), PlayStation Store (GTA 6), harga pasar/Google (PS5, olahraga, refleksi), UMP DKI 2026 (UMR). Foto: iBox &amp; Wikimedia Commons — lihat kredit di bagian Belanja Pajak. Aplikasi tidak menyimpan, mengirim, atau memproses data pribadi di server.
+            <span class="font-bold text-amber-400/80">Catatan:</span> angka bersifat estimasi untuk edukasi dan perencanaan. Pemotongan aktual dapat berbeda karena kebijakan pemberi kerja, status PTKP suami/istri, iuran pensiun lain, dan perubahan regulasi. Harga: iBox (Apple), e-commerce (bahan pokok), Pertamina (Pertamax), Dufan/Ancol (tiket), harga pasar/Google (nasi padang, cookie, PS5, olahraga, refleksi), UMP DKI 2026 (UMR). Foto: iBox &amp; Wikimedia Commons — lihat kredit di bagian Belanja Pajak. Aplikasi tidak menyimpan, mengirim, atau memproses data pribadi di server.
           </p>
         </div>
       </div>
@@ -810,54 +949,148 @@
       return TER_CATEGORY_BY_PTKP[ptkp] || "A";
     }
 
+    // Urutan awal untuk tampilan "Semua": barang yang paling mudah direlasikan.
+    const FEATURED_GOODS = [
+      "iPhone 18 Pro Max 256GB",
+      "Beras premium 1 kg",
+      "Nasi Padang",
+      "Baju Kaos",
+      "Baju Kemeja",
+      "Celana",
+      "Sempak Segitiga",
+      "Indomie",
+      "Air mineral 600 ml",
+      "Kopi susu kekinian"
+    ];
+
     // Katalog ilustrasi daya beli (harga indikatif 2026, dalam Rupiah).
     const GOODS = [
       // Elektronik — harga Apple dari iBox, PS5 harga pasar.
       { name: "iPhone 18 Pro Max 256GB", price: 29999000, category: "Elektronik", icon: "phone", image: "assets/iphone-18-pro-max.webp", imageFit: "contain", source: "iBox" },
       { name: "PlayStation 5", price: 8999000, category: "Elektronik", icon: "gamepad", image: "assets/playstation-5.webp", imageFit: "contain", source: "Harga pasar" },
-      { name: "MacBook Pro M6 14-inch", price: 38999000, category: "Elektronik", icon: "laptop", image: "assets/macbook-pro.webp", imageFit: "contain", source: "iBox (estimasi)" },
+      { name: "MacBook Pro M6 14-inch", price: 38999000, category: "Elektronik", icon: "laptop", image: "assets/macbook-pro.webp", imageFit: "cover", source: "iBox (estimasi)" },
       { name: "iPad Pro 11-inch M5 256GB", price: 24999000, category: "Elektronik", icon: "tablet", image: "assets/ipad-pro.webp", imageFit: "contain", source: "iBox" },
+      { name: "RTX 5060 8GB", price: 11000000, category: "Elektronik", icon: "gpu", image: "assets/rtx-5000-fe.webp", imageFit: "cover", source: "Harga pasar 2026", unit: "unit" },
+      { name: "RTX 5060 Ti 16GB", price: 16300000, category: "Elektronik", icon: "gpu", image: "assets/rtx-5000-fe.webp", imageFit: "cover", source: "Harga pasar 2026", unit: "unit" },
+      { name: "RTX 5070 12GB", price: 19650000, category: "Elektronik", icon: "gpu", image: "assets/rtx-5000-fe.webp", imageFit: "cover", source: "Harga pasar 2026", unit: "unit" },
+      { name: "RTX 5070 Ti 16GB", price: 32400000, category: "Elektronik", icon: "gpu", image: "assets/rtx-5000-fe.webp", imageFit: "cover", source: "Harga pasar 2026", unit: "unit" },
+      { name: "RTX 5080 16GB", price: 33100000, category: "Elektronik", icon: "gpu", image: "assets/rtx-5000-fe.webp", imageFit: "cover", source: "Harga pasar 2026", unit: "unit" },
+      { name: "RTX 5090 32GB", price: 182000000, category: "Elektronik", icon: "gpu", image: "assets/rtx-5000-fe.webp", imageFit: "cover", source: "Harga pasar 2026", unit: "unit" },
+      { name: "NVIDIA DGX Spark", price: 150000000, category: "Elektronik", icon: "desktop", image: "assets/dgx-spark.webp", imageFit: "cover", source: "NVIDIA (estimasi)", unit: "unit" },
+      { name: "NVIDIA DGX Rubin NVL8", price: 35000000000, category: "Elektronik", icon: "gpu", image: "assets/dgx-nvl8.webp", imageFit: "cover", source: "NVIDIA (estimasi)", unit: "unit" },
+      { name: "NVIDIA DGX Rubin NVL72", price: 105000000000, category: "Elektronik", icon: "gpu", image: "assets/dgx-nvl72.webp", imageFit: "cover", source: "NVIDIA (estimasi)", unit: "unit" },
+      { name: "Mac mini M6", price: 15900000, category: "Elektronik", icon: "desktop", image: "assets/mac-mini-m6.webp", imageFit: "contain", source: "Apple Indonesia (estimasi)", unit: "unit" },
+      { name: "iPhone Duo 256GB", price: 45678910, category: "Elektronik", icon: "phoneFold", image: "assets/iphone-duo.webp", imageFit: "contain", source: "iBox" },
+      { name: "Samsung Galaxy Z Fold8", price: 28499000, category: "Elektronik", icon: "phoneFold", image: "assets/samsung-fold8.webp", imageFit: "contain", source: "Samsung Indonesia" },
+      { name: "Samsung Galaxy S26", price: 16499000, category: "Elektronik", icon: "phone", image: "assets/samsung-s26.webp", imageFit: "contain", source: "Samsung Indonesia" },
+      { name: "Samsung Galaxy S26+", price: 19499000, category: "Elektronik", icon: "phone", image: "assets/samsung-s26-plus.webp", imageFit: "contain", source: "Samsung Indonesia" },
+      { name: "Samsung Galaxy S26 Ultra", price: 24499000, category: "Elektronik", icon: "phone", image: "assets/samsung-s26-ultra.webp", imageFit: "contain", source: "Samsung Indonesia" },
 
       // Bahan pokok — harga e-commerce.
       { name: "Beras premium 1 kg", price: 14500, category: "Bahan Pokok", icon: "rice", image: "assets/beras.webp", imageFit: "cover", source: "E-commerce", unit: "kg" },
       { name: "Gula pasir 1 kg", price: 17500, category: "Bahan Pokok", icon: "sugar", image: "assets/gula.webp", imageFit: "cover", source: "E-commerce", unit: "kg" },
-      { name: "Minyak goreng 1 liter", price: 17900, category: "Bahan Pokok", icon: "oil", source: "E-commerce", unit: "liter" },
+      { name: "Minyak goreng 1 liter", price: 17900, category: "Bahan Pokok", icon: "oil", image: "assets/minyak-goreng.webp", imageFit: "cover", source: "E-commerce", unit: "liter" },
+      { name: "Nasi Padang", price: 20000, category: "Bahan Pokok", icon: "meal", image: "assets/nasi-padang.webp", imageFit: "cover", source: "Harga pasar", unit: "porsi" },
+      { name: "Isi ulang galon", price: 20000, category: "Bahan Pokok", icon: "water", source: "E-commerce", unit: "galon" },
+      { name: "Indomie", price: 4000, category: "Bahan Pokok", icon: "noodle", image: "assets/indomie.webp", imageFit: "cover", source: "E-commerce", unit: "bungkus" },
+      { name: "Air mineral 600 ml", price: 4000, category: "Bahan Pokok", icon: "water", source: "E-commerce", unit: "botol" },
+
+      // Transportasi.
+      { name: "Bensin Pertamax", price: 16500, category: "Transportasi", icon: "fuel", image: "assets/pertamax.webp", imageFit: "cover", source: "Pertamina", unit: "liter" },
+      { name: "Tiket First Class Whoosh", price: 600000, category: "Transportasi", icon: "train", image: "assets/whoosh.webp", imageFit: "cover", source: "KCIC", unit: "tiket" },
+      { name: "Honda BeAT", price: 19380000, category: "Transportasi", icon: "scooter", image: "assets/honda-beat.webp", imageFit: "contain", source: "AHM OTR Jakarta", unit: "unit" },
+      { name: "Daihatsu Sigra", price: 144400000, category: "Transportasi", icon: "car", image: "assets/daihatsu-sigra.webp", imageFit: "contain", source: "OTR 2026", unit: "unit" },
+      { name: "Toyota Calya", price: 170200000, category: "Transportasi", icon: "car", image: "assets/toyota-calya.webp", imageFit: "contain", source: "Auto2000 OTR Jabodetabek", unit: "unit" },
+      { name: "Honda Brio", price: 170400000, category: "Transportasi", icon: "car", image: "assets/honda-brio.webp", imageFit: "contain", source: "OTR 2026", unit: "unit" },
 
       // Pemerintah.
       { name: "1 porsi MBG", price: 10000, category: "Pemerintah", icon: "meal", image: "assets/mbg.webp", imageFit: "cover", source: "Program MBG", unit: "porsi" },
-      { name: "Gaji 1 pegawai UMR Jakarta", price: 5729876, category: "Pemerintah", icon: "worker", source: "UMP DKI 2026", unit: "bulan", captionUnit: "pegawai/bulan" },
+      { name: "Gaji 1 pegawai UMR Jakarta", price: 5729876, category: "Pemerintah", icon: "worker", image: "assets/umr-jakarta.webp", imageFit: "cover", source: "UMP DKI 2026", unit: "bulan", captionUnit: "pegawai/bulan" },
+      { name: "Bangunan Kopdes", price: 1600000000, category: "Pemerintah", icon: "home", image: "assets/kopdes.webp", imageFit: "cover", source: "Estimasi program", unit: "unit" },
+      { name: "Bangunan SPPG", price: 4500000000, category: "Pemerintah", icon: "home", image: "assets/sppg.webp", imageFit: "contain", source: "Estimasi program", unit: "unit" },
 
-      // Olahraga — sewa lapangan per jam.
-      { name: "Sewa lapangan padel", price: 350000, category: "Olahraga", icon: "padel", source: "Google / harga pasar", unit: "jam" },
-      { name: "Sewa lapangan tenis", price: 200000, category: "Olahraga", icon: "tennis", source: "Google / harga pasar", unit: "jam" },
-      { name: "Sewa lapangan futsal", price: 300000, category: "Olahraga", icon: "futsal", source: "Google / harga pasar", unit: "jam" },
+      // Olahraga — Garmin, sepatu lari, sewa lapangan per jam.
+      { name: "Garmin Forerunner 70", price: 4659000, category: "Elektronik", icon: "watch", image: "assets/garmin-forerunner-70.webp", imageFit: "contain", source: "Eraspace / Urban Republic", unit: "unit" },
+      { name: "Garmin Instinct 3 Solar 45mm", price: 7149000, category: "Elektronik", icon: "watch", image: "assets/garmin-instinct-3.webp", imageFit: "contain", source: "Eraspace / Urban Republic", unit: "unit" },
+      { name: "Garmin Venu 4 45mm", price: 9699000, category: "Elektronik", icon: "watch", image: "assets/garmin-venu-4.webp", imageFit: "contain", source: "Eraspace / Urban Republic", unit: "unit" },
+      { name: "Garmin Venu X1", price: 12099000, category: "Elektronik", icon: "watch", image: "assets/garmin-venu-x1.webp", imageFit: "contain", source: "Eraspace / Urban Republic", unit: "unit" },
+      { name: "Garmin Fenix 8 Sapphire Solar 51mm", price: 18399000, category: "Elektronik", icon: "watch", image: "assets/garmin-fenix-8.webp", imageFit: "contain", source: "Eraspace / Urban Republic", unit: "unit" },
+      { name: "Adidas Adizero Adios Pro 4", price: 3899000, category: "Wearable", icon: "shoe", image: "assets/sepatu-adidas.webp", imageFit: "cover", source: "Harga pasar", unit: "pasang" },
+      { name: "Nike Alphafly 3", price: 4699000, category: "Wearable", icon: "shoe", image: "assets/sepatu-nike.webp", imageFit: "cover", source: "Harga pasar", unit: "pasang" },
+      { name: "Hoka Cielo X1 2.0", price: 4299000, category: "Wearable", icon: "shoe", image: "assets/sepatu-hoka.webp", imageFit: "cover", source: "Harga pasar", unit: "pasang" },
+      { name: "On Cloudboom Strike", price: 4499000, category: "Wearable", icon: "shoe", image: "assets/sepatu-on.webp", imageFit: "contain", source: "Harga pasar", unit: "pasang" },
+      { name: "Puma Fast-R Nitro Elite 3", price: 4299000, category: "Wearable", icon: "shoe", image: "assets/sepatu-puma.webp", imageFit: "contain", source: "Harga pasar", unit: "pasang" },
+      { name: "Asics Metaspeed Sky Paris", price: 4499000, category: "Wearable", icon: "shoe", image: "assets/sepatu-asics.webp", imageFit: "cover", source: "Harga pasar", unit: "pasang" },
+      { name: "Sempak Segitiga", price: 50000, category: "Wearable", icon: "shirt", emoji: "🩲", source: "Harga pasar", unit: "pcs" },
+      { name: "Baju Kaos", price: 150000, category: "Wearable", icon: "shirt", image: "assets/baju-kaos.webp", imageFit: "cover", source: "Harga pasar", unit: "pcs" },
+      { name: "Baju Kemeja", price: 200000, category: "Wearable", icon: "shirt", image: "assets/baju-kemeja.webp", imageFit: "cover", source: "Harga pasar", unit: "pcs" },
+      { name: "Celana", price: 400000, category: "Wearable", icon: "shirt", image: "assets/celana.webp", imageFit: "cover", source: "Harga pasar", unit: "pcs" },
+      { name: "Sewa lapangan padel", price: 350000, category: "Olahraga", icon: "padel", image: "assets/padel.webp", imageFit: "cover", source: "Google / harga pasar", unit: "jam" },
+      { name: "Sewa lapangan tenis", price: 200000, category: "Olahraga", icon: "tennis", image: "assets/tenis.webp", imageFit: "cover", source: "Google / harga pasar", unit: "jam" },
+      { name: "Sewa lapangan futsal", price: 300000, category: "Olahraga", icon: "futsal", image: "assets/futsal.webp", imageFit: "cover", source: "Google / harga pasar", unit: "jam" },
+      { name: "Membership Gym", price: 800000, category: "Olahraga", icon: "dumbbell", image: "assets/gym.webp", imageFit: "cover", source: "Harga pasar", unit: "bulan" },
 
       // Gaming.
-      { name: "GTA 6 Pre-Order (PS5)", price: 1190000, category: "Gaming", icon: "gamepad", source: "PlayStation Store", unit: "unit" },
+      { name: "GTA 6 Pre-Order (PS5)", price: 1190000, category: "Gaming", icon: "gamepad", image: "assets/gta-6.webp", imageFit: "cover", source: "PlayStation Store", unit: "unit" },
+      { name: "Game Steam (rata-rata)", price: 300000, category: "Gaming", icon: "gamepad", image: "assets/game-steam.webp", imageFit: "cover", source: "Steam", unit: "game" },
+      { name: "Game PS5 (rata-rata)", price: 900000, category: "Gaming", icon: "gamepad", image: "assets/game-ps5.webp", imageFit: "contain", source: "PlayStation Store", unit: "game" },
+      { name: "Nintendo Switch 2", price: 9999000, category: "Gaming", icon: "handheld", image: "assets/nintendo-switch-2.webp", imageFit: "contain", source: "Nintendo Indonesia", unit: "unit" },
+      { name: "Steam Deck", price: 15999000, category: "Gaming", icon: "handheld", image: "assets/steam-deck.webp", imageFit: "cover", source: "Blibli", unit: "unit" },
 
       // Liburan — satuan hari.
       { name: "Liburan Bali", price: 1500000, category: "Liburan", icon: "plane", image: "assets/bali.webp", imageFit: "cover", source: "Estimasi", unit: "hari" },
       { name: "Liburan Jepang", price: 4000000, category: "Liburan", icon: "plane", image: "assets/japan.webp", imageFit: "cover", source: "Estimasi", unit: "hari" },
+      { name: "Tiket Liburan Singapura", price: 8500000, category: "Liburan", icon: "plane", image: "assets/singapura.webp", imageFit: "cover", source: "Estimasi paket", unit: "tiket" },
+      { name: "Tiket Liburan Malaysia", price: 5500000, category: "Liburan", icon: "plane", image: "assets/malaysia.webp", imageFit: "cover", source: "Estimasi paket", unit: "tiket" },
+      { name: "Tiket Liburan Vietnam", price: 6500000, category: "Liburan", icon: "plane", image: "assets/vietnam.webp", imageFit: "cover", source: "Estimasi paket", unit: "tiket" },
 
       // Ibadah.
-      { name: "Umrah 9 Hari", price: 32000000, category: "Ibadah", icon: "kaaba", source: "Estimasi", unit: "paket" },
+      { name: "Umrah 9 Hari", price: 32000000, category: "Ibadah", icon: "kaaba", image: "assets/umrah.webp", imageFit: "cover", source: "Estimasi", unit: "paket" },
+      { name: "Ziarah Holyland 9 Hari", price: 45000000, category: "Ibadah", icon: "kaaba", image: "assets/ziarah-holyland.webp", imageFit: "cover", source: "Estimasi paket", unit: "paket" },
 
       // Keluarga & wellness.
-      { name: "Refleksi keluarga premium", price: 250000, category: "Keluarga", icon: "spa", source: "Harga pasar", unit: "jam" },
+      { name: "Tiket Annual Pass Dufan", price: 500000, category: "Keluarga", icon: "ticket", image: "assets/dufan.webp", imageFit: "cover", source: "Dufan/Ancol", unit: "tiket" },
+      { name: "Refleksi keluarga premium", price: 250000, category: "Keluarga", icon: "spa", image: "assets/spa.webp", imageFit: "cover", source: "Harga pasar", unit: "jam" },
 
       // Emas.
       { name: "Emas Antam 1 gram", price: 2150000, category: "Emas", icon: "gold", image: "assets/gold.webp", imageFit: "cover", source: "Harga pasar", unit: "gram" },
       { name: "Emas Antam 10 gram", price: 20500000, category: "Emas", icon: "gold", image: "assets/gold.webp", imageFit: "cover", source: "Harga pasar", unit: "batang" },
 
       // Lifestyle.
-      { name: "Kopi susu kekinian", price: 25000, category: "Lifestyle", icon: "coffee", unit: "gelas" },
-      { name: "Netflix 1 tahun", price: 2280000, category: "Lifestyle", icon: "tv", unit: "tahun" },
-      { name: "Sepeda Brompton", price: 32000000, category: "Lifestyle", icon: "bike", unit: "unit" }
+      { name: "Kopi susu kekinian", price: 25000, category: "Lifestyle", icon: "coffee", image: "assets/kopi-susu.webp", imageFit: "cover", unit: "gelas" },
+      { name: "Dubai Chewy Cookie", price: 35000, category: "Lifestyle", icon: "cookie", image: "assets/cookie.webp", imageFit: "cover", source: "Harga pasar", unit: "pcs" },
+      { name: "Netflix 1 tahun", price: 2280000, category: "Hiburan", icon: "tv", image: "assets/netflix.webp", imageFit: "contain", unit: "tahun" },
+      { name: "Claude Pro", price: 349000, category: "Produktifitas", icon: "sparkles", image: "assets/claude.webp", imageFit: "contain", source: "Anthropic (estimasi)", unit: "bulan" },
+      { name: "ChatGPT Plus", price: 349000, category: "Produktifitas", icon: "sparkles", image: "assets/chatgpt.webp", imageFit: "contain", source: "OpenAI (estimasi)", unit: "bulan" },
+      { name: "Gemini Pro (Google AI Pro)", price: 329000, category: "Produktifitas", icon: "sparkles", image: "assets/gemini.webp", imageFit: "contain", source: "Google One (estimasi)", unit: "bulan" },
+      { name: "YouTube Premium", price: 69000, category: "Hiburan", icon: "youtube", image: "assets/youtube-membership.webp", imageFit: "contain", source: "YouTube Indonesia", unit: "bulan" },
+      { name: "Spotify Premium", price: 59900, category: "Hiburan", icon: "music", image: "assets/spotify.webp", imageFit: "contain", source: "Spotify Indonesia", unit: "bulan" },
+      { name: "Paket data 28 hari / 80GB", price: 100000, category: "Lifestyle", icon: "signal", source: "Operator seluler", unit: "paket" },
+      { name: "Tiket Pertunjukan Mens Rea Diamond", price: 2000000, category: "Hiburan", icon: "ticket", image: "assets/mens-rea.webp", imageFit: "cover", source: "Pandji Pragiwaksono", unit: "tiket" },
+      // Luxury.
+      { name: "Porsche 911 GT3 RS", price: 12000000000, category: "Luxury", icon: "car", image: "assets/porsche-gt3rs.webp", imageFit: "cover", source: "Estimasi harga pasar 2026", unit: "unit" },
+      { name: "Porsche 911", price: 5500000000, category: "Luxury", icon: "car", image: "assets/porsche-911.webp", imageFit: "cover", source: "Estimasi harga pasar 2026", unit: "unit" },
+      { name: "BMW M2", price: 2200000000, category: "Luxury", icon: "car", image: "assets/bmw-m2.webp", imageFit: "cover", source: "Estimasi harga pasar 2026", unit: "unit" },
+      { name: "BMW M3", price: 2900000000, category: "Luxury", icon: "car", image: "assets/bmw-m3.webp", imageFit: "cover", source: "Estimasi harga pasar 2026", unit: "unit" },
+      { name: "BMW M4", price: 3200000000, category: "Luxury", icon: "car", image: "assets/bmw-m4.webp", imageFit: "cover", source: "Estimasi harga pasar 2026", unit: "unit" },
+      { name: "Mercedes-Benz G-Class", price: 6000000000, category: "Luxury", icon: "car", image: "assets/mercedes-gclass.webp", imageFit: "cover", source: "Estimasi harga pasar 2026", unit: "unit" },
+      { name: "Mercedes-Maybach GLS", price: 4500000000, category: "Luxury", icon: "car", image: "assets/maybach-gls.webp", imageFit: "cover", source: "Estimasi harga pasar 2026", unit: "unit" },
+      { name: "Mercedes-Maybach S-Class", price: 5500000000, category: "Luxury", icon: "car", image: "assets/maybach-s.webp", imageFit: "cover", source: "Estimasi harga pasar 2026", unit: "unit" },
+      { name: "Lexus LM", price: 2500000000, category: "Luxury", icon: "car", image: "assets/lexus-lm.webp", imageFit: "cover", source: "Estimasi harga pasar 2026", unit: "unit" },
+      { name: "Lexus RX", price: 1500000000, category: "Luxury", icon: "car", image: "assets/lexus-rx.webp", imageFit: "cover", source: "Estimasi harga pasar 2026", unit: "unit" },
+      { name: "Lexus LX", price: 3500000000, category: "Luxury", icon: "car", image: "assets/lexus-lx.webp", imageFit: "cover", source: "Estimasi harga pasar 2026", unit: "unit" },
+      { name: "Toyota Alphard", price: 1300000000, category: "Luxury", icon: "car", image: "assets/toyota-alphard.webp", imageFit: "cover", source: "Estimasi harga pasar 2026", unit: "unit" },
+      { name: "Toyota Land Cruiser", price: 2700000000, category: "Luxury", icon: "car", image: "assets/toyota-land-cruiser.webp", imageFit: "cover", source: "Estimasi harga pasar 2026", unit: "unit" },
+      { name: "Patek Philippe Nautilus", price: 1500000000, category: "Luxury", icon: "watch", image: "assets/patek-nautilus.webp", imageFit: "cover", source: "Estimasi harga pasar 2026", unit: "unit" },
+      { name: "Rolex Cosmograph Daytona", price: 700000000, category: "Luxury", icon: "watch", image: "assets/rolex.webp", imageFit: "cover", source: "Estimasi harga pasar 2026", unit: "unit" },
+      { name: "Audemars Piguet Royal Oak", price: 700000000, category: "Luxury", icon: "watch", image: "assets/ap-royal-oak.webp", imageFit: "cover", source: "Estimasi harga pasar 2026", unit: "unit" },
+      { name: "Rumah Mewah", price: 15000000000, category: "Luxury", icon: "home", image: "assets/rumah-mewah.webp", imageFit: "cover", source: "Estimasi harga pasar 2026", unit: "unit" }
     ];
 
     const CATEGORY_COLORS = {
       Elektronik: "#60a5fa",
       "Bahan Pokok": "#a3e635",
+      Transportasi: "#f97316",
       Pemerintah: "#38bdf8",
       Olahraga: "#fb923c",
       Gaming: "#818cf8",
@@ -865,7 +1098,11 @@
       Ibadah: "#2dd4bf",
       Keluarga: "#f472b6",
       Emas: "#fbbf24",
-      Lifestyle: "#34d399"
+      Lifestyle: "#34d399",
+      Hiburan: "#f43f5e",
+      Produktifitas: "#22d3ee",
+      Luxury: "#d946ef",
+      Wearable: "#94a3b8"
     };
 
     const ICON_PATHS = {
@@ -887,12 +1124,33 @@
       gold: '<rect x="5" y="13" width="14" height="6" rx="1"/><rect x="8" y="8" width="10" height="4" rx="1"/>',
       coffee: '<path d="M17 8h1a3 3 0 1 1 0 6h-1"/><path d="M3 8h14v6a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8Z"/><path d="M6 2v2M10 2v2M14 2v2"/>',
       tv: '<rect x="2" y="6" width="20" height="14" rx="2"/><path d="m10 10 5 3-5 3z"/><path d="M8 2v4M16 2v4"/>',
-      bike: '<circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2ZM12 17.5V14l-3-3 4-3 3 3h3"/>'
+      fuel: '<path d="M3 21h12"/><path d="M5 21V5a2 2 0 0 1 2-2h5a2 2 0 0 1 2 2v16"/><path d="M5 11h9"/><path d="M14 8h2a2 2 0 0 1 2 2v7a2 2 0 0 0 4 0V9l-3-3"/>',
+      ticket: '<path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2M13 11v2M13 17v2"/>',
+      water: '<path d="M12 2.5 18 9a8.5 8.5 0 1 1-12 0Z"/><path d="M8 14a4 4 0 0 0 4 4"/>',
+      noodle: '<path d="M12 21a9 9 0 0 0 9-9H3a9 9 0 0 0 9 9Z"/><path d="M7 21h10"/><path d="M19.5 12 22 6"/><path d="M16.25 3c.27.1.8.53.75 1.36-.06.83-.93 1.2-1 2.02-.07.82.35 1.36.75 1.62"/><path d="M11.25 3c.27.1.8.53.75 1.36-.06.83-.93 1.2-1 2.02-.07.82.35 1.36.75 1.62"/><path d="M6.25 3c.27.1.8.53.75 1.36-.06.83-.93 1.2-1 2.02-.07.82.35 1.36.75 1.62"/>',
+      cookie: '<path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5Z"/><path d="M8.5 8.5h.01M16 16h.01M12 12h.01M11 17h.01M7 14h.01"/>',
+      sparkles: '<path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8Z"/><path d="M19 3v4M21 5h-4M5 17v4M7 19H3"/>',
+      music: '<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
+      dumbbell: '<path d="m6.5 6.5 11 11M4 9l2-2M9 4l2-2M20 15l-2 2M15 20l-2 2M7 7l10 10"/><path d="m14 6 4 4M6 14l4 4"/>',
+      home: '<path d="m3 11 9-8 9 8"/><path d="M5 9v12h14V9"/><path d="M9 21v-6h6v6"/>',
+      shirt: '<path d="m8 3-5 2 2 5 3-1v12h8V9l3 1 2-5-5-2a3 3 0 0 1-6 0Z"/>',
+      train: '<rect x="4" y="3" width="16" height="14" rx="3"/><path d="M4 11h16M8 21l2-4M16 21l-2-4"/><circle cx="8.5" cy="14" r="1"/><circle cx="15.5" cy="14" r="1"/>',
+      scooter: '<circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 18h4l3-8h3"/><path d="M6 15V9h4l2 4"/><path d="M14 6h3l1 4"/>',
+      car: '<path d="m5 11 2-5h10l2 5"/><path d="M3 13h18v5H3z"/><circle cx="7" cy="18" r="1.5"/><circle cx="17" cy="18" r="1.5"/>',
+      watch: '<circle cx="12" cy="12" r="6"/><path d="M9 3h6l1 3M9 21h6l1-3M12 9v3l2 1"/>',
+      gpu: '<rect x="3" y="7" width="18" height="10" rx="2"/><circle cx="9" cy="12" r="3"/><path d="M15 10h3M15 14h3M6 17v3M6 7V4"/>',
+      desktop: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',
+      phoneFold: '<rect x="3" y="4" width="8" height="16" rx="2"/><rect x="13" y="4" width="8" height="16" rx="2"/><path d="M11 8v8M13 8v8"/>',
+      handheld: '<rect x="2" y="7" width="20" height="10" rx="4"/><circle cx="7" cy="12" r="2"/><circle cx="17" cy="12" r="2"/><path d="M7 10v4M5 12h4M16 11h.01M18 13h.01"/>',
+      shoe: '<path d="M2 16h20v3H2z"/><path d="M3 16c1-6 3-9 6-9 2 0 3 2 5 4 2 2 4 3 8 3"/>',
+      signal: '<path d="M4 20v-4M10 20V8M16 20v-7M22 20V5"/>',
+      youtube: '<rect x="2" y="5" width="20" height="14" rx="4"/><path d="m10 9 5 3-5 3z"/>'
     };
 
     const CATEGORY_ICONS = {
       Elektronik: ICON_PATHS.phone,
       "Bahan Pokok": ICON_PATHS.rice,
+      Transportasi: ICON_PATHS.fuel,
       Pemerintah: ICON_PATHS.worker,
       Olahraga: ICON_PATHS.tennis,
       Gaming: ICON_PATHS.gamepad,
@@ -900,7 +1158,11 @@
       Ibadah: ICON_PATHS.kaaba,
       Keluarga: ICON_PATHS.spa,
       Emas: ICON_PATHS.gold,
-      Lifestyle: ICON_PATHS.coffee
+      Lifestyle: ICON_PATHS.coffee,
+      Hiburan: ICON_PATHS.tv,
+      Produktifitas: ICON_PATHS.sparkles,
+      Luxury: ICON_PATHS.gold,
+      Wearable: ICON_PATHS.shoe
     };
 
     const COLORS = {
@@ -921,6 +1183,7 @@
     let activeJobs = [];
     const secondarySalaries = {};
     let goodsFilter = "Semua";
+    let goodsQuery = "";
     let chart = null;
     let currentChartView = "sankey";
     let lastResult = null;
@@ -1164,20 +1427,23 @@
         const ctx = chartInstance.ctx;
         const x = (area.left + area.right) / 2;
         const y = (area.top + area.bottom) / 2;
+        const chartSize = Math.min(area.right - area.left, area.bottom - area.top);
+        const valueSize = Math.max(18, Math.min(52, chartSize * 0.055));
+        const labelSize = Math.max(9, Math.round(valueSize * 0.5));
 
         ctx.save();
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillStyle = "#64748b";
-        ctx.font = "700 9px " + FONT_STACK;
-        ctx.fillText("GAJI BRUTO", x, y - 16);
+        ctx.font = "700 " + labelSize + "px " + FONT_STACK;
+        ctx.fillText("GAJI BRUTO", x, y - valueSize * 0.9);
         ctx.fillStyle = "#f8fafc";
-        ctx.font = "800 18px " + FONT_STACK;
+        ctx.font = "800 " + valueSize + "px " + FONT_STACK;
         ctx.fillText(formatCompact(total), x, y + 3);
         ctx.fillStyle = "#475569";
-        ctx.font = "600 9px " + FONT_STACK;
+        ctx.font = "600 " + labelSize + "px " + FONT_STACK;
         const activeCount = data.filter(function (value) { return Number(value) > 0; }).length;
-        ctx.fillText(activeCount + " komponen", x, y + 21);
+        ctx.fillText(activeCount + " komponen", x, y + valueSize * 1.15);
         ctx.restore();
       }
     };
@@ -1432,6 +1698,103 @@
       }
     }
 
+    function isChartFullscreen() {
+      const panel = byId("chartPanel");
+      return document.fullscreenElement === panel ||
+        document.webkitFullscreenElement === panel ||
+        (panel && panel.classList.contains("chart-panel-faux-fullscreen"));
+    }
+
+    function syncChartFullscreenButton() {
+      const active = isChartFullscreen();
+      const button = byId("chartFullscreenBtn");
+      const expandIcon = byId("chartFullscreenIcon");
+      const exitIcon = byId("chartExitFullscreenIcon");
+      const label = active ? "Keluar dari layar penuh" : "Tampilkan grafik dalam layar penuh";
+      if (button) {
+        button.setAttribute("aria-pressed", active ? "true" : "false");
+        button.setAttribute("aria-label", label);
+        button.setAttribute("title", active ? "Keluar dari layar penuh" : "Layar penuh");
+      }
+      if (expandIcon) expandIcon.classList.toggle("hidden", active);
+      if (exitIcon) exitIcon.classList.toggle("hidden", !active);
+    }
+
+    function resizeChartAfterFullscreen() {
+      requestAnimationFrame(function () {
+        if (chart && lastResult && currentChartView === "donut") {
+          chart.resize();
+          chart.update("none");
+        }
+      });
+    }
+
+    function openChartFullscreenFallback() {
+      const panel = byId("chartPanel");
+      if (!panel) return;
+      panel.classList.add("chart-panel-faux-fullscreen", "chart-panel-is-fullscreen");
+      const host = panel.closest("aside");
+      if (host) host.classList.add("chart-panel-host-fallback");
+      document.body.classList.add("overflow-hidden");
+      syncChartFullscreenButton();
+      resizeChartAfterFullscreen();
+    }
+
+    function closeChartFullscreenFallback() {
+      const panel = byId("chartPanel");
+      if (!panel || !panel.classList.contains("chart-panel-faux-fullscreen")) return;
+      panel.classList.remove("chart-panel-faux-fullscreen", "chart-panel-is-fullscreen");
+      const host = panel.closest("aside");
+      if (host) host.classList.remove("chart-panel-host-fallback");
+      const shareModal = byId("shareModal");
+      if (!shareModal || shareModal.classList.contains("hidden")) {
+        document.body.classList.remove("overflow-hidden");
+      }
+      syncChartFullscreenButton();
+      resizeChartAfterFullscreen();
+    }
+
+    function onChartFullscreenChange() {
+      const panel = byId("chartPanel");
+      if (!panel) return;
+      const active = isChartFullscreen();
+      if (!active) panel.classList.remove("chart-panel-faux-fullscreen");
+      panel.classList.toggle("chart-panel-is-fullscreen", active);
+      document.body.classList.toggle("overflow-hidden", active);
+      syncChartFullscreenButton();
+      resizeChartAfterFullscreen();
+    }
+
+    function toggleChartFullscreen() {
+      const panel = byId("chartPanel");
+      if (!panel) return;
+
+      if (panel.classList.contains("chart-panel-faux-fullscreen")) {
+        closeChartFullscreenFallback();
+        return;
+      }
+
+      if (isChartFullscreen()) {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+        return;
+      }
+
+      const request = panel.requestFullscreen || panel.webkitRequestFullscreen;
+      if (!request) {
+        openChartFullscreenFallback();
+        return;
+      }
+
+      const result = request.call(panel);
+      if (result && typeof result.catch === "function") {
+        result.catch(openChartFullscreenFallback);
+      }
+    }
+
     /* ------------------------------------------------------------------ */
     /*  Hitung utama                                                      */
     /* ------------------------------------------------------------------ */
@@ -1476,15 +1839,52 @@
       return (low + high) / 2;
     }
 
+    // Gross-up PPh 21 sesuai rumus wajib:
+    // D = PTKP + biaya jabatan maksimum Rp6 juta; T = THP setahun.
+    // Catatan: konstanta bracket 2–5 harus dikurangkan (bukan ditambah) agar
+    // B - PPh = T. Konstanta bracket teratas yang konsisten adalah Rp306 juta.
+    function pph21GrossUp(thpMonthly, ptkp) {
+      const d = ptkp + 6000000;
+      const t = Math.max(0, thpMonthly) * 12;
+      let b;
+
+      if (t <= d + 57000000) {
+        b = (t - 0.05 * d) / 0.95;
+      } else if (t <= d + 218500000) {
+        b = (t - 0.15 * d - 6000000) / 0.85;
+      } else if (t <= d + 406000000) {
+        b = (t - 0.25 * d - 31000000) / 0.75;
+      } else if (t <= d + 3556000000) {
+        b = (t - 0.30 * d - 56000000) / 0.70;
+      } else {
+        b = (t - 0.35 * d - 306000000) / 0.65;
+      }
+
+      b = Math.max(0, b);
+      const pkp = Math.floor(Math.max(0, b - d) / 1000) * 1000;
+      const grossMonthly = b / 12;
+      const tax = progressiveTax(pkp);
+      const pphMonthly = Math.max(0, grossMonthly - thpMonthly);
+      return { d, t, b, pkp, grossMonthly, tax, pphMonthly };
+    }
+
     function calculate() {
       const ptkp = readNumber(byId("ptkpStatus").value) || 54000000;
       const category = byId("terCategory").value;
 
-      // Input adalah gaji bersih tahunan (take-home); bruto dicari dengan
-      // gross-up tahunan agar PPh 21 terutang dan BPJS ikut diperhitungkan.
+      // Input adalah THP bulanan setelah PPh 21. Bruto dihitung dengan rumus
+      // gross-up PPh 21 (PTKP + biaya jabatan maksimum); BPJS dihitung terpisah.
       const job1Net = readNumber(byId("job1Salary").value);
-      const job1Gross = solveGrossFromAnnualNet(job1Net * 12, category, ptkp);
-      const job1 = calcPrimary(job1Gross, category);
+      const pph1 = pph21GrossUp(job1Net, ptkp);
+      const job1Gross = pph1.grossMonthly;
+      const job1Primary = calcPrimary(job1Gross, category);
+      const job1 = Object.assign(job1Primary, {
+        pph: pph1.pphMonthly,
+        rate: job1Gross > 0 ? pph1.pphMonthly / job1Gross : 0,
+        terRate: job1Primary.rate,
+        net: job1Net
+      });
+      job1.total = job1.kes + job1.jht + job1.jp + job1.pph;
 
       const secondaries = activeJobs.map(function (n) {
         const net = readNumber(secondarySalaries[n]);
@@ -1506,7 +1906,7 @@
       setText("j1Jht", formatIDR(job1.jht));
       setText("j1Jp", formatIDR(job1.jp));
       setText("j1Pph", formatIDR(job1.pph));
-      setText("j1TerBadge", "TER " + category + " · " + formatRate(job1.rate));
+      setText("j1TerBadge", "TER " + category + " · " + formatRate(job1.terRate) + " (Jan–Nov)");
       setText("j1Gross", formatIDR(job1Gross));
       setText("j1TakeHome", formatIDR(job1Net));
 
@@ -1519,14 +1919,13 @@
       });
 
       // ---- Rekonsiliasi tahunan
-      // Biaya jabatan dihitung per pemberi kerja (bukan digabung), sesuai
-      // ketentuan: 5% dari bruto, maks Rp6 juta/tahun per pemberi kerja.
-      const job1BiayaJabatan = Math.min(job1Gross * 12 * BIYA_JABATAN.rate, BIYA_JABATAN.cap);
+      // Pekerjaan utama memakai D = PTKP + biaya jabatan maksimum Rp6 juta.
+      // Pekerjaan tambahan tetap memakai biaya jabatan 5% (maks Rp6 juta).
+      const job1BiayaJabatan = 6000000;
       const biayaJabatan = secondaries.reduce(function (sum, job) {
         return sum + job.biayaJabatan;
       }, job1BiayaJabatan);
-      const bpjsDeductible = (job1.jht + job1.jp) * 12;
-      const pkpRaw = totalGross - biayaJabatan - bpjsDeductible - ptkp;
+      const pkpRaw = totalGross - biayaJabatan - ptkp;
       const pkp = Math.floor(Math.max(0, pkpRaw) / 1000) * 1000;
       const trueTax = progressiveTax(pkp);
 
@@ -1574,7 +1973,7 @@
         const walletNotes = [];
         const walletDelta = netFromGross - totalNet;
         if (Math.abs(walletDelta) > 1000) {
-          walletNotes.push("Rekonsiliasi tahunan: input " + formatIDR(totalNet) + " → efektif " + formatIDR(netFromGross) + ".");
+          walletNotes.push("BPJS " + formatIDR(bpjsYear / 12) + "/bulan dipotong terpisah dari THP.");
         }
         if (ppn + pb1 > 0) {
           walletNotes.push("Take-home sebelum PPN/PB1: " + formatIDR(netFromGross) + ".");
@@ -1696,21 +2095,23 @@
       const priceUnit = item.unit || "unit";
 
       const badge = affordable
-        ? '<span class="rounded-full px-1.5 py-0.5 font-mono text-[10px] font-bold tabular backdrop-blur-sm" style="background:rgba(2,6,23,.82);border:1px solid ' + tint(accent, 0.45) + ";color:" + accent + '">×' + formatNumber(qty) + "</span>"
-        : '<span class="rounded-full bg-slate-950/80 px-1.5 py-0.5 font-mono text-[9px] font-semibold tabular text-slate-300 backdrop-blur-sm">' + Math.round(progress) + "%</span>";
+        ? '<span class="rounded-full px-1.5 py-0.5 font-mono text-[10px] font-bold tabular backdrop-blur-sm lg:text-[11px]" style="background:rgba(2,6,23,.82);border:1px solid ' + tint(accent, 0.45) + ";color:" + accent + '">×' + formatNumber(qty) + "</span>"
+        : '<span class="rounded-full bg-slate-950/80 px-1.5 py-0.5 font-mono text-[9px] font-semibold tabular text-slate-300 backdrop-blur-sm lg:text-[10px]">' + Math.round(progress) + "%</span>";
 
       const caption = affordable
         ? 'Setara <span class="font-semibold" style="color:' + accent + '">' + formatNumber(qty) + " " + unit + "</span>"
         : 'Kurang <span class="font-semibold text-slate-300">' + formatIDR(item.price - total) + "</span> lagi";
 
-      const media = item.image
+      const media = item.emoji
+        ? '<div class="flex h-full w-full items-center justify-center text-6xl leading-none drop-shadow-lg sm:text-7xl lg:text-8xl" role="img" aria-label="' + item.name + '">' + item.emoji + "</div>"
+        : item.image
         ? '<img src="' + item.image + '" alt="' + item.name + '" width="800" height="600" loading="eager" decoding="async" class="h-full w-full ' +
           (item.imageFit === "contain" ? "object-contain p-3" : "object-cover") +
           ' transition duration-500 group-hover:scale-[1.03]">'
         : '<div class="flex h-full w-full items-center justify-center" style="color:' + accent + '"><svg class="h-16 w-16 opacity-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + iconPaths + "</svg></div>";
 
       const source = item.source
-        ? '<span class="absolute bottom-2 left-2 hidden rounded-md bg-slate-950/80 px-1 py-0.5 text-[7px] font-bold uppercase tracking-wider text-slate-300 backdrop-blur-sm sm:block">' + item.source + "</span>"
+        ? '<span class="absolute bottom-2 left-2 hidden rounded-md bg-slate-950/80 px-1 py-0.5 text-[7px] font-bold uppercase tracking-wider text-slate-300 backdrop-blur-sm sm:block lg:text-[8px]">' + item.source + "</span>"
         : "";
 
       return `
@@ -1721,12 +2122,12 @@
             ${source}
           </div>
           <div class="p-2 sm:p-2.5">
-            <h3 class="text-[10px] font-semibold leading-snug text-slate-100 sm:text-[11px]">${item.name}</h3>
-            <p class="mt-0.5 font-mono text-[7px] tabular text-slate-500 sm:text-[8px]">${formatIDR(item.price)}<span class="text-slate-600"> / ${priceUnit}</span></p>
+            <h3 class="text-[10px] font-semibold leading-snug text-slate-100 sm:text-[11px] lg:text-xs">${item.name}</h3>
+            <p class="mt-0.5 font-mono text-[7px] tabular text-slate-500 sm:text-[8px] lg:text-[10px]">${formatIDR(item.price)}<span class="text-slate-600"> / ${priceUnit}</span></p>
             <div class="mt-1.5 h-1 overflow-hidden rounded-full bg-slate-800">
               <div class="h-full rounded-full" style="width:${progress}%;background:${accent};opacity:${affordable ? 1 : 0.5}"></div>
             </div>
-            <p class="mt-1 text-[7px] text-slate-500 sm:text-[8px]">${caption}</p>
+            <p class="mt-1 text-[7px] text-slate-500 sm:text-[8px] lg:text-[10px]">${caption}</p>
           </div>
         </article>
       `;
@@ -1791,9 +2192,34 @@
       }
       setText("comboItem", combo);
 
-      const list = goodsFilter === "Semua" ? GOODS : GOODS.filter(function (item) { return item.category === goodsFilter; });
+      const query = goodsQuery.trim().toLowerCase();
+      const list = GOODS.filter(function (item) {
+        const matchesCategory = goodsFilter === "Semua" || item.category === goodsFilter;
+        const matchesQuery = !query || (item.name + " " + item.category).toLowerCase().indexOf(query) !== -1;
+        return matchesCategory && matchesQuery;
+      });
+
+      if (goodsFilter === "Semua" && !query) {
+        list.sort(function (a, b) {
+          const ai = FEATURED_GOODS.indexOf(a.name);
+          const bi = FEATURED_GOODS.indexOf(b.name);
+          if (ai === -1 && bi === -1) return 0;
+          if (ai === -1) return 1;
+          if (bi === -1) return -1;
+          return ai - bi;
+        });
+      }
+
+      setText("goodsCount", list.length + " dari " + GOODS.length + " item");
+      const clearButton = byId("goodsSearchClear");
+      if (clearButton) clearButton.style.display = query ? "grid" : "none";
+
       const grid = byId("goodsGrid");
-      if (grid) grid.innerHTML = list.map(function (item) { return goodsCard(item, total); }).join("");
+      if (grid) {
+        grid.innerHTML = list.length
+          ? list.map(function (item) { return goodsCard(item, total); }).join("")
+          : '<div class="col-span-full rounded-xl border border-slate-800 bg-slate-950/40 px-4 py-8 text-center text-xs text-slate-500">Tidak ada barang yang cocok. Coba kata kunci lain.</div>';
+      }
     }
 
     /* ------------------------------------------------------------------ */
@@ -2425,6 +2851,10 @@
         });
       });
 
+      byId("chartFullscreenBtn").addEventListener("click", toggleChartFullscreen);
+      document.addEventListener("fullscreenchange", onChartFullscreenChange);
+      document.addEventListener("webkitfullscreenchange", onChartFullscreenChange);
+
       document.querySelectorAll("[data-preset]").forEach(function (button) {
         button.addEventListener("click", function () {
           const input = byId("job1Salary");
@@ -2465,6 +2895,25 @@
         });
         if (lastResult) renderGoods(lastResult.total);
       });
+
+      const goodsSearch = byId("goodsSearch");
+      if (goodsSearch) {
+        goodsSearch.addEventListener("input", function () {
+          goodsQuery = this.value;
+          if (lastResult) renderGoods(lastResult.total);
+        });
+      }
+      const goodsSearchClear = byId("goodsSearchClear");
+      if (goodsSearchClear) {
+        goodsSearchClear.addEventListener("click", function () {
+          goodsQuery = "";
+          if (goodsSearch) {
+            goodsSearch.value = "";
+            goodsSearch.focus();
+          }
+          if (lastResult) renderGoods(lastResult.total);
+        });
+      }
 
       const downloadButton = byId("downloadShareBtn");
       downloadButton.addEventListener("click", async function () {
@@ -2507,7 +2956,10 @@
       });
 
       document.addEventListener("keydown", function (event) {
-        if (event.key === "Escape") closeShareModal();
+        if (event.key === "Escape") {
+          closeShareModal();
+          closeChartFullscreenFallback();
+        }
       });
     }
 
