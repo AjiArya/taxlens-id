@@ -507,6 +507,7 @@
                   <div class="inline-flex rounded-lg border border-slate-800 bg-slate-950/60 p-0.5" role="group" aria-label="Pilih jenis grafik">
                     <button type="button" class="chart-tab is-active" data-chart-view="sankey" aria-pressed="true">Sankey</button>
                     <button type="button" class="chart-tab" data-chart-view="donut" aria-pressed="false">Donut</button>
+                    <button type="button" class="chart-tab" data-chart-view="cash" aria-pressed="false">Fisik</button>
                   </div>
                   <button type="button" id="chartFullscreenBtn" title="Layar penuh" aria-label="Tampilkan grafik dalam layar penuh" aria-pressed="false"
                     class="grid h-[26px] w-[26px] shrink-0 place-items-center rounded-lg border border-slate-800 bg-slate-950/60 text-slate-400 transition hover:border-slate-700 hover:bg-slate-800/80 hover:text-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40">
@@ -524,6 +525,7 @@
                 <div id="donutChartWrap" class="hidden h-full w-full">
                   <canvas id="outflowChart" aria-label="Grafik donat komposisi pajak dan iuran wajib tahunan" role="img"></canvas>
                 </div>
+                <div id="cashChart" class="hidden h-full w-full"></div>
               </div>
               <p id="chartNote" class="mt-2 text-[10px] leading-relaxed text-slate-500">Gaji bruto terbagi ke PPh 21, BPJS Kesehatan, BPJSTK, dan Dompet Kamu.</p>
 
@@ -1731,7 +1733,166 @@
       });
     }
 
+    function renderCash(result) {
+      const container = byId("cashChart");
+      if (!container) return;
+
+      const GEPOK_VALUE = 10000000;
+      const GEPOK_CM = 1.2;
+      const HUMAN_CM = 165;
+      const components = (result && result.items ? result.items : []).filter(function (item) {
+        return item.label !== "Dompet Kamu" && item.value > 0;
+      });
+      const total = components.reduce(function (sum, item) { return sum + item.value; }, 0);
+
+      if (!total) {
+        container.innerHTML = '<div class="flex h-full items-center justify-center px-6 text-center text-[11px] leading-relaxed text-slate-500">Belum ada pajak atau iuran untuk divisualisasikan.</div>';
+        container.setAttribute("aria-label", "Belum ada kontribusi pajak dan iuran.");
+        return;
+      }
+
+      const totalGepok = total / GEPOK_VALUE;
+      const totalCm = totalGepok * GEPOK_CM;
+      const pct = (totalCm / HUMAN_CM) * 100;
+      const persons = Math.max(1, Math.ceil(totalCm / HUMAN_CM));
+      const personHeight = 250 / persons;
+      const trueScale = personHeight / HUMAN_CM;
+      const trueHeight = Math.min(250, totalCm * trueScale);
+      const trueTop = 290 - trueHeight;
+      const humanScale = personHeight / 250;
+      const bodyLabelsData = [
+        { cm: 1.5, label: "kuku kaki", half: 20 },
+        { cm: 7, label: "mata kaki", half: 20 },
+        { cm: 46, label: "lutut", half: 20 },
+        { cm: 87, label: "pinggul", half: 26 },
+        { cm: 99, label: "pusar", half: 26 },
+        { cm: 135, label: "bahu", half: 42 },
+        { cm: 154, label: "mata", half: 20 },
+        { cm: 165, label: "ujung kepala", half: 20 }
+      ];
+      const cmText = totalCm < 0.01 ? "<0,01" : formatNumber(totalCm, 2);
+      const gepokText = totalGepok < 0.01 ? "<0,01" : formatNumber(totalGepok, 2);
+      const lembarText = formatNumber(total / 100000, 0);
+      const pctText = formatNumber(pct, 2);
+
+      const humans = [];
+      for (let i = 0; i < persons; i += 1) {
+        const top = 290 - (i + 1) * personHeight;
+        humans.push(
+          '<g transform="translate(' + (82 - 50 * humanScale) + ' ' + top + ') scale(' + humanScale + ')" filter="url(#humanGlow)">' +
+            '<circle cx="50" cy="20" r="20" fill="url(#cashBills)"/>' +
+            '<rect x="40" y="32" width="20" height="16" fill="url(#cashBills)"/>' +
+            '<path d="M24 44 Q50 32 76 44 L76 122 Q76 134 64 134 L36 134 Q24 134 24 122 Z" fill="url(#cashBills)"/>' +
+            '<rect x="8" y="46" width="18" height="84" rx="9" fill="url(#cashBills)"/>' +
+            '<rect x="74" y="46" width="18" height="84" rx="9" fill="url(#cashBills)"/>' +
+            '<rect x="30" y="122" width="18" height="128" rx="9" fill="url(#cashBills)"/>' +
+            '<rect x="52" y="122" width="18" height="128" rx="9" fill="url(#cashBills)"/>' +
+          '</g>'
+        );
+      }
+
+      const totalHumanCm = persons * HUMAN_CM;
+      const tickStep = persons <= 2 ? 55 : 165;
+      const ticks = [];
+      for (let cm = 0; cm <= totalHumanCm + 0.1; cm += tickStep) {
+        const y = 290 - cm * trueScale;
+        ticks.push(
+          '<line x1="27" y1="' + y + '" x2="32" y2="' + y + '" stroke="#475569"/>' +
+          '<text x="24" y="' + (y + 2) + '" text-anchor="end" font-size="6.5" fill="#64748b">' + Math.round(cm) + '</text>'
+        );
+      }
+
+      const activeLabelsData = persons === 1 ? bodyLabelsData : bodyLabelsData.filter(function (point) {
+        return [165, 135, 87, 46, 1.5].indexOf(point.cm) !== -1;
+      });
+      const bodyLabels = activeLabelsData.map(function (point) {
+        const y = 290 - point.cm * trueScale;
+        const bodyX = 82 + point.half * humanScale;
+        const labelX = Math.max(130, bodyX + 6);
+        const size = persons > 2 ? 5.2 : 6;
+        const heightText = Number.isInteger(point.cm) ? point.cm : formatNumber(point.cm, 1);
+        return '<line x1="' + bodyX + '" y1="' + y + '" x2="' + (labelX - 3) + '" y2="' + y + '" stroke="#475569" stroke-width="0.5"/>' +
+          '<circle cx="' + bodyX + '" cy="' + y + '" r="0.8" fill="#64748b"/>' +
+          '<text x="' + labelX + '" y="' + (y + 2) + '" font-size="' + size + '" fill="#94a3b8">' + point.label + ' ' + heightText + ' cm</text>';
+      }).join("");
+
+      let trueY = 290;
+      const trueSegments = components.map(function (item) {
+        const h = (item.value / GEPOK_VALUE * GEPOK_CM) * trueScale;
+        trueY -= h;
+        return '<rect x="190" y="' + trueY + '" width="22" height="' + Math.max(h, 0.3) + '" fill="' + item.color + '" opacity="0.95"/>';
+      }).join("");
+
+      const trueLines = [];
+      for (let y = trueTop + 2.5; y < 290; y += 3) {
+        trueLines.push('<line x1="190" y1="' + y + '" x2="212" y2="' + y + '" stroke="rgba(2,6,23,.35)" stroke-width="0.6"/>');
+      }
+
+      let detailY = 242;
+      const detailSegments = components.map(function (item) {
+        const h = (item.value / total) * 170;
+        detailY -= h;
+        return '<rect x="262" y="' + detailY + '" width="44" height="' + Math.max(h, 0.35) + '" fill="' + item.color + '" opacity="0.95"/>';
+      }).join("");
+
+      const detailLines = [];
+      for (let y = 72.5; y < 242; y += 3) {
+        detailLines.push('<line x1="262" y1="' + y + '" x2="306" y2="' + y + '" stroke="rgba(2,6,23,.4)" stroke-width="0.6"/>');
+      }
+
+      const legend = components.map(function (item, index) {
+        const y = 88 + index * 24;
+        return '<rect x="318" y="' + (y - 6) + '" width="6" height="6" rx="1" fill="' + item.color + '"/>' +
+          '<text x="329" y="' + y + '" font-size="7" font-weight="700" fill="#cbd5e1">' + escapeXml(item.label) + '</text>' +
+          '<text x="329" y="' + (y + 9) + '" font-size="6.5" fill="#64748b">' + formatCompact(item.value) + ' · ' + formatNumber(item.value / GEPOK_VALUE, 2) + ' gepok</text>';
+      }).join("");
+
+      const multipleNote = totalCm > HUMAN_CM ? ' · ' + formatNumber(totalCm / HUMAN_CM, 2) + '×' : '';
+      const summary = components.map(function (item) { return item.label + ' ' + formatIDR(item.value); }).join(', ');
+      container.setAttribute("aria-label", "Visualisasi fisik kontribusi pajak dan iuran: " + summary + ". Setara " + cmText + " cm atau " + lembarText + " lembar uang Rp100.000.");
+
+      container.innerHTML =
+        '<svg viewBox="0 0 440 330" class="h-full w-full" preserveAspectRatio="xMidYMid meet" aria-hidden="true" style="font-family:' + FONT_STACK + '">' +
+          '<defs>' +
+            '<pattern id="cashBills" width="10" height="5" patternUnits="userSpaceOnUse">' +
+              '<rect width="10" height="5" fill="#0c2a21"/>' +
+              '<rect y="2" width="10" height="1.5" fill="#10b981" opacity="0.35"/>' +
+            '</pattern>' +
+            '<filter id="humanGlow" x="-25%" y="-20%" width="150%" height="140%">' +
+              '<feDropShadow dx="0" dy="0" stdDeviation="1.6" flood-color="#10b981" flood-opacity="0.4"/>' +
+            '</filter>' +
+          '</defs>' +
+          '<line x1="30" y1="290" x2="214" y2="290" stroke="#1e293b"/>' +
+          '<line x1="32" y1="40" x2="32" y2="290" stroke="#334155" stroke-width="1"/>' +
+          ticks.join("") +
+          '<text x="32" y="32" text-anchor="middle" font-size="6.5" font-weight="700" fill="#64748b">cm</text>' +
+          humans.join("") +
+          bodyLabels +
+          '<text x="82" y="306" text-anchor="middle" font-size="7.5" font-weight="700" fill="#94a3b8">' + (persons === 1 ? "165 cm" : "165 cm × " + persons) + '</text>' +
+          '<rect x="188" y="' + (trueTop - 2) + '" width="26" height="' + (trueHeight + 2) + '" rx="1.5" fill="#020617" opacity="0.55" stroke="rgba(16,185,129,.5)" stroke-width="0.8"/>' +
+          trueSegments +
+          trueLines.join("") +
+          '<text x="201" y="316" text-anchor="middle" font-size="6.5" fill="#475569">skala asli</text>' +
+          '<path d="M216 288 L236 288" stroke="#10b981" stroke-width="0.8" stroke-dasharray="2 2" opacity="0.7"/>' +
+          '<rect x="238" y="34" width="194" height="262" rx="10" fill="#0b1220" stroke="#1e293b"/>' +
+          '<text x="250" y="52" font-size="8" font-weight="800" letter-spacing="0.8" fill="#94a3b8">DETAIL TUMPUKAN</text>' +
+          '<text x="250" y="63" font-size="6.5" fill="#475569">skala diperbesar</text>' +
+          '<rect x="262" y="70" width="44" height="172" rx="2" fill="#020617" opacity="0.5"/>' +
+          detailSegments +
+          detailLines.join("") +
+          legend +
+          '<text x="250" y="256" font-size="8" font-weight="800" fill="#e2e8f0">' + formatCompact(total) + ' · ' + gepokText + ' gepok</text>' +
+          '<text x="250" y="268" font-size="7.5" fill="#94a3b8">' + lembarText + ' lembar · ≈ ' + cmText + ' cm</text>' +
+          '<text x="250" y="280" font-size="7.2" fill="#94a3b8">' + pctText + '% dari 165 cm' + multipleNote + '</text>' +
+          '<text x="250" y="291" font-size="6.2" fill="#475569">1 gepok = 100 lembar Rp100.000 ≈ 1,2 cm</text>' +
+        '</svg>';
+    }
+
     function updateChartNote() {
+      if (currentChartView === "cash") {
+        setText("chartNote", "1 gepok = 100 lembar Rp100.000 = Rp10.000.000 ≈ 1,2 cm. Tinggi manusia 165 cm dipakai sebagai pembanding.");
+        return;
+      }
       setText(
         "chartNote",
         lastResult && lastResult.chartNote
@@ -1742,17 +1903,19 @@
 
     function setChartView(view) {
       const isDonut = view === "donut";
+      const isCash = view === "cash";
       if (isDonut && typeof Chart === "undefined") {
         showToast("Grafik donut tidak tersedia di browser ini.");
         return;
       }
 
-      currentChartView = isDonut ? "donut" : "sankey";
+      currentChartView = isCash ? "cash" : (isDonut ? "donut" : "sankey");
       const sankey = byId("sankeyChart");
       const donut = byId("donutChartWrap");
+      const cash = byId("cashChart");
       if (sankey) {
-        sankey.classList.toggle("hidden", isDonut);
-        if (isDonut) {
+        sankey.classList.toggle("hidden", currentChartView !== "sankey");
+        if (currentChartView !== "sankey") {
           sankey.classList.remove("has-hover");
           sankey.querySelectorAll(".sankey-seg").forEach(function (segment) {
             segment.classList.remove("is-hovered");
@@ -1760,6 +1923,7 @@
         }
       }
       if (donut) donut.classList.toggle("hidden", !isDonut);
+      if (cash) cash.classList.toggle("hidden", !isCash);
       updateChartNote();
 
       document.querySelectorAll("[data-chart-view]").forEach(function (button) {
@@ -1779,6 +1943,8 @@
           }
         });
       }
+
+      if (isCash) renderCash(lastResult);
     }
 
     function isChartFullscreen() {
@@ -2161,6 +2327,7 @@
       updateChart(items);
       renderSankey(sourceValue, sankeyTargets, "penghasilan bruto setahun", overBudget ? "Gaji Bruto + Tabungan" : "Gaji Bruto");
       updateChartNote();
+      if (currentChartView === "cash") renderCash(lastResult);
       renderGoods(grandTotal);
     }
 
@@ -2588,7 +2755,7 @@
       ctx.lineWidth = 1.5;
       ctx.stroke();
 
-      const isSankeyPoster = currentChartView === "sankey";
+      const isSankeyPoster = currentChartView !== "donut";
       const activeItems = result.items.filter(function (item) { return item.value > 0; });
       const shownItems = activeItems.length ? activeItems : result.items;
       const chartTotal = result.chartTotal || shownItems.reduce(function (sum, item) { return sum + Math.max(0, item.value); }, 0);
