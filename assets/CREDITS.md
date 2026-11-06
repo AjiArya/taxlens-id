@@ -111,7 +111,9 @@ Foto produk resmi berasal dari situs resmi produsen dan merupakan hak cipta masi
 | Sewa kosan | [A Residential Room](https://commons.wikimedia.org/wiki/File:A_Residential_Room.jpg) | Kalokih | CC BY-SA 4.0 |
 | Sewa apartment | [Pink apartment building facade](https://commons.wikimedia.org/wiki/File:Pink_apartment_building_facade,_Rio_de_Janeiro.jpg) | Wilfredor | CC0 |
 | Sewa kontrakan | [House for rent in Chipata Compound](https://commons.wikimedia.org/wiki/File:House_for_rent_in_Chipata_Compound.jpg) | Olympian Xeus | CC BY-SA 4.0 |
-| AYCE | [Buffet dishes at Khua Din Restaurant](https://commons.wikimedia.org/wiki/File:Buffet_dishes_at_Khua_Din_Restaurant.jpg) | Mx. Granger | CC0 |
+| Hotel bintang 3 | [Ibis Budget Reduta Warszawa room](https://commons.wikimedia.org/wiki/File:Ibis_Budget_Reduta_Warszawa_room.jpg) | Mateusz Giełczyński | CC BY-SA 3.0 |
+| Hotel bintang 4 | [Cozy hotel room](https://commons.wikimedia.org/wiki/File:Cozy_hotel_room_with_modern_furnishings_and_natural_light_flowing_through_the_curtains.jpg) | Shixart1985 | CC BY 2.0 |
+| Hotel bintang 5 | [Canopy bed of Amantaka Suite](https://commons.wikimedia.org/wiki/File:Canopy_bed_of_Amantaka_Suite_in_Amantaka_luxury_Resort_%26_Hotel_in_Luang_Prabang_Laos.jpg) | Basile Morin | CC BY-SA 4.0 |
 
 ## Teks lisensi
 
