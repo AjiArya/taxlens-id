@@ -12,11 +12,12 @@ Personal statutory & tax flow tracker untuk Indonesia. Menghitung PPh 21, BPJS, 
 - **Pekerjaan tambahan** — hingga 3 sumber penghasilan, PPh 21 progresif tanpa PTKP.
 - **Rekonsiliasi tahunan** — Pasal 17, biaya jabatan 5% (maks Rp 6 jt per pemberi kerja), PTKP sekali. Satu pekerjaan: selisih Desember ditampilkan sebagai info dan diselesaikan pemberi kerja. Multi-pekerjaan: kurang/lebih bayar SPT ditampilkan.
 - **Pajak konsumsi** — PPN 11% dan PB1 10%.
+- **Setara mata uang** — total outflow dikonversi ke USD, Yen, Yuan, SGD, Euro, AUD, dan British Pounds memakai kurs ECB melalui Frankfurter API, dengan kurs fallback bila API tidak tersedia.
 - **Visualisasi aliran gaji** — Sankey dan Donut memakai data yang sama: **Gaji Bruto** → PPh 21, BPJS Kesehatan, BPJSTK (JHT + JP), PPN 11%, PB1 10%, dan **Dompet Kamu** (sisa setelah pajak & iuran). Sankey jadi tampilan utama; Donut opsi sekunder.
-- **Belanja Pajak** — katalog 124 item lintas elektronik, bahan pokok, transportasi, properti, pemerintah, olahraga, gaming, hiburan, liburan, ibadah, keluarga, emas, lifestyle, produktifitas, luxury, dan wearable. Ada **pencarian sederhana** dan filter kategori; setiap item punya gambar/ikon; gambar produk brand memakai aset resmi bila tersedia.
+- **Belanja Pajak** — katalog 133 item lintas elektronik, bahan pokok, transportasi, properti, pemerintah, olahraga, gaming, hiburan, liburan, ibadah, keluarga, emas, lifestyle, produktifitas, luxury, dan wearable. Ada **pencarian sederhana** dan filter kategori; setiap item punya gambar/ikon; gambar produk brand memakai aset resmi bila tersedia.
 - **Download JPG 1080 × 1350 (4:5)** — poster berisi total kontribusi, grafik sesuai pilihan (Sankey atau Donut), barang setara, dan branding **#SadarDipalak** dengan tiga warna solid: hijau `#1b8a3e`, biru `#123c8a`, merah `#dc2626`; pas untuk Threads, Instagram, dan foto TikTok. Dibuat sepenuhnya di browser dengan Canvas API.
 - **Bantu posting** — tombol bagikan memakai Web Share API di HP; di desktop gambar disalin ke clipboard atau diunduh. Tersedia juga Salin Gambar, Simpan Foto, dan tombol Threads/Instagram/TikTok.
-- **Privasi** — tanpa backend, tanpa cookie, tanpa localStorage. Tidak ada data yang dikirim atau disimpan.
+- **Privasi** — tanpa backend, tanpa cookie, tanpa localStorage. Satu-satunya permintaan eksternal adalah kurs mata uang dari Frankfurter API; tidak ada data pribadi yang dikirim atau disimpan.
 - **Build ID** — footer menampilkan build ID dari commit deploy (tanggal + SHA pendek) untuk memudahkan verifikasi versi yang sedang dilihat.
 
 ## Menjalankan lokal
@@ -52,8 +53,8 @@ Situs: **https://ajiarya.github.io/taxlens-id/**
 
 - Apple: iBox (iPhone 18 Pro Max 256GB Rp 29.999.000; iPad Pro 11-inch M5 256GB Rp 24.999.000; MacBook Pro 14-inch seri terbaru Rp 38.999.000 — M6 belum tersedia di katalog iBox, dipakai sebagai estimasi).
 - Bahan pokok: harga e-commerce (beras, gula, minyak goreng, air mineral, isi ulang galon, Indomie); nasi padang: harga pasar.
-- Transportasi: Pertamax Rp 16.500/liter (Pertamina); Whoosh First Class Rp 600.000 (KCIC); Honda BeAT Rp 19.380.000 (AHM OTR Jakarta); Daihatsu Sigra Rp 144.400.000, Toyota Calya Rp 170.200.000, Honda Brio Rp 170.400.000 (OTR 2026).
-- Properti: sewa kosan Rp 1.000.000/bulan, sewa apartment Rp 3.000.000/bulan, sewa kontrakan Rp 5.000.000/tahun (harga pasar).
+- Transportasi: BBM Pertamina per liter (estimasi) — Pertalite Rp 10.000, Biosolar Rp 6.800, Pertamax Rp 16.500, Pertamax Turbo Rp 18.500, Dexlite Rp 17.500, Pertamina Dex Rp 19.500; Whoosh First Class Rp 600.000 (KCIC); Honda BeAT Rp 19.380.000 (AHM OTR Jakarta); Daihatsu Sigra Rp 144.400.000, Toyota Calya Rp 170.200.000, Honda Brio Rp 170.400.000 (OTR 2026).
+- Properti: sewa kosan Rp 1.000.000/bulan, sewa apartment Rp 3.000.000/bulan, sewa kontrakan Rp 5.000.000/bulan (harga pasar).
 - Tiket PP Pesawat per orang (estimasi 2026): Bali Ekonomi Rp 2.000.000 / Bisnis Rp 6.500.000; Jepang Rp 8.000.000 / Rp 28.000.000; Singapura Rp 2.800.000 / Rp 9.500.000; Malaysia Rp 2.500.000 / Rp 8.500.000; Vietnam Rp 3.500.000 / Rp 12.000.000.
 - Hotel rata-rata per malam (acuan harga Singapura): bintang 3 Rp 1.800.000, bintang 4 Rp 3.200.000, bintang 5 Rp 6.500.000 (estimasi).
 - Ibadah: Umrah 9 Hari Rp 32.000.000; Ziarah Holyland 9 Hari Rp 45.000.000 (estimasi paket).
@@ -68,8 +69,9 @@ Situs: **https://ajiarya.github.io/taxlens-id/**
 - Hiburan: Netflix Rp 2.280.000/tahun, YouTube Premium Rp 69.000/bulan, Spotify Premium Rp 59.900/bulan, Disney+ Premium Rp 199.000/bulan, HBO Max Rp 119.000/bulan, Vidio Premier Rp 99.000/bulan, tiket Mens Rea Diamond Rp 2.000.000 (estimasi).
 - GTA 6: PlayStation Store (estimasi pre-order).
 - PS5, sewa lapangan, refleksi keluarga: harga pasar/Google.
-- UMR Jakarta: UMP DKI Jakarta 2026 Rp 5.729.876; Bangunan Kopdes Rp 1.600.000.000; Bangunan SPPG Rp 4.500.000.000 (estimasi program); listrik PLN 1300 VA Rp 1.445/kWh (tarif 2026).
+- UMR Jakarta: UMP DKI Jakarta 2026 Rp 5.729.876; Bangunan Kopdes Rp 1.600.000.000; Bangunan SPPG Rp 4.500.000.000 (estimasi program); listrik PLN per kWh (tarif 2026): 900 VA subsidi Rp 605, 900 VA non-subsidi Rp 1.352, 1300 VA Rp 1.445, 2200 VA Rp 1.445, 3500 VA Rp 1.700.
 - Foto item: foto produk brand dan langganan digital (Apple, Samsung, Garmin, otomotif, PlayStation, Nintendo, Steam, Indomie, Netflix, Disney+, HBO Max, Vidio, Claude, ChatGPT, Gemini, Grok, Spotify, YouTube, PLN, Roblox, Fortnite, Valorant, PUBG, MLBB, Meta) berasal dari situs resmi masing-masing dan merupakan hak cipta pemilik merek; foto nasi padang dari Grab Indonesia; foto lain dari Wikimedia Commons dengan lisensi bebas (CC0, Public Domain, CC BY, CC BY-SA). Semua di-crop/resize untuk kartu. Daftar lengkap sumber, kreator, dan lisensi ada di [assets/CREDITS.md](assets/CREDITS.md).
+- Kurs mata uang: [Frankfurter API](https://frankfurter.dev/) (referensi ECB), dengan kurs fallback estimasi bila API tidak tersedia. Bendera: [flagcdn.com](https://flagcdn.com/) (public domain).
 - Semua harga bersifat ilustratif dan dapat berubah, bukan penawaran.
 
 > Aplikasi ini adalah alat edukasi dan estimasi, bukan bukti potong resmi, nasihat pajak, atau pengganti perhitungan konsultan/pemberi kerja.

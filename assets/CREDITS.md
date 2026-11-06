@@ -64,7 +64,6 @@ Foto produk resmi berasal dari situs resmi produsen dan merupakan hak cipta masi
 |---|---|---|---|
 | Gula | [Granulated White Sugar](https://commons.wikimedia.org/wiki/File:Granulated_White_Sugar_with_Large_Crystals,_Bright_Front_Light.jpg) | Tobias Erbsland | CC BY-SA 4.0 |
 | Minyak goreng | [Minyak Goreng Sawit Kemasan](https://commons.wikimedia.org/wiki/File:Minyak_Goreng_Sawit_Kemasan_Di_Indonesia.jpg) | DARMAS BS 9 | CC BY-SA 4.0 |
-| Bensin Pertamax | [Pertamina Gas Station Ciamis](https://commons.wikimedia.org/wiki/File:Pertamina_Gas_Station_at_Jalan_Iwa_Kusumasumantri,_Ciamis.jpg) | Rafka Aditia | CC BY-SA 4.0 |
 | MBG | [Makan Bergizi Gratis 2](https://commons.wikimedia.org/wiki/File:Makan_Bergizi_Gratis_2.jpg) | Fitrah 9131 | CC0 |
 | UMR Jakarta | [Разговор по телефону](https://commons.wikimedia.org/wiki/File:%D0%A0%D0%B0%D0%B7%D0%B3%D0%BE%D0%B2%D0%BE%D1%80_%D0%BF%D0%BE_%D1%82%D0%B5%D0%BB%D0%B5%D1%84%D0%BE%D0%BD%D1%83.jpg) | Антон Пищулин | CC BY-SA 4.0 |
 | Padel | [Padel Court in Nsambya](https://commons.wikimedia.org/wiki/File:Padel_Court_in_Nsambya.jpg) | Samson Ssemakadde | CC0 |
@@ -110,7 +109,7 @@ Foto produk resmi berasal dari situs resmi produsen dan merupakan hak cipta masi
 | Bangunan Kopdes | [Koperasi Desa Merah Putih Sawahan](https://commons.wikimedia.org/wiki/File:Koperasi_Desa_Merah_Putih_Sawahan,_Juwiring,_Klaten_1_Agustus_2026.jpg) | Dani Safa Adi Nugraha | CC BY-SA 3.0 |
 | Sewa kosan | [A Residential Room](https://commons.wikimedia.org/wiki/File:A_Residential_Room.jpg) | Kalokih | CC BY-SA 4.0 |
 | Sewa apartment | [Pink apartment building facade](https://commons.wikimedia.org/wiki/File:Pink_apartment_building_facade,_Rio_de_Janeiro.jpg) | Wilfredor | CC0 |
-| Sewa kontrakan | [House for rent in Chipata Compound](https://commons.wikimedia.org/wiki/File:House_for_rent_in_Chipata_Compound.jpg) | Olympian Xeus | CC BY-SA 4.0 |
+| Sewa kontrakan | [Modern house exterior](https://commons.wikimedia.org/wiki/File:Modern_house_exterior_with_red_roof_and_landscaped_garden_under_clear_blue_sky.jpg) | Shixart1985 | CC BY 2.0 |
 | Hotel bintang 3 | [Ibis Budget Reduta Warszawa room](https://commons.wikimedia.org/wiki/File:Ibis_Budget_Reduta_Warszawa_room.jpg) | Mateusz Giełczyński | CC BY-SA 3.0 |
 | Hotel bintang 4 | [Cozy hotel room](https://commons.wikimedia.org/wiki/File:Cozy_hotel_room_with_modern_furnishings_and_natural_light_flowing_through_the_curtains.jpg) | Shixart1985 | CC BY 2.0 |
 | Hotel bintang 5 | [Canopy bed of Amantaka Suite](https://commons.wikimedia.org/wiki/File:Canopy_bed_of_Amantaka_Suite_in_Amantaka_luxury_Resort_%26_Hotel_in_Luang_Prabang_Laos.jpg) | Basile Morin | CC BY-SA 4.0 |

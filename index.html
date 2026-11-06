@@ -194,7 +194,7 @@
       </svg>
       <p class="flex-1 text-[11px] leading-relaxed text-emerald-200/80 sm:text-xs">
         <span class="font-bold text-emerald-300">Privasi:</span>
-        website ini <span class="font-semibold text-emerald-200">tidak menyimpan data apa pun</span>. Semua perhitungan dan gambar diproses sepenuhnya di browser kamu — tidak ada data yang dikirim ke server.
+        website ini <span class="font-semibold text-emerald-200">tidak menyimpan data apa pun</span>. Semua perhitungan dan gambar diproses sepenuhnya di browser kamu. Satu-satunya permintaan eksternal adalah kurs mata uang; tidak ada data pribadi yang dikirim ke server.
       </p>
       <button id="dismissPrivacy" type="button" aria-label="Tutup banner privasi" class="rounded-md px-1.5 py-0.5 text-base leading-none text-emerald-300/60 transition hover:bg-emerald-500/10 hover:text-emerald-200">×</button>
     </div>
@@ -583,22 +583,12 @@
           <p class="mt-0.5 text-[9px] text-slate-500">@ Rp 2.150.000 / gram</p>
 
           <div class="mt-3 space-y-1.5 border-t border-amber-500/10 pt-2.5">
-            <div class="flex items-baseline justify-between gap-2">
-              <span class="shrink-0 text-[8px] font-bold uppercase tracking-[0.12em] text-slate-500">Termahal</span>
-              <span id="topItem" class="text-right text-[11px] font-semibold leading-snug text-slate-100">—</span>
-            </div>
-            <div class="flex items-baseline justify-between gap-2">
-              <span class="shrink-0 text-[8px] font-bold uppercase tracking-[0.12em] text-slate-500">Paling banyak</span>
-              <span id="bulkItem" class="text-right text-[11px] font-semibold leading-snug text-slate-100">—</span>
-            </div>
-            <div class="flex items-baseline justify-between gap-2">
-              <span class="shrink-0 text-[8px] font-bold uppercase tracking-[0.12em] text-slate-500">Kombinasi</span>
-              <span id="comboItem" class="text-right text-[11px] font-semibold leading-snug text-slate-100">—</span>
-            </div>
+            <div id="currencyList" class="space-y-1.5"></div>
           </div>
+          <p id="currencyUpdated" class="mt-2 text-[8px] text-slate-600">Kurs estimasi</p>
 
-          <p class="mt-3 border-t border-amber-500/10 pt-2.5 text-[8px] leading-relaxed text-slate-600">
-            Total outflow tahunan ÷ harga satuan. Bukan akumulasi semua barang sekaligus.
+          <p class="mt-2 border-t border-amber-500/10 pt-2.5 text-[8px] leading-relaxed text-slate-600">
+            Total outflow tahunan dikonversi ke mata uang. Nilai ilustratif.
           </p>
         </div>
 
@@ -638,7 +628,7 @@
           <div id="goodsGrid" class="grid grid-cols-3 gap-1.5 sm:gap-2 lg:grid-cols-4"></div>
           <p class="mt-3 text-[10px] leading-relaxed text-slate-500">
             Setiap item dihitung terpisah dari total outflow — bukan akumulasi semuanya sekaligus.
-            Harga Apple: iBox; Samsung: Samsung Indonesia; Garmin: Eraspace/Urban Republic; otomotif: AHM/Auto2000/OTR 2026; travel: estimasi paket; sepatu &amp; gadget lain: harga pasar; RTX: harga pasar + foto FE NVIDIA; bahan pokok: e-commerce; Pertamax: Pertamina; Dufan: Ancol; GTA 6: PlayStation Store; UMR: UMP DKI 2026. Harga dapat berubah.
+            Harga Apple: iBox; Samsung: Samsung Indonesia; Garmin: Eraspace/Urban Republic; otomotif: AHM/Auto2000/OTR 2026; travel: estimasi paket; sepatu &amp; gadget lain: harga pasar; RTX: harga pasar + foto FE NVIDIA; bahan pokok: e-commerce; BBM: Pertamina; Dufan: Ancol; GTA 6: PlayStation Store; UMR: UMP DKI 2026. Harga dapat berubah.
           </p>
           <details class="mt-2 rounded-lg border border-slate-800 bg-slate-950/30 px-3 py-2">
             <summary class="cursor-pointer text-[10px] font-semibold text-slate-500 hover:text-slate-300">Sumber &amp; kredit foto</summary>
@@ -700,7 +690,6 @@
                 <li class="pt-1 font-semibold text-slate-400">Foto lisensi bebas</li>
                 <li>Gula — <a href="https://commons.wikimedia.org/wiki/File:Granulated_White_Sugar_with_Large_Crystals,_Bright_Front_Light.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Granulated White Sugar</a> · Tobias Erbsland · CC BY-SA 4.0</li>
                 <li>Minyak goreng — <a href="https://commons.wikimedia.org/wiki/File:Minyak_Goreng_Sawit_Kemasan_Di_Indonesia.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Minyak Goreng Sawit Kemasan</a> · DARMAS BS 9 · CC BY-SA 4.0</li>
-                <li>Bensin Pertamax — <a href="https://commons.wikimedia.org/wiki/File:Pertamina_Gas_Station_at_Jalan_Iwa_Kusumasumantri,_Ciamis.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Pertamina Gas Station Ciamis</a> · Rafka Aditia · CC BY-SA 4.0</li>
                 <li>MBG — <a href="https://commons.wikimedia.org/wiki/File:Makan_Bergizi_Gratis_2.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Makan Bergizi Gratis 2</a> · Fitrah 9131 · CC0</li>
                 <li>UMR Jakarta — <a href="https://commons.wikimedia.org/wiki/File:%D0%A0%D0%B0%D0%B7%D0%B3%D0%BE%D0%B2%D0%BE%D1%80_%D0%BF%D0%BE_%D1%82%D0%B5%D0%BB%D0%B5%D1%84%D0%BE%D0%BD%D1%83.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Разговор по телефону</a> · Антон Пищулин · CC BY-SA 4.0</li>
                 <li>Padel — <a href="https://commons.wikimedia.org/wiki/File:Padel_Court_in_Nsambya.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Padel Court in Nsambya</a> · Samson Ssemakadde · CC0</li>
@@ -746,7 +735,7 @@
                 <li>Bangunan Kopdes — <a href="https://commons.wikimedia.org/wiki/File:Koperasi_Desa_Merah_Putih_Sawahan,_Juwiring,_Klaten_1_Agustus_2026.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Koperasi Desa Merah Putih Sawahan</a> · Dani Safa Adi Nugraha · CC BY-SA 3.0</li>
                 <li>Sewa kosan — <a href="https://commons.wikimedia.org/wiki/File:A_Residential_Room.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">A Residential Room</a> · Kalokih · CC BY-SA 4.0</li>
                 <li>Sewa apartment — <a href="https://commons.wikimedia.org/wiki/File:Pink_apartment_building_facade,_Rio_de_Janeiro.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Pink apartment building facade</a> · Wilfredor · CC0</li>
-                <li>Sewa kontrakan — <a href="https://commons.wikimedia.org/wiki/File:House_for_rent_in_Chipata_Compound.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">House for rent in Chipata Compound</a> · Olympian Xeus · CC BY-SA 4.0</li>
+                <li>Sewa kontrakan — <a href="https://commons.wikimedia.org/wiki/File:Modern_house_exterior_with_red_roof_and_landscaped_garden_under_clear_blue_sky.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Modern house exterior</a> · Shixart1985 · CC BY 2.0</li>
                 <li>Hotel bintang 3 — <a href="https://commons.wikimedia.org/wiki/File:Ibis_Budget_Reduta_Warszawa_room.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Ibis Budget Reduta Warszawa room</a> · Mateusz Giełczyński · CC BY-SA 3.0</li>
                 <li>Hotel bintang 4 — <a href="https://commons.wikimedia.org/wiki/File:Cozy_hotel_room_with_modern_furnishings_and_natural_light_flowing_through_the_curtains.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Cozy hotel room</a> · Shixart1985 · CC BY 2.0</li>
                 <li>Hotel bintang 5 — <a href="https://commons.wikimedia.org/wiki/File:Canopy_bed_of_Amantaka_Suite_in_Amantaka_luxury_Resort_%26_Hotel_in_Luang_Prabang_Laos.jpg" target="_blank" rel="noopener noreferrer" class="underline decoration-slate-700 underline-offset-2 hover:text-slate-300">Canopy bed of Amantaka Suite</a> · Basile Morin · CC BY-SA 4.0</li>
@@ -799,7 +788,7 @@
 
         <div class="mt-5 rounded-xl border border-amber-500/10 bg-amber-500/[0.04] px-4 py-3">
           <p class="text-[10px] leading-relaxed text-slate-500">
-            <span class="font-bold text-amber-400/80">Catatan:</span> angka bersifat estimasi untuk edukasi dan perencanaan. Pemotongan aktual dapat berbeda karena kebijakan pemberi kerja, status PTKP suami/istri, iuran pensiun lain, dan perubahan regulasi. Harga: iBox (Apple), e-commerce (bahan pokok), Pertamina (Pertamax), Dufan/Ancol (tiket), harga pasar/Google (nasi padang, cookie, PS5, olahraga, refleksi), UMP DKI 2026 (UMR). Foto: iBox &amp; Wikimedia Commons — lihat kredit di bagian Belanja Pajak. Aplikasi tidak menyimpan, mengirim, atau memproses data pribadi di server.
+            <span class="font-bold text-amber-400/80">Catatan:</span> angka bersifat estimasi untuk edukasi dan perencanaan. Pemotongan aktual dapat berbeda karena kebijakan pemberi kerja, status PTKP suami/istri, iuran pensiun lain, dan perubahan regulasi. Harga: iBox (Apple), e-commerce (bahan pokok), Pertamina (BBM), Dufan/Ancol (tiket), harga pasar/Google (nasi padang, cookie, PS5, olahraga, refleksi), UMP DKI 2026 (UMR). Foto: iBox &amp; Wikimedia Commons — lihat kredit di bagian Belanja Pajak. Aplikasi tidak menyimpan, mengirim, atau memproses data pribadi di server.
           </p>
         </div>
       </div>
@@ -960,6 +949,21 @@
     const SECONDARY_DEFAULT = 5000000;
     const GOLD_PRICE = 2150000;
 
+    // Kurs acuan fallback (IDR per 1 unit). Diperbarui dari Frankfurter API bila tersedia.
+    const CURRENCY_META = [
+      { code: "USD", label: "USD", symbol: "$", flag: "assets/flags/us.svg" },
+      { code: "JPY", label: "Yen", symbol: "¥", flag: "assets/flags/jp.svg" },
+      { code: "CNY", label: "Yuan", symbol: "¥", flag: "assets/flags/cn.svg" },
+      { code: "SGD", label: "SGD", symbol: "S$", flag: "assets/flags/sg.svg" },
+      { code: "EUR", label: "Euro", symbol: "€", flag: "assets/flags/eu.svg" },
+      { code: "AUD", label: "AUD", symbol: "A$", flag: "assets/flags/au.svg" },
+      { code: "GBP", label: "British Pounds", symbol: "£", flag: "assets/flags/gb.svg" }
+    ];
+    const FALLBACK_RATES = { USD: 18000, JPY: 114, CNY: 2700, SGD: 14150, EUR: 20300, AUD: 12650, GBP: 24300 };
+    let exchangeRates = Object.assign({}, FALLBACK_RATES);
+    let exchangeRateDate = "";
+    let lastGoodsTotal = 0;
+
     // Kategori TER ditentukan oleh status PTKP (PP 58/2023).
     const TER_CATEGORY_BY_PTKP = {
       54000000: "A",
@@ -1020,7 +1024,12 @@
       { name: "Air mineral 600 ml", price: 4000, category: "Bahan Pokok", icon: "water", source: "E-commerce", unit: "botol" },
 
       // Transportasi.
-      { name: "Bensin Pertamax", price: 16500, category: "Transportasi", icon: "fuel", image: "assets/pertamax.webp", imageFit: "cover", source: "Pertamina", unit: "liter" },
+      { name: "Bensin Pertalite", price: 10000, category: "Transportasi", icon: "fuel", source: "Pertamina", unit: "liter" },
+      { name: "Biosolar", price: 6800, category: "Transportasi", icon: "fuel", source: "Pertamina", unit: "liter" },
+      { name: "Bensin Pertamax", price: 16500, category: "Transportasi", icon: "fuel", source: "Pertamina", unit: "liter" },
+      { name: "Bensin Pertamax Turbo", price: 18500, category: "Transportasi", icon: "fuel", source: "Pertamina", unit: "liter" },
+      { name: "Bensin Dexlite", price: 17500, category: "Transportasi", icon: "fuel", source: "Pertamina", unit: "liter" },
+      { name: "Bensin Pertamina Dex", price: 19500, category: "Transportasi", icon: "fuel", source: "Pertamina", unit: "liter" },
       { name: "Tiket First Class Whoosh", price: 600000, category: "Transportasi", icon: "train", image: "assets/whoosh.webp", imageFit: "cover", source: "KCIC", unit: "tiket" },
       { name: "Honda BeAT", price: 19380000, category: "Transportasi", icon: "scooter", image: "assets/honda-beat.webp", imageFit: "contain", source: "AHM OTR Jakarta", unit: "unit" },
       { name: "Daihatsu Sigra", price: 144400000, category: "Transportasi", icon: "car", image: "assets/daihatsu-sigra.webp", imageFit: "contain", source: "OTR 2026", unit: "unit" },
@@ -1029,14 +1038,18 @@
       // Properti — sewa per bulan/tahun.
       { name: "Sewa kosan", price: 1000000, category: "Properti", icon: "home", image: "assets/sewa-kosan.webp", imageFit: "cover", source: "Harga pasar", unit: "bulan" },
       { name: "Sewa apartment", price: 3000000, category: "Properti", icon: "home", image: "assets/sewa-apartment.webp", imageFit: "cover", source: "Harga pasar", unit: "bulan" },
-      { name: "Sewa kontrakan", price: 5000000, category: "Properti", icon: "home", image: "assets/sewa-kontrakan.webp", imageFit: "cover", source: "Harga pasar", unit: "tahun" },
+      { name: "Sewa kontrakan", price: 5000000, category: "Properti", icon: "home", image: "assets/sewa-kontrakan-modern.webp", imageFit: "cover", source: "Harga pasar", unit: "bulan" },
 
       // Pemerintah.
       { name: "1 porsi MBG", price: 10000, category: "Pemerintah", icon: "meal", image: "assets/mbg.webp", imageFit: "cover", source: "Program MBG", unit: "porsi" },
       { name: "Gaji 1 pegawai UMR Jakarta", price: 5729876, category: "Pemerintah", icon: "worker", image: "assets/umr-jakarta.webp", imageFit: "cover", source: "UMP DKI 2026", unit: "bulan", captionUnit: "pegawai/bulan" },
       { name: "Bangunan Kopdes", price: 1600000000, category: "Pemerintah", icon: "home", image: "assets/kopdes.webp", imageFit: "cover", source: "Estimasi program", unit: "unit" },
       { name: "Bangunan SPPG", price: 4500000000, category: "Pemerintah", icon: "home", image: "assets/sppg.webp", imageFit: "contain", source: "Estimasi program", unit: "unit" },
+      { name: "Listrik PLN 900 VA (Subsidi)", price: 605, category: "Pemerintah", icon: "bolt", image: "assets/pln.webp", imageFit: "contain", source: "Tarif PLN 2026", unit: "kWh" },
+      { name: "Listrik PLN 900 VA (Non-Subsidi)", price: 1352, category: "Pemerintah", icon: "bolt", image: "assets/pln.webp", imageFit: "contain", source: "Tarif PLN 2026", unit: "kWh" },
       { name: "Listrik PLN 1300 VA", price: 1445, category: "Pemerintah", icon: "bolt", image: "assets/pln.webp", imageFit: "contain", source: "Tarif PLN 2026", unit: "kWh" },
+      { name: "Listrik PLN 2200 VA", price: 1445, category: "Pemerintah", icon: "bolt", image: "assets/pln.webp", imageFit: "contain", source: "Tarif PLN 2026", unit: "kWh" },
+      { name: "Listrik PLN 3500 VA", price: 1700, category: "Pemerintah", icon: "bolt", image: "assets/pln.webp", imageFit: "contain", source: "Tarif PLN 2026", unit: "kWh" },
 
       // Olahraga — Garmin, sepatu lari, sewa lapangan per jam.
       { name: "Garmin Forerunner 70", price: 4659000, category: "Elektronik", icon: "watch", image: "assets/garmin-forerunner-70.webp", imageFit: "contain", source: "Eraspace / Urban Republic", unit: "unit" },
@@ -2220,35 +2233,54 @@
       return { hero: hero, qty: qty, extra: extra, leftover: leftover };
     }
 
+    function renderCurrencyList(total) {
+      lastGoodsTotal = total;
+      const list = byId("currencyList");
+      if (!list) return;
+      list.innerHTML = CURRENCY_META.map(function (currency) {
+        const rate = exchangeRates[currency.code] || FALLBACK_RATES[currency.code];
+        const value = rate > 0 ? total / rate : 0;
+        return '<div class="flex items-baseline justify-between gap-2">' +
+          '<span class="flex shrink-0 items-center gap-1.5 text-[8px] font-bold uppercase tracking-[0.12em] text-slate-500">' +
+            '<img src="' + currency.flag + '" alt="" class="h-3 w-4 rounded-[2px] object-cover ring-1 ring-slate-700/60" loading="lazy">' +
+            currency.label +
+          '</span>' +
+          '<span class="text-right font-mono text-[11px] font-semibold tabular text-slate-100">' + currency.symbol + formatNumber(value, 0) + '</span>' +
+          '</div>';
+      }).join("");
+      const updated = byId("currencyUpdated");
+      if (updated) updated.textContent = exchangeRateDate ? "Kurs ECB · " + exchangeRateDate : "Kurs estimasi";
+    }
+
+    function loadExchangeRates() {
+      if (typeof fetch !== "function") return;
+      fetch("https://api.frankfurter.dev/v1/latest?from=IDR&to=USD,JPY,CNY,SGD,EUR,AUD,GBP", { cache: "no-store" })
+        .then(function (response) {
+          if (!response.ok) throw new Error("HTTP " + response.status);
+          return response.json();
+        })
+        .then(function (data) {
+          const incoming = {};
+          CURRENCY_META.forEach(function (currency) {
+            const value = data && data.rates ? data.rates[currency.code] : null;
+            if (value && value > 0) incoming[currency.code] = 1 / value;
+          });
+          if (Object.keys(incoming).length) {
+            exchangeRates = Object.assign({}, FALLBACK_RATES, incoming);
+            exchangeRateDate = data.date || "";
+            renderCurrencyList(lastGoodsTotal);
+          }
+        })
+        .catch(function () {
+          // Tetap pakai kurs fallback bila API tidak dapat diakses.
+        });
+    }
+
     function renderGoods(total) {
       setText("goodsTotal", formatIDR(total));
       setText("goldGrams", formatNumber(total / GOLD_PRICE, 1));
 
-      const affordable = GOODS.filter(function (item) { return item.price <= total; });
-      const top = affordable.reduce(function (best, item) {
-        return !best || item.price > best.price ? item : best;
-      }, null);
-
-      let bulk = null;
-      let bulkQty = 0;
-      GOODS.forEach(function (item) {
-        const qty = Math.floor(total / item.price);
-        if (qty > bulkQty) {
-          bulkQty = qty;
-          bulk = item;
-        }
-      });
-
-      setText("topItem", top ? "1 × " + top.name : "Belum cukup untuk 1 unit");
-      setText("bulkItem", bulk && bulkQty >= 1 ? formatNumber(bulkQty) + " × " + bulk.name : "Belum ada");
-
-      const haul = buildHaul(total);
-      let combo = "—";
-      if (haul) {
-        combo = haul.qty + " × " + haul.hero.name;
-        if (haul.extra) combo += " + 1 × " + haul.extra.name;
-      }
-      setText("comboItem", combo);
+      renderCurrencyList(total);
 
       const query = goodsQuery.trim().toLowerCase();
       const list = GOODS.filter(function (item) {
@@ -3041,6 +3073,7 @@
       renderJobs();
       setChartView("sankey");
       calculate();
+      loadExchangeRates();
     }
 
     if (document.readyState === "loading") {
