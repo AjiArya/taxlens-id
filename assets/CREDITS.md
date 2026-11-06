@@ -46,6 +46,17 @@ Foto produk resmi berasal dari situs resmi produsen dan merupakan hak cipta masi
 | Bangunan SPPG | [Badan Gizi Nasional](https://bgn.go.id/) | © Badan Gizi Nasional |
 | Game PS5 | [PlayStation](https://www.playstation.com/) | © Sony Interactive Entertainment |
 | Nasi Padang | [Grab Indonesia](https://assets.grab.com/wp-content/uploads/sites/9/2019/12/19112921/ID-nasi-padang-pedas1-700x700.jpg) | © Grab |
+| Disney+ | [Disney+ logo](https://commons.wikimedia.org/wiki/File:Disney%2B_logo.svg) | © Disney |
+| HBO Max | [HBO Max logo](https://www.hbomax.com/) | © Warner Bros. Discovery |
+| Vidio | [Vidio logo](https://commons.wikimedia.org/wiki/File:Vidio_logo.svg) | © Vidio |
+| Meta Verified | [Instagram logo](https://www.instagram.com/) | © Meta |
+| Grok | [Grok logo](https://commons.wikimedia.org/wiki/File:Grok_logo_%282023-2025%29.svg) | © xAI |
+| PLN | [Logo PLN](https://commons.wikimedia.org/wiki/File:Logo_PLN.svg) | © PLN |
+| Roblox | [Roblox logo](https://www.roblox.com/) | © Roblox |
+| Fortnite | [Fortnite logo](https://www.fortnite.com/) | © Epic Games |
+| Valorant | [Valorant logo](https://playvalorant.com/) | © Riot Games |
+| PUBG | [PUBG Mobile logo](https://www.pubgmobile.com/) | © Krafton |
+| MLBB | [Mobile Legends logo](https://en.wikipedia.org/wiki/Mobile_Legends:_Bang_Bang) | © Moonton |
 
 ## Foto lisensi bebas
 
@@ -97,6 +108,10 @@ Foto produk resmi berasal dari situs resmi produsen dan merupakan hak cipta masi
 | Audemars Piguet Royal Oak | [Audemars Piguet Royal Oak ref. 15202](https://commons.wikimedia.org/wiki/File:Audemars_Piguet_Royal_Oak_ref._15202.jpg) | OpaleHorse | CC BY-SA 4.0 |
 | Beras | [WhiteRice](https://commons.wikimedia.org/wiki/File:WhiteRice.jpg) | Sanjay Acharya | CC BY-SA 3.0 |
 | Bangunan Kopdes | [Koperasi Desa Merah Putih Sawahan](https://commons.wikimedia.org/wiki/File:Koperasi_Desa_Merah_Putih_Sawahan,_Juwiring,_Klaten_1_Agustus_2026.jpg) | Dani Safa Adi Nugraha | CC BY-SA 3.0 |
+| Sewa kosan | [A Residential Room](https://commons.wikimedia.org/wiki/File:A_Residential_Room.jpg) | Kalokih | CC BY-SA 4.0 |
+| Sewa apartment | [Pink apartment building facade](https://commons.wikimedia.org/wiki/File:Pink_apartment_building_facade,_Rio_de_Janeiro.jpg) | Wilfredor | CC0 |
+| Sewa kontrakan | [House for rent in Chipata Compound](https://commons.wikimedia.org/wiki/File:House_for_rent_in_Chipata_Compound.jpg) | Olympian Xeus | CC BY-SA 4.0 |
+| AYCE | [Buffet dishes at Khua Din Restaurant](https://commons.wikimedia.org/wiki/File:Buffet_dishes_at_Khua_Din_Restaurant.jpg) | Mx. Granger | CC0 |
 
 ## Teks lisensi
 
